@@ -1,4 +1,4 @@
-from gaia.map import HexagonGrid
+from gaia.map import Hexagon
 
 from flask import Flask
 app = Flask(__name__)
@@ -6,4 +6,4 @@ app = Flask(__name__)
 
 @app.route('/')
 def draw_map():
-    return str(HexagonGrid(1))
+    return str(Hexagon(1, 2))

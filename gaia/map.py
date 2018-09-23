@@ -38,7 +38,7 @@ class Hexagon(object):
 @dataclass(frozen=True)
 class Planet(object):
     hex: Hexagon
-    planet_type: Planets = Planets.SPACE
+    planet_type: Planets
 
 
 class Sector(object):
