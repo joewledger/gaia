@@ -23,7 +23,7 @@ class Hexagon(object):
 
     @property
     def y(self):
-        return -self.x - self.y
+        return -self.x - self.z
 
     def distance_from_coordinates(self, x, z):
         return (abs(self.x - x) + abs(self.y - (-x - z)) + abs(self.z - z)) / 2
@@ -42,8 +42,8 @@ class Planet(object):
 
 
 class Sector(object):
-    def __init__(self, planets: List[Planet], radius: int=2, x_offset: int=0, z_offset: int=0):
-        assert radius >= 0, "Radius must be greater or equal to zero"
+    def __init__(self, planets: List[Planet], radius: int=3, x_offset: int=0, z_offset: int=0):
+        assert radius >= 1, "Radius must be greater or equal to zero"
         assert isinstance(planets, list), "Planets must be a list"
 
         self.radius = radius
