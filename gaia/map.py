@@ -1,10 +1,9 @@
 from dataclasses import dataclass
 from enum import Enum
-from typing import Set
+from typing import List
 
 
 class Planets(Enum):
-    SPACE = 0
     RED = 1
     ORANGE = 2
     WHITE = 3
@@ -21,7 +20,6 @@ class Planets(Enum):
 class Hexagon(object):
     x: int
     z: int
-    planet_type: Planets = Planets.SPACE
 
     @property
     def y(self):
@@ -33,33 +31,33 @@ class Hexagon(object):
     def distance(self, other):
         return self.distance_from_coordinates(other.x, other.z)
 
-    def __hash__(self):
-        return hash((self.x, self.z))
-
-    def __eq__(self, other):
-        return (self.x, self.z) == (other.x, other.z)
-
     def __str__(self):
         return "({0.x},{0.z})".format(self)
 
 
+@dataclass(frozen=True)
+class Planet(object):
+    hex: Hexagon
+    planet_type: Planets = Planets.SPACE
+
+
 class Sector(object):
-    def __init__(self, radius: int=3, x_offset: int=0, z_offset: int=0, hexagon_overrides: Set[Hexagon]=None):
-        assert radius > 0 and (hexagon_overrides is None or isinstance(hexagon_overrides, list))
+    def __init__(self, planets: List[Planet], radius: int=2, x_offset: int=0, z_offset: int=0):
+        assert radius >= 0, "Radius must be greater or equal to zero"
+        assert isinstance(planets, list), "Planets must be a list"
 
         self.radius = radius
         self.x_offset = x_offset
         self.z_offset = z_offset
 
         self.hexagons = set()
+        self.planets = {p.hex: p for p in planets}
+
         center = Hexagon(self.x_offset, self.z_offset)
         for x in range(self.x_offset - self.radius, self.x_offset + self.radius + 1):
             for z in range(self.z_offset - self.radius, self.z_offset + self.radius + 1):
-                local_hexagon = Hexagon(x, z)
-                if local_hexagon in hexagon_overrides:
-                    self.hexagons.add([h for h in hexagon_overrides if h == local_hexagon][0])
-                elif center.distance_from_coordinates(x, z) < self.radius:
-                    self.hexagons.add(local_hexagon)
+                if center.distance_from_coordinates(x, z) < self.radius:
+                    self.hexagons.add(Hexagon(x, z))
 
     def rotate(self, degrees: int):
         assert degrees in range(0, 361) and degrees % 60 == 0
