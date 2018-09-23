@@ -103,3 +103,7 @@ class Sector(object):
 class Map:
     def __init__(self, sectors):
         self.sectors = sectors
+        self.federations = []
+
+    def add_federation(self, federation):
+        self.federations.append(federation)
