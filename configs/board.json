@@ -1,0 +1,516 @@
+{
+  "2p_default": {
+    "sectors": [
+      {
+        "number": 1,
+        "side": 0,
+        "x_offset": 3,
+        "y_offset": -5
+      },
+      {
+        "number": 2,
+        "side": 0,
+        "x_offset": -2,
+        "y_offset": -3
+      },
+      {
+        "number": 3,
+        "side": 0,
+        "x_offset": 0,
+        "y_offset": 0
+      },
+      {
+        "number": 4,
+        "side": 0,
+        "x_offset": -5,
+        "y_offset": 2
+      },
+      {
+        "number": 5,
+        "side": 1,
+        "x_offset": 5,
+        "y_offset": -2
+      },
+      {
+        "number": 6,
+        "side": 1,
+        "x_offset": 2,
+        "y_offset": 3
+      },
+      {
+        "number": 7,
+        "side": 1,
+        "x_offset": -3,
+        "y_offset": -5
+      }
+    ]
+  },
+  "sectors": [
+    {
+      "number": 1,
+      "radius": 3,
+      "sides": [
+        [
+          {
+            "x": -1,
+            "y": -1,
+            "type": "YELLOW"
+          },
+          {
+            "x": 0,
+            "z": -1,
+            "type": "BROWN"
+          },
+          {
+            "x": 1,
+            "z": 0,
+            "type": "BLUE"
+          },
+          {
+            "x": 1,
+            "z": 1,
+            "type": "TRANSDIM"
+          },
+          {
+            "x": -1,
+            "z": 2,
+            "type": "ORANGE"
+          },
+          {
+            "x": -2,
+            "z": 2,
+            "type": "RED"
+          }
+        ]
+      ]
+    },
+    {
+      "number": 2,
+      "radius": 3,
+      "sides": [
+        [
+          {
+            "x":-1,
+            "z": 0,
+            "type": "BROWN"
+          },
+          {
+            "x":1,
+            "z":0,
+            "type":"WHITE"
+          },
+          {
+            "x": 1,
+            "z": -2,
+            "type": "ORANGE"
+          },
+          {
+            "x": 2,
+            "z": -2,
+            "type": "GREY"
+          },
+          {
+            "x": 1,
+            "z": 1,
+            "type": "YELLOW"
+          },
+          {
+            "x": -1,
+            "z": 2,
+            "type": "TRANSDIM"
+          },
+          {
+            "x": -2,
+            "z": 1,
+            "type": "RED"
+          }
+        ]
+      ]
+    },
+    {
+      "number": 3,
+      "radius": 3,
+      "sides": [
+        [
+          {
+            "x": 0,
+            "z": -1,
+            "type": "GAIA"
+          },
+          {
+            "x": 2,
+            "z": -2,
+            "type": "TRANSDIM"
+          },
+          {
+            "x": 0,
+            "z": -1,
+            "type": "WHITE"
+          },
+          {
+            "x": 1,
+            "z": 1,
+            "type": "GREY"
+          },
+          {
+            "x": -2,
+            "z": 1,
+            "type": "BLUE"
+          },
+          {
+            "x": -2,
+            "z": 2,
+            "type": "YELLOW"
+          }
+        ]
+      ]
+    },
+    {
+      "number": 4,
+      "radius": 3,
+      "sides": [
+        [
+          {
+            "x": -1,
+            "z": -1,
+            "type": "WHITE"
+          },
+          {
+            "x": -1,
+            "z": 0,
+            "type": "ORANGE"
+          },
+          {
+            "x": 1,
+            "z": -1,
+            "type": "RED"
+          },
+          {
+            "x": 2,
+            "z": -2,
+            "type": "GREY"
+          },
+          {
+            "x": 0,
+            "z": 1,
+            "type": "BROWN"
+          },
+          {
+            "x": 0,
+            "z": 2,
+            "type": "BLUE"
+          }
+        ]
+      ]
+    },
+    {
+      "number": 5,
+      "radius": 3,
+      "sides": [
+        [
+          {
+            "x": 0,
+            "z": -1,
+            "type": "GAIA"
+          },
+          {
+            "x": 2,
+            "z": -2,
+            "type": "WHITE"
+          },
+          {
+            "x": 2,
+            "z": 0,
+            "type": "TRANSDIM"
+          },
+          {
+            "x": 1,
+            "z": 1,
+            "type": "RED"
+          },
+          {
+            "x": -2,
+            "z": 1,
+            "type": "ORANGE"
+          },
+          {
+            "x": -2,
+            "z": 2,
+            "type": "YELLOW"
+          }
+        ],
+        [
+          {
+            "x": 0,
+            "z": -1,
+            "type": "GAIA"
+          },
+          {
+            "x": 2,
+            "z": -2,
+            "type": "WHITE"
+          },
+          {
+            "x": 2,
+            "z": 0,
+            "type": "TRANSDIM"
+          },
+          {
+            "x": 1,
+            "z": 1,
+            "type": "RED"
+          },
+          {
+            "x": -2,
+            "z": 1,
+            "type": "ORANGE"
+          }
+        ]
+      ]
+    },
+    {
+      "number": 6,
+      "radius": 3,
+      "sides": [
+        [
+          {
+            "x": 0,
+            "z": -1,
+            "type": "BROWN"
+          },
+          {
+            "x": 1,
+            "z": 0,
+            "type": "BLUE"
+          },
+          {
+            "x": 2,
+            "z": -1,
+            "type": "TRANSDIM"
+          },
+          {
+            "x": -1,
+            "z": 1,
+            "type": "GAIA"
+          },
+          {
+            "x": -1,
+            "z": 2,
+            "type": "TRANSDIM"
+          },
+          {
+            "x": 0,
+            "z": 2,
+            "type": "YELLOW"
+          }
+        ],
+        [
+          {
+            "x": 1,
+            "z": 0,
+            "type": "BLUE"
+          },
+          {
+            "x": 2,
+            "z": -1,
+            "type": "TRANSDIM"
+          },
+          {
+            "x": -1,
+            "z": 1,
+            "type": "GAIA"
+          },
+          {
+            "x": -1,
+            "z": 2,
+            "type": "TRANSDIM"
+          },
+          {
+            "x": 0,
+            "z": 2,
+            "type": "YELLOW"
+          }
+        ]
+      ]
+    },
+    {
+      "number": 7,
+      "radius": 3,
+      "sides": [
+        [
+          {
+            "x": 0,
+            "z": -2,
+            "type": "TRANSDIM"
+          },
+          {
+            "x": -1,
+            "z": 0,
+            "type": "GAIA"
+          },
+          {
+            "x": 1,
+            "z": -1,
+            "type": "RED"
+          },
+          {
+            "x": 2,
+            "z": -1,
+            "type": "BROWN"
+          },
+          {
+            "x": 0,
+            "z": 1,
+            "type": "GAIA"
+          },
+          {
+            "x": -2,
+            "z": 2,
+            "type": "GREY"
+          }
+        ],
+        [
+          {
+            "x": 0,
+            "z": -2,
+            "type": "TRANSDIM"
+          },
+          {
+            "x": -1,
+            "z": 0,
+            "type": "GAIA"
+          },
+          {
+            "x": 2,
+            "z": -1,
+            "type": "BROWN"
+          },
+          {
+            "x": 0,
+            "z": 1,
+            "type": "GAIA"
+          },
+          {
+            "x": -2,
+            "z": 2,
+            "type": "GREY"
+          }
+        ]
+      ]
+    },
+    {
+      "number": 8,
+      "radius": 3,
+      "sides": [
+        [
+          {
+            "x": -2,
+            "z": 1,
+            "type": "TRANSDIM"
+          },
+          {
+            "x": -1,
+            "z": 0,
+            "type": "ORANGE"
+          },
+          {
+            "x": 0,
+            "z": 1,
+            "type": "GREY"
+          },
+          {
+            "x": 1,
+            "z": -1,
+            "type": "WHITE"
+          },
+          {
+            "x": 2,
+            "z": -2,
+            "type": "BLUE"
+          },
+          {
+            "x": 2,
+            "z": 0,
+            "type": "TRANSDIM"
+          }
+        ]
+      ]
+    },
+    {
+      "number": 9,
+      "radius": 3,
+      "sides": [
+        [
+          {
+            "x": -2,
+            "z": 0,
+            "type": "BROWN"
+          },
+          {
+            "x": -1,
+            "z": 0,
+            "type": "GREY"
+          },
+          {
+            "x": 0,
+            "z": 1,
+            "type": "GAIA"
+          },
+          {
+            "x": 1,
+            "z": -2,
+            "type": "ORANGE"
+          },
+          {
+            "x": 2,
+            "z": -1,
+            "type": "TRANSDIM"
+          },
+          {
+            "x": 2,
+            "z": 0,
+            "type": "WHITE"
+          }
+        ]
+      ]
+    },
+    {
+      "number": 10,
+      "radius": 3,
+      "sides": [
+        [
+          {
+            "x": -2,
+            "z": 0,
+            "type": "BLUE"
+          },
+          {
+            "x": -2,
+            "z": 1,
+            "type": "RED"
+          },
+          {
+            "x": 0,
+            "z": -1,
+            "type": "YELLOW"
+          },
+          {
+            "x": 0,
+            "z": 1,
+            "type": "GAIA"
+          },
+          {
+            "x": 2,
+            "z": -1,
+            "type": "TRANSDIM"
+          },
+          {
+            "x": 2,
+            "z": 0,
+            "type": "TRANSDIM"
+          }
+        ]
+      ]
+    }
+  ]
+}
