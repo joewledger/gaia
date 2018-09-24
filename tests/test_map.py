@@ -9,6 +9,7 @@ from gaia.buildings import Buildings
 @pytest.mark.parametrize("hex1,hex2,distance", [
     (Hexagon(0, 0), Hexagon(0, 1), 1),
     (Hexagon(0, 0), Hexagon(2, 1), 3),
+    (Hexagon(0, 0), Hexagon(-2, 2), 2),
     (Hexagon(0, 0), Hexagon(2, 2), 4),
     (Hexagon(-3, 0), Hexagon(3, 0), 6),
     (Hexagon(-3, -2), Hexagon(5, -3), 8),
