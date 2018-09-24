@@ -1,6 +1,49 @@
 {
-  "2p": {
-
+  "2p_default": {
+    "sectors": [
+      {
+        "number": 1,
+        "side": 0,
+        "x_offset": 3,
+        "y_offset": -5
+      },
+      {
+        "number": 2,
+        "side": 0,
+        "x_offset": -2,
+        "y_offset": -3
+      },
+      {
+        "number": 3,
+        "side": 0,
+        "x_offset": 0,
+        "y_offset": 0
+      },
+      {
+        "number": 4,
+        "side": 0,
+        "x_offset": -5,
+        "y_offset": 2
+      },
+      {
+        "number": 5,
+        "side": 1,
+        "x_offset": 5,
+        "y_offset": -2
+      },
+      {
+        "number": 6,
+        "side": 1,
+        "x_offset": 2,
+        "y_offset": 3
+      },
+      {
+        "number": 7,
+        "side": 1,
+        "x_offset": -3,
+        "y_offset": -5
+      }
+    ]
   },
   "sectors": [
     {
