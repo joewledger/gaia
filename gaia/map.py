@@ -1,8 +1,9 @@
 from __future__ import annotations
 from dataclasses import dataclass
 from enum import Enum
-from typing import List
+from typing import List, Dict
 import random
+import json
 
 from gaia.players import Factions
 from gaia.buildings import Buildings
@@ -100,10 +101,44 @@ class Sector(object):
         self.rotate(random.randint(0, 6) * 60)
 
 
+class GameTile(object):
+    """
+    GameTiles are the physical pieces that form the map.
+    They have either one or two sides (which are sectors)
+    """
+    def __init__(self):
+        self.sides = []
+
+    @staticmethod
+    def get_tile_mapping_from_config(config_path: str) -> Dict[int, GameTile]:
+        with open(config_path) as config:
+            data = json.load(config)
+
+        tile_mapping = dict()
+
+        for tile in data["tiles"]:
+            game_tile = GameTile()
+            tile_mapping[tile["number"]] = game_tile
+
+            radius = tile["radius"]
+            for side in tile["sides"]:
+                planets = [Planet(Hexagon(p["x"], p["z"]), planet_type=Planet.Type[p["type"]]) for p in side]
+                game_tile.sides.append(Sector(planets, radius))
+
+        return tile_mapping
+
+
 class Map:
     def __init__(self, sectors):
         self.sectors = sectors
         self.federations = []
+
+    @classmethod
+    def load_from_config(cls, config_path: str, game_type: str = None):
+        with open(config_path) as config:
+            data = json.load(config)
+
+        game_tiles = GameTile.get_tile_mapping_from_config(config_path)
 
     def add_federation(self, federation):
         self.federations.append(federation)

@@ -1,7 +1,7 @@
 import pytest
 from copy import copy
 
-from gaia.map import Hexagon, Planet, InhabitedPlanet, Sector
+from gaia.map import Hexagon, Planet, InhabitedPlanet, Sector, Map, GameTile
 from gaia.players import Factions
 from gaia.buildings import Buildings
 
@@ -84,3 +84,32 @@ def test_sector_has_all_planets(planets):
     assert sector.get_planet(0, 5) == planets[1]
     assert sector.get_planet(0, 4) == planets[2]
     assert sector.get_planet(100, -100) is None
+
+
+@pytest.mark.integration
+def test_load_gametile_mapping_from_config():
+    gametiles = GameTile.get_tile_mapping_from_config(config_path="../configs/board.json")
+
+    assert len(gametiles) == 10
+    assert list(gametiles.keys()) == list(range(1, 11))
+    assert all(isinstance(gt, GameTile) for gt in gametiles.values())
+    assert all(len(gt.sides) in (1, 2) for gt in gametiles.values())
+
+    sectors = set()
+    for gt in gametiles.values():
+        sectors.update(gt.sides)
+
+    assert all(s.radius == 3 for s in sectors)
+    assert all(s.x_offset == 0 and s.z_offset == 0 for s in sectors)
+
+    for sector in sectors:
+        planets = sector.planets.values()
+        assert all(planet.hex.x in range(-2, 3) and planet.hex.z in range(-2, 3) for planet in planets)
+        assert all(isinstance(planet.planet_type, Planet.Type) for planet in planets)
+
+
+@pytest.mark.integration
+def test_map_load_from_config():
+    map = Map.load_from_config(config_path="../configs/board.json",
+                               game_type="2p_default")
+    assert len(map.sectors) == 7
