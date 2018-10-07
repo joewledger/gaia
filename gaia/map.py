@@ -119,6 +119,9 @@ class Sector(object):
             if old_hex in self.planets:
                 new_planets[new_hex] = self.planets[old_hex].move_hex(new_hex)
 
+        self.hexagons = new_hexagons
+        self.planets = new_planets
+
 
 class GameTile(object):
     """

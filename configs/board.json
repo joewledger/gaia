@@ -41,7 +41,7 @@
         "number": 7,
         "side": 1,
         "x_offset": -3,
-        "z_offset": -5
+        "z_offset": 5
       }
     ]
   },

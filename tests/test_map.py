@@ -113,3 +113,12 @@ def test_map_load_from_config(config_path):
     map = Map.load_from_config(config_path=config_path,
                                game_type="2p_default")
     assert len(map.sectors) == 7
+
+    hexagons = set()
+    for sector in map.sectors:
+        assert len(sector.hexagons) == 19
+        assert not any(h in hexagons for h in sector.hexagons)
+        hexagons.update(sector.hexagons)
+
+    # There should be 19 hexagons in each sector, and no hexagons should overlap between sectors
+    assert len(hexagons) == 7 * 19
