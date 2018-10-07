@@ -1,4 +1,5 @@
 import pytest
+import os
 
 from gaia.map import Hexagon, Planet, InhabitedPlanet
 from gaia.players import Factions
@@ -12,3 +13,8 @@ def planets():
         Planet(Hexagon(0, 5), Planet.Type.RED),
         InhabitedPlanet(Hexagon(0, 4), Planet.Type.ORANGE, Factions.AMBAS, Buildings.MINE)
     ]
+
+
+@pytest.fixture()
+def config_path():
+    return os.path.dirname(os.path.realpath(__file__)) + "\\..\\configs\\board.json"

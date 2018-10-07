@@ -87,8 +87,8 @@ def test_sector_has_all_planets(planets):
 
 
 @pytest.mark.integration
-def test_load_gametile_mapping_from_config():
-    gametiles = GameTile.get_tile_mapping_from_config(config_path="../configs/board.json")
+def test_load_gametile_mapping_from_config(config_path):
+    gametiles = GameTile.get_tile_mapping_from_config(config_path=config_path)
 
     assert len(gametiles) == 10
     assert list(gametiles.keys()) == list(range(1, 11))
@@ -109,7 +109,7 @@ def test_load_gametile_mapping_from_config():
 
 
 @pytest.mark.integration
-def test_map_load_from_config():
-    map = Map.load_from_config(config_path="../configs/board.json",
+def test_map_load_from_config(config_path):
+    map = Map.load_from_config(config_path=config_path,
                                game_type="2p_default")
     assert len(map.sectors) == 7
