@@ -87,6 +87,7 @@ class Sector(object):
         self.z_offset = z_offset
 
         self.hexagons = set()
+        planets = [p.move_hex(p.hex.adjust_offset(x_offset, z_offset)) for p in planets]
         self.planets = {p.hex: p for p in planets}
 
         center = Hexagon(self.x_offset, self.z_offset)

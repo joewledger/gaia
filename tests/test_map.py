@@ -1,5 +1,5 @@
 import pytest
-from copy import copy
+from copy import copy, deepcopy
 
 from gaia.map import Hexagon, Planet, InhabitedPlanet, Sector, Map, GameTile
 from gaia.players import Factions
@@ -18,6 +18,15 @@ from gaia.buildings import Buildings
 ])
 def test_hexagon_get_distance(hex1, hex2, distance):
     assert hex1.distance(hex2) == distance
+
+
+@pytest.mark.parametrize("hex1,hex2,x_offset_diff,z_offset_diff", [
+    (Hexagon(0, 0), Hexagon(1, 1), 1, 1),
+    (Hexagon(1, 5), Hexagon(2, 3), 1, -2),
+    (Hexagon(4, -2), Hexagon(5, -3), 1, -1)
+])
+def test_hexagon_adjust_offset(hex1, hex2, x_offset_diff, z_offset_diff):
+    assert hex1.adjust_offset(x_offset_diff, z_offset_diff) == hex2
 
 
 @pytest.mark.parametrize("orig,new,degrees", [
@@ -81,9 +90,33 @@ def test_sector_has_all_planets(planets):
 
     assert len(sector.planets) == len(planets)
     assert sector.get_planet(0, 0) == planets[0]
-    assert sector.get_planet(0, 5) == planets[1]
-    assert sector.get_planet(0, 4) == planets[2]
+    assert sector.get_planet(0, 2) == planets[1]
+    assert sector.get_planet(-1, 1) == planets[2]
     assert sector.get_planet(100, -100) is None
+
+
+@pytest.mark.parametrize("orig_x_offset,orig_z_offset,x_offset,z_offset", [
+    (0, 0, 0, 0),
+    (0, 0, 1, 2),
+    (0, 0, -2, -4),
+    (0, 0, 154, 163),
+    (0, 0, -24, 18),
+    (1, 2, 0, 0),
+    (-1, 4, 1, 2),
+    (-3, 5, -2, -4),
+    (2, -1, 154, 163),
+    (-5, 3, -24, 18)
+])
+def test_sector_adjust_offset(planets, orig_x_offset, orig_z_offset, x_offset, z_offset):
+    planets_copy = deepcopy(planets)
+    sector = Sector(planets, x_offset=orig_x_offset, z_offset=orig_z_offset)
+    sector.adjust_offset(x_offset=x_offset, z_offset=z_offset)
+    assert all(h.distance(Hexagon(x_offset, z_offset)) <= 2 for h in sector.hexagons)
+    assert all(p.hex.distance(Hexagon(x_offset, z_offset)) <= 2 for p in sector.planets.values())
+    assert all(h == p.hex for h, p in sector.planets.items())
+    assert sector.x_offset == x_offset
+    assert sector.z_offset == z_offset
+    assert all(p.move_hex(p.hex.adjust_offset(x_offset, z_offset)) in sector.planets.values() for p in planets_copy)
 
 
 @pytest.mark.integration
