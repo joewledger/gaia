@@ -155,3 +155,9 @@ def test_map_load_from_config(config_path):
 
     # There should be 19 hexagons in each sector, and no hexagons should overlap between sectors
     assert len(hexagons) == 7 * 19
+
+
+@pytest.mark.integration
+def test_map_to_json(default_map):
+    json_map = default_map.to_json()
+    assert isinstance(json_map, str)

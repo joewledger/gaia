@@ -1,9 +1,10 @@
 from __future__ import annotations
 from dataclasses import dataclass
-from enum import Enum
+from enum import IntEnum
 from typing import List, Dict
 import random
 import json
+from copy import deepcopy
 
 from gaia.players import Factions
 from gaia.buildings import Buildings
@@ -41,7 +42,7 @@ class Hexagon(object):
 
 @dataclass(frozen=True)
 class Planet(object):
-    class Type(Enum):
+    class Type(IntEnum):
         RED = 1
         ORANGE = 2
         WHITE = 3
@@ -95,6 +96,12 @@ class Sector(object):
             for z in range(self.z_offset - self.radius, self.z_offset + self.radius + 1):
                 if center.distance_from_coordinates(x, z) < self.radius:
                     self.hexagons.add(Hexagon(x, z))
+
+    def __iter__(self):
+        my_dict = deepcopy(self.__dict__)
+        my_dict["planets"] = list(self.planets.values())
+        for key, value in my_dict.items():
+            yield key, value
 
     def get_planet(self, x: int, z: int) -> Planet:
         h = Hexagon(x, z)
@@ -160,7 +167,7 @@ class Map:
         self.federations = []
 
     @classmethod
-    def load_from_config(cls, config_path: str, game_type: str = None):
+    def load_from_config(cls, config_path: str, game_type: str = None) -> Map:
         with open(config_path) as config:
             config = json.load(config)
 
@@ -178,6 +185,18 @@ class Map:
             raise NotImplementedError
 
         return Map(sectors)
+
+    def to_json(self):
+        class MapEncoder(json.JSONEncoder):
+            def default(self, obj):
+                if isinstance(obj, set):
+                    return list(obj)
+                elif isinstance(obj, Sector):
+                    return dict(obj)
+                else:
+                    return obj.__dict__
+
+        return json.dumps(self, cls=MapEncoder)
 
     def add_federation(self, federation):
         self.federations.append(federation)

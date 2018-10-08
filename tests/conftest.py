@@ -1,7 +1,7 @@
 import pytest
 import os
 
-from gaia.map import Hexagon, Planet, InhabitedPlanet, Sector
+from gaia.map import Hexagon, Planet, InhabitedPlanet, Map
 from gaia.players import Factions
 from gaia.buildings import Buildings
 
@@ -18,3 +18,9 @@ def planets():
 @pytest.fixture()
 def config_path():
     return os.path.dirname(os.path.realpath(__file__)) + "\\..\\configs\\board.json"
+
+
+@pytest.fixture()
+def default_map(config_path):
+    return Map.load_from_config(config_path=config_path,
+                                game_type="2p_default")
