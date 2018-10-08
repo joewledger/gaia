@@ -1,5 +1,6 @@
 import pytest
 from copy import copy, deepcopy
+import json
 
 from gaia.map import Hexagon, Planet, InhabitedPlanet, Sector, Map, GameTile
 from gaia.players import Factions
@@ -159,5 +160,19 @@ def test_map_load_from_config(config_path):
 
 @pytest.mark.integration
 def test_map_to_json(default_map):
-    json_map = default_map.to_json()
-    assert isinstance(json_map, str)
+    map_str = default_map.to_json()
+    assert isinstance(map_str, str)
+
+    map_json = json.loads(map_str)
+    sectors = map_json["sectors"]
+    assert len(sectors) == 7
+    assert all(all(prop in sector for prop in ["radius", "x_offset", "z_offset", "hexagons", "planets"]) for sector in sectors)
+    assert all(len(sector["hexagons"]) == 19 for sector in sectors)
+
+    for sector in sectors:
+        hexagons = sector["hexagons"]
+        planets = sector["planets"]
+        assert all(all(prop in hex for prop in ["x", "z"]) for hex in hexagons)
+        assert all(all(prop in planet for prop in ["hex", "planet_type"]) for planet in planets)
+
+    assert map_json["federations"] == []
