@@ -1,8 +1,10 @@
 from __future__ import annotations
 from dataclasses import dataclass
-from enum import Enum
-from typing import List
+from enum import IntEnum
+from typing import List, Dict
 import random
+import json
+from copy import deepcopy
 
 from gaia.players import Factions
 from gaia.buildings import Buildings
@@ -31,13 +33,16 @@ class Hexagon(object):
             x, y, z = -z, -x, -y
         return Hexagon(x, z)
 
+    def adjust_offset(self, x_offset_diff: int, z_offset_diff: int) -> Hexagon:
+        return Hexagon(self.x + x_offset_diff, self.z + z_offset_diff)
+
     def __str__(self) -> str:
         return "({0.x},{0.z})".format(self)
 
 
 @dataclass(frozen=True)
 class Planet(object):
-    class Type(Enum):
+    class Type(IntEnum):
         RED = 1
         ORANGE = 2
         WHITE = 3
@@ -52,10 +57,13 @@ class Planet(object):
     hex: Hexagon
     planet_type: Type
 
-    def rotate(self, degrees: int) -> Planet:
+    def move_hex(self, new_hex: Hexagon) -> Planet:
         attrs = self.__dict__
-        attrs['hex'] = self.hex.rotate(degrees)
+        attrs['hex'] = new_hex
         return type(self)(**attrs)
+
+    def rotate(self, degrees: int) -> Planet:
+        return self.move_hex(self.hex.rotate(degrees))
 
     def is_inhabited(self) -> bool:
         return False
@@ -80,6 +88,7 @@ class Sector(object):
         self.z_offset = z_offset
 
         self.hexagons = set()
+        planets = [p.move_hex(p.hex.adjust_offset(x_offset, z_offset)) for p in planets]
         self.planets = {p.hex: p for p in planets}
 
         center = Hexagon(self.x_offset, self.z_offset)
@@ -87,6 +96,12 @@ class Sector(object):
             for z in range(self.z_offset - self.radius, self.z_offset + self.radius + 1):
                 if center.distance_from_coordinates(x, z) < self.radius:
                     self.hexagons.add(Hexagon(x, z))
+
+    def __iter__(self):
+        my_dict = deepcopy(self.__dict__)
+        my_dict["planets"] = list(self.planets.values())
+        for key, value in my_dict.items():
+            yield key, value
 
     def get_planet(self, x: int, z: int) -> Planet:
         h = Hexagon(x, z)
@@ -99,11 +114,89 @@ class Sector(object):
     def random_rotate(self) -> None:
         self.rotate(random.randint(0, 6) * 60)
 
+    def adjust_offset(self, x_offset: int, z_offset: int) -> None:
+        x_offset_diff = x_offset - self.x_offset
+        z_offset_diff = z_offset - self.z_offset
+
+        self.x_offset, self.z_offset = x_offset, z_offset
+        new_hexagons = set()
+        new_planets = dict()
+        for old_hex in self.hexagons:
+            new_hex = old_hex.adjust_offset(x_offset_diff, z_offset_diff)
+            new_hexagons.add(new_hex)
+            if old_hex in self.planets:
+                new_planets[new_hex] = self.planets[old_hex].move_hex(new_hex)
+
+        self.hexagons = new_hexagons
+        self.planets = new_planets
+
+
+class GameTile(object):
+    """
+    GameTiles are the physical pieces that form the map.
+    They have either one or two sides (which are sectors)
+    """
+    def __init__(self):
+        self.sides = []
+
+    def __getitem__(self, idx):
+        return self.sides[idx]
+
+    @staticmethod
+    def get_tile_mapping_from_config(config_path: str) -> Dict[int, GameTile]:
+        with open(config_path) as config:
+            config = json.load(config)
+
+        tile_mapping = dict()
+
+        for tile in config["tiles"]:
+            game_tile = GameTile()
+            tile_mapping[tile["number"]] = game_tile
+
+            radius = tile["radius"]
+            for side in tile["sides"]:
+                planets = [Planet(Hexagon(p["x"], p["z"]), planet_type=Planet.Type[p["type"]]) for p in side]
+                game_tile.sides.append(Sector(planets, radius))
+
+        return tile_mapping
+
 
 class Map:
-    def __init__(self, sectors):
+    def __init__(self, sectors: List[Sector]):
         self.sectors = sectors
         self.federations = []
+
+    @classmethod
+    def load_from_config(cls, config_path: str, game_type: str = None) -> Map:
+        with open(config_path) as config:
+            config = json.load(config)
+
+        all_game_tiles = GameTile.get_tile_mapping_from_config(config_path)
+        sectors = []
+
+        if game_type:
+            for tile_config in config[game_type]["tiles"]:
+                tile = all_game_tiles[tile_config["number"]]
+                sector = tile[tile_config["side"]]
+                sector.adjust_offset(tile_config["x_offset"], tile_config["z_offset"])
+                sectors.append(sector)
+        else:
+            # TODO implement random map generation
+            raise NotImplementedError
+
+        return Map(sectors)
+
+    def to_json(self):
+        class MapEncoder(json.JSONEncoder):
+            def default(self, obj):
+                if isinstance(obj, set):
+                    return list(obj)
+                elif isinstance(obj, Sector):
+                    return dict(obj)
+                else:
+                    return obj.__dict__
+
+        return json.dumps(self, cls=MapEncoder)
 
     def add_federation(self, federation):
         self.federations.append(federation)

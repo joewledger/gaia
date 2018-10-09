@@ -1,7 +1,8 @@
 import pytest
-from copy import copy
+from copy import copy, deepcopy
+import json
 
-from gaia.map import Hexagon, Planet, InhabitedPlanet, Sector
+from gaia.map import Hexagon, Planet, InhabitedPlanet, Sector, Map, GameTile
 from gaia.players import Factions
 from gaia.buildings import Buildings
 
@@ -18,6 +19,15 @@ from gaia.buildings import Buildings
 ])
 def test_hexagon_get_distance(hex1, hex2, distance):
     assert hex1.distance(hex2) == distance
+
+
+@pytest.mark.parametrize("hex1,hex2,x_offset_diff,z_offset_diff", [
+    (Hexagon(0, 0), Hexagon(1, 1), 1, 1),
+    (Hexagon(1, 5), Hexagon(2, 3), 1, -2),
+    (Hexagon(4, -2), Hexagon(5, -3), 1, -1)
+])
+def test_hexagon_adjust_offset(hex1, hex2, x_offset_diff, z_offset_diff):
+    assert hex1.adjust_offset(x_offset_diff, z_offset_diff) == hex2
 
 
 @pytest.mark.parametrize("orig,new,degrees", [
@@ -81,6 +91,88 @@ def test_sector_has_all_planets(planets):
 
     assert len(sector.planets) == len(planets)
     assert sector.get_planet(0, 0) == planets[0]
-    assert sector.get_planet(0, 5) == planets[1]
-    assert sector.get_planet(0, 4) == planets[2]
+    assert sector.get_planet(0, 2) == planets[1]
+    assert sector.get_planet(-1, 1) == planets[2]
     assert sector.get_planet(100, -100) is None
+
+
+@pytest.mark.parametrize("orig_x_offset,orig_z_offset,x_offset,z_offset", [
+    (0, 0, 0, 0),
+    (0, 0, 1, 2),
+    (0, 0, -2, -4),
+    (0, 0, 154, 163),
+    (0, 0, -24, 18),
+    (1, 2, 0, 0),
+    (-1, 4, 1, 2),
+    (-3, 5, -2, -4),
+    (2, -1, 154, 163),
+    (-5, 3, -24, 18)
+])
+def test_sector_adjust_offset(planets, orig_x_offset, orig_z_offset, x_offset, z_offset):
+    planets_copy = deepcopy(planets)
+    sector = Sector(planets, x_offset=orig_x_offset, z_offset=orig_z_offset)
+    sector.adjust_offset(x_offset=x_offset, z_offset=z_offset)
+    assert all(h.distance(Hexagon(x_offset, z_offset)) <= 2 for h in sector.hexagons)
+    assert all(p.hex.distance(Hexagon(x_offset, z_offset)) <= 2 for p in sector.planets.values())
+    assert all(h == p.hex for h, p in sector.planets.items())
+    assert sector.x_offset == x_offset
+    assert sector.z_offset == z_offset
+    assert all(p.move_hex(p.hex.adjust_offset(x_offset, z_offset)) in sector.planets.values() for p in planets_copy)
+
+
+@pytest.mark.integration
+def test_load_gametile_mapping_from_config(config_path):
+    gametiles = GameTile.get_tile_mapping_from_config(config_path=config_path)
+
+    assert len(gametiles) == 10
+    assert list(gametiles.keys()) == list(range(1, 11))
+    assert all(isinstance(gt, GameTile) for gt in gametiles.values())
+    assert all(len(gt.sides) in (1, 2) for gt in gametiles.values())
+
+    sectors = set()
+    for gt in gametiles.values():
+        sectors.update(gt.sides)
+
+    assert all(s.radius == 3 for s in sectors)
+    assert all(s.x_offset == 0 and s.z_offset == 0 for s in sectors)
+
+    for sector in sectors:
+        planets = sector.planets.values()
+        assert all(planet.hex.x in range(-2, 3) and planet.hex.z in range(-2, 3) for planet in planets)
+        assert all(isinstance(planet.planet_type, Planet.Type) for planet in planets)
+
+
+@pytest.mark.integration
+def test_map_load_from_config(config_path):
+    map = Map.load_from_config(config_path=config_path,
+                               game_type="2p_default")
+    assert len(map.sectors) == 7
+
+    hexagons = set()
+    for sector in map.sectors:
+        assert len(sector.hexagons) == 19
+        assert not any(h in hexagons for h in sector.hexagons)
+        hexagons.update(sector.hexagons)
+
+    # There should be 19 hexagons in each sector, and no hexagons should overlap between sectors
+    assert len(hexagons) == 7 * 19
+
+
+@pytest.mark.integration
+def test_map_to_json(default_map):
+    map_str = default_map.to_json()
+    assert isinstance(map_str, str)
+
+    map_json = json.loads(map_str)
+    sectors = map_json["sectors"]
+    assert len(sectors) == 7
+    assert all(all(prop in sector for prop in ["radius", "x_offset", "z_offset", "hexagons", "planets"]) for sector in sectors)
+    assert all(len(sector["hexagons"]) == 19 for sector in sectors)
+
+    for sector in sectors:
+        hexagons = sector["hexagons"]
+        planets = sector["planets"]
+        assert all(all(prop in hex for prop in ["x", "z"]) for hex in hexagons)
+        assert all(all(prop in planet for prop in ["hex", "planet_type"]) for planet in planets)
+
+    assert map_json["federations"] == []

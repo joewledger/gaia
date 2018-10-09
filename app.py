@@ -1,9 +1,16 @@
-from gaia.map import Hexagon
+from gaia.map import Map
 
-from flask import Flask
+import os
+from flask import Flask, Response
 app = Flask(__name__)
 
+config_path = os.path.dirname(os.path.realpath(__file__)) + "\\configs\\board.json"
 
-@app.route('/')
-def draw_map():
-    return str(Hexagon(1, 2))
+
+@app.route('/map')
+def get_map():
+    map_json = Map.load_from_config(config_path, game_type="2p_default").to_json()
+
+    return Response(response=map_json,
+                    status=200,
+                    mimetype="application/json")
