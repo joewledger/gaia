@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<svg viewBox="-3000 -3000 6000 6000" xmlns="http://www.w3.org/2000/svg">
+  <!-- Using g to inherit presentation attributes -->
+  <g stroke="green" stroke-width=".2">
+      {% for sector in map.sectors %}
+        {% for hexagon in sector.hexagons %}
+          <g transform="translate({{ 1.5 * 100 * hexagon.x }}, {{0.87 * 100 * hexagon.x * 1.73 * hexagon.z }})">
+              <g class="grid">
+                  <g class="">
+                    <polygon points="100,0 50,-87 -50,-87 -100,-0 -50,87 50,87"></polygon>
+                  </g>
+              </g>
+          </g>
+        {% endfor %}
+      {% endfor %}
+  </g>
+</svg>
+</body>
+</html>
