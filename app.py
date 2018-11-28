@@ -9,8 +9,8 @@ config_path = os.path.dirname(os.path.realpath(__file__)) + "\\configs\\board.js
 
 @app.route('/')
 def main():
-    map = map = Map.load_from_config(config_path, game_type="2p_default")
-    return render_template("test.html", map=map)
+    map = Map.load_from_config(config_path, game_type="2p_default")
+    return render_template("board.html", map=map)
 
 
 @app.route('/map')

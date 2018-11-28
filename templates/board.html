@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Gaia Project</title>
+</head>
+<body>
+<svg viewBox="-3000 -3000 6000 6000" xmlns="http://www.w3.org/2000/svg">
+  <!-- Using g to inherit presentation attributes -->
+  <g stroke="white" stroke-width=".3">
+      {% for sector in map.sectors %}
+        {% for hexagon in sector.hexagons %}
+          <g transform="translate({{ hexagon.screen_x_factor * 100 }}, {{ hexagon.screen_y_factor * 100 }})">
+              <g class="grid">
+                  <polygon points="100,0 50,-87 -50,-87 -100,-0 -50,87 50,87"></polygon>
+              </g>
+          </g>
+        {% endfor %}
+
+        {% for planet in sector.planets.values() %}
+          <g transform="translate({{ planet.hex.screen_x_factor * 100 }}, {{ planet.hex.screen_y_factor * 100 }})">
+              <g class="grid">
+                  <circle cx="0" cy="0" r="70" stroke="black" stroke-width="3" fill="{{ planet.hex_color }}" />
+              </g>
+          </g>
+        {% endfor %}
+      {% endfor %}
+  </g>
+</svg>
+</body>
+</html>
