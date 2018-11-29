@@ -5,6 +5,7 @@ from typing import List, Dict
 import random
 import json
 from copy import deepcopy
+from math import sqrt
 
 from gaia.players import Factions
 from gaia.buildings import Buildings
@@ -18,6 +19,22 @@ class Hexagon(object):
     @property
     def y(self) -> int:
         return -self.x - self.z
+
+    @property
+    def q(self) -> int:
+        return self.z + self.x
+
+    @property
+    def r(self) -> int:
+        return -self.x
+
+    @property
+    def screen_x_factor(self) -> float:
+        return self.q * (3/2)
+
+    @property
+    def screen_y_factor(self) -> float:
+        return (sqrt(3) / 2) * self.q + sqrt(3) * self.r
 
     def distance_from_coordinates(self, x: int, z: int) -> int:
         return (abs(self.x - x) + abs(self.y - (-x - z)) + abs(self.z - z)) // 2
@@ -56,6 +73,21 @@ class Planet(object):
 
     hex: Hexagon
     planet_type: Type
+
+    @property
+    def hex_color(self):
+        return {
+            Planet.Type.RED: "#ff0000",
+            Planet.Type.ORANGE: "#ff6600",
+            Planet.Type.WHITE: "#ffffff",
+            Planet.Type.GREY: "#b3b3b3",
+            Planet.Type.YELLOW: "#ffff00",
+            Planet.Type.BROWN: "#663300",
+            Planet.Type.BLUE: "#0000ff",
+            Planet.Type.GAIA: "#00ff00",
+            Planet.Type.TRANSDIM: "#cc00cc",
+            Planet.Type.LOST: "#cc6699"
+        }[self.planet_type]
 
     def move_hex(self, new_hex: Hexagon) -> Planet:
         attrs = self.__dict__
