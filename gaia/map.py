@@ -57,9 +57,6 @@ class Hexagon(object):
         return "({0.x},{0.z})".format(self)
 
 
-
-
-
 @dataclass(frozen=True)
 class Planet(object):
     class Type(IntEnum):
