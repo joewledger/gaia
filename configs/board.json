@@ -1,5 +1,5 @@
 {
-  "2p_default": {
+  "1p_2p_default": {
     "tiles": [
       {
         "number": 1,
@@ -45,6 +45,74 @@
       }
     ]
   },
+
+  "3p_4p_default": {
+    "tiles": [
+      {
+        "number": 1,
+        "side": 0,
+        "x_offset": 3,
+        "z_offset": -5
+      },
+      {
+        "number": 2,
+        "side": 0,
+        "x_offset": -2,
+        "z_offset": -3
+      },
+      {
+        "number": 3,
+        "side": 0,
+        "x_offset": 0,
+        "z_offset": 0
+      },
+      {
+        "number": 4,
+        "side": 0,
+        "x_offset": -5,
+        "z_offset": 2
+      },
+      {
+        "number": 5,
+        "side": 0,
+        "x_offset": 5,
+        "z_offset": -2
+      },
+      {
+        "number": 6,
+        "side": 0,
+        "x_offset": 2,
+        "z_offset": 3
+      },
+      {
+        "number": 7,
+        "side": 0,
+        "x_offset": -3,
+        "z_offset": 5
+      },
+      {
+        "number": 8,
+        "side": 0,
+        "x_offset": -7,
+        "z_offset": -1
+      },
+      {
+        "number": 9,
+        "side": 0,
+        "x_offset": -4,
+        "z_offset": -6
+      },
+      {
+        "number": 10,
+        "side": 0,
+        "x_offset": 1,
+        "z_offset": -8
+
+
+      }
+    ]
+  },
+
   "tiles": [
     {
       "number": 1,
@@ -144,7 +212,7 @@
           },
           {
             "x": 0,
-            "z": -1,
+            "z": 1,
             "type": "WHITE"
           },
           {
@@ -354,8 +422,8 @@
             "type": "RED"
           },
           {
-            "x": 2,
-            "z": -1,
+            "x": 0,
+            "z": 1,
             "type": "BROWN"
           },
           {
@@ -381,13 +449,13 @@
             "type": "GAIA"
           },
           {
-            "x": 2,
-            "z": -1,
+            "x": 0,
+            "z": 1,
             "type": "BROWN"
           },
           {
-            "x": 0,
-            "z": 1,
+            "x": 1,
+            "z": -1,
             "type": "GAIA"
           },
           {
