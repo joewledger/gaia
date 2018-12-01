@@ -4,7 +4,7 @@ import os
 from flask import Flask, Response, render_template
 app = Flask(__name__)
 
-config_path = os.path.dirname(os.path.realpath(__file__)) + "\\configs\\board.json"
+config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "configs", "board.json")
 
 
 @app.route('/')
