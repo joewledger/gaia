@@ -5,9 +5,13 @@
     <title>Gaia Project</title>
 </head>
 <body>
-<svg viewBox="-3000 -3000 6000 6000" xmlns="http://www.w3.org/2000/svg">
+
+<h1>
+    Gaia Project
+</h1>
+<svg viewBox="-3000 -1500 6000 3000" xmlns="http://www.w3.org/2000/svg">
   <!-- Using g to inherit presentation attributes -->
-  <g stroke="white" stroke-width=".3">
+  <g stroke="white" stroke-width="1">
       {% for sector in map.sectors %}
         {% for hexagon in sector.hexagons %}
           <g transform="translate({{ hexagon.screen_x_factor * 100 }}, {{ hexagon.screen_y_factor * 100 }})">
