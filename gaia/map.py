@@ -135,6 +135,14 @@ class Sector(object):
         for key, value in my_dict.items():
             yield key, value
 
+    @property
+    def screen_x_factor(self):
+        return Hexagon(self.x_offset, self.z_offset).screen_x_factor
+
+    @property
+    def screen_y_factor(self):
+        return Hexagon(self.x_offset, self.z_offset).screen_y_factor
+
     def get_planet(self, x: int, z: int) -> Planet:
         h = Hexagon(x, z)
         return self.planets[h] if h in self.planets else None
