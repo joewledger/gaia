@@ -145,7 +145,7 @@ def test_load_gametile_mapping_from_config(config_path):
 @pytest.mark.integration
 def test_map_load_from_config(config_path):
     map = Map.load_from_config(config_path=config_path,
-                               game_type="2p_default")
+                               game_type="1p_2p_default")
     assert len(map.sectors) == 7
 
     hexagons = set()
