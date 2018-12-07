@@ -4,7 +4,7 @@ import json
 
 from gaia.map import Hexagon, Planet, InhabitedPlanet, Sector, Map, GameTile
 from gaia.players import Factions
-from gaia.buildings import Buildings
+from gaia.buildings import Building
 
 
 @pytest.mark.parametrize("hex1,hex2,distance", [
@@ -42,8 +42,8 @@ def test_hexagon_rotation(orig, new, degrees):
     assert orig.rotate(degrees) == new
     assert (Planet(orig, Planet.Type.ORANGE).rotate(degrees) ==
             Planet(new, Planet.Type.ORANGE))
-    assert (InhabitedPlanet(orig, Planet.Type.ORANGE, Factions.AMBAS, Buildings.MINE).rotate(degrees) ==
-            InhabitedPlanet(new, Planet.Type.ORANGE, Factions.AMBAS, Buildings.MINE))
+    assert (InhabitedPlanet(orig, Planet.Type.ORANGE, Factions.AMBAS, Building.MINE).rotate(degrees) ==
+            InhabitedPlanet(new, Planet.Type.ORANGE, Factions.AMBAS, Building.MINE))
 
 
 @pytest.mark.parametrize("degrees", [

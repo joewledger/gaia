@@ -56,7 +56,7 @@ class Income(object):
     credits: int = 0
     knowledge: int = 0
     qic: int = 0
-    power: int = 0,
+    power: int = 0
     power_tokens: int = 0
 
     def __add__(self, other: Income):

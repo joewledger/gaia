@@ -8,7 +8,7 @@ from copy import deepcopy
 from math import sqrt
 
 from gaia.players import Factions
-from gaia.buildings import Buildings
+from gaia.buildings import Building
 
 
 @dataclass(frozen=True)
@@ -104,7 +104,7 @@ class Planet(object):
 @dataclass(frozen=True)
 class InhabitedPlanet(Planet):
     faction: Factions
-    buildings: Buildings
+    buildings: Building
 
     def is_inhabited(self) -> bool:
         return True
