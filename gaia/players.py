@@ -1,8 +1,7 @@
 from __future__ import annotations
 from dataclasses import dataclass
 from enum import IntEnum
-from typing import List, Dict
-from functools import reduce
+from typing import Dict
 
 
 class Factions(IntEnum):
@@ -24,9 +23,9 @@ class Factions(IntEnum):
 
 class Player(object):
     def __init__(self):
-        self._player_resources = PlayerResources(ore=4, credits=15, knowledge=3, qic=1, power={0: 4, 1: 4, 2: 0})
-        self._board_income = Income(ore=1, knowledge=1)
-        self._round_bonus = None
+        self.player_resources = PlayerResources(ore=4, credits=15, knowledge=3, qic=1, power={0: 4, 1: 4, 2: 0})
+        self.board_income = Income(ore=1, knowledge=1)
+        self.round_bonus = None
 
 
 @dataclass
@@ -50,12 +49,6 @@ class PlayerResources(object):
                 self.power[2] += 1
                 self.power[1] -= 1
 
-    def add_income_sources(self, incomes: List[Income]):
-        total_income = reduce(lambda x, y: x + y, incomes)
-        for key, value in total_income.__dict__.items():
-            if key in self.__dict__:
-                self.__dict__[key] += value
-
 
 @dataclass
 class Income(object):
@@ -63,11 +56,13 @@ class Income(object):
     credits: int = 0
     knowledge: int = 0
     qic: int = 0
-    power: int = 0
+    power: int = 0,
+    power_tokens: int = 0
 
     def __add__(self, other: Income):
         return Income(self.ore + other.ore,
                       self.credits + other.credits,
                       self.knowledge + other.knowledge,
                       self.qic + other.qic,
-                      self.power + other.power)
+                      self.power + other.power,
+                      self.power_tokens + other.power_tokens)
