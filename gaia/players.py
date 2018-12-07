@@ -26,6 +26,7 @@ class Player(object):
     def __init__(self):
         self._player_resources = PlayerResources(ore=4, credits=15, knowledge=3, qic=1, power={0: 4, 1: 4, 2: 0})
         self._board_income = Income(ore=1, knowledge=1)
+        self._round_bonus = None
 
 
 @dataclass
