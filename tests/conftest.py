@@ -2,7 +2,7 @@ import pytest
 import os
 
 from gaia.map import Hexagon, Planet, InhabitedPlanet, Map
-from gaia.players import Factions
+from gaia.players import Factions, PlayerResources
 from gaia.buildings import Buildings
 
 
@@ -24,3 +24,8 @@ def config_path():
 def default_map(config_path):
     return Map.load_from_config(config_path=config_path,
                                 game_type="1p_2p_default")
+
+
+@pytest.fixture()
+def default_player_resources():
+    return PlayerResources(ore=4, credits=15, knowledge=3, qic=1, power={0: 4, 1: 4, 2: 0})

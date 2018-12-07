@@ -1,11 +1,11 @@
 from __future__ import annotations
 from dataclasses import dataclass
-from enum import Enum
+from enum import IntEnum
 from typing import List, Dict
 from functools import reduce
 
 
-class Factions(Enum):
+class Factions(IntEnum):
     TERRANS = 0
     LANTIDS = 1
     XENOS = 2
@@ -40,7 +40,7 @@ class PlayerResources(object):
     MAX_KNOWLEDGE = 15
     MAX_CREDITS = 30
 
-    def upgrade_power(self, power: int):
+    def gain_power(self, power: int):
         for i in range(power):
             if self.power[0] > 0:
                 self.power[1] += 1
