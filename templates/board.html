@@ -16,7 +16,7 @@
         {% for hexagon in sector.hexagons %}
           <g transform="translate({{ hexagon.screen_x_factor * 100 + sector.screen_x_factor }}, {{ hexagon.screen_y_factor * 100 + sector.screen_y_factor}})">
               <g class="grid">
-                  <polygon points="100,0 50,-87 -50,-87 -100,-0 -50,87 50,87"></polygon>
+                  <polygon class="hex" points="100,0 50,-87 -50,-87 -100,-0 -50,87 50,87"></polygon>
               </g>
           </g>
         {% endfor %}
@@ -24,12 +24,19 @@
         {% for planet in sector.planets.values() %}
           <g transform="translate({{ planet.hex.screen_x_factor * 100 + sector.screen_x_factor }}, {{ planet.hex.screen_y_factor * 100 + sector.screen_y_factor }})">
               <g class="grid">
-                  <circle cx="0" cy="0" r="70" stroke="black" stroke-width="3" fill="{{ planet.hex_color }}" />
+                  <circle class='planet' cx="0" cy="0" r="70" stroke="black" stroke-width="3" fill="{{ planet.hex_color }}" />
               </g>
           </g>
         {% endfor %}
       {% endfor %}
   </g>
 </svg>
+
+<!--Load JQuery-->
+<script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+<script type=text/javascript src="{{ url_for('static', filename='main.js') }}"></script>
 </body>
 </html>
