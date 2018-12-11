@@ -4,14 +4,15 @@ import os
 from gaia.map import Hexagon, Planet, InhabitedPlanet, Map
 from gaia.players import Factions, PlayerResources
 from gaia.buildings import Building
+from gaia.planet_types import PlanetType
 
 
 @pytest.fixture()
 def planets():
     return [
-        Planet(Hexagon(0, 0), Planet.Type.BLUE),
-        Planet(Hexagon(0, 2), Planet.Type.RED),
-        InhabitedPlanet(Hexagon(-1, 1), Planet.Type.ORANGE, Factions.AMBAS, Building.MINE)
+        Planet(Hexagon(0, 0), PlanetType.BLUE),
+        Planet(Hexagon(0, 2), PlanetType.RED),
+        InhabitedPlanet(Hexagon(-1, 1), PlanetType.ORANGE, Factions.AMBAS, Building.MINE)
     ]
 
 

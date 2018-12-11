@@ -5,7 +5,7 @@ from typing import Dict
 from uuid import uuid4
 from abc import abstractmethod
 
-from gaia.map import Planet
+from gaia.planet_types import PlanetType
 
 
 class Factions(IntEnum):
@@ -40,7 +40,7 @@ class Player(object):
         return self.player_id
 
     @abstractmethod
-    def get_distance_from_planet_color(self, planet: Planet):
+    def get_distance_from_planet_color(self, planet: PlanetType) -> int:
         pass
 
     def can_afford(self, cost: Cost):

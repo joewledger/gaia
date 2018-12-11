@@ -1,6 +1,5 @@
 from __future__ import annotations
 from dataclasses import dataclass
-from enum import IntEnum
 from typing import List, Dict, Set, Union
 import random
 import json
@@ -9,6 +8,7 @@ from math import sqrt
 
 from gaia.players import Factions
 from gaia.buildings import Building
+from gaia.planet_types import PlanetType, planet_type_to_hex_color
 
 
 @dataclass(frozen=True)
@@ -69,35 +69,12 @@ class Hexagon(object):
 
 @dataclass(frozen=True)
 class Planet(object):
-    class Type(IntEnum):
-        RED = 1
-        ORANGE = 2
-        WHITE = 3
-        GREY = 4
-        YELLOW = 5
-        BROWN = 6
-        BLUE = 7
-        GAIA = 8
-        TRANSDIM = 9
-        LOST = 10
-
     hex: Hexagon
-    planet_type: Type
+    planet_type: PlanetType
 
     @property
     def hex_color(self):
-        return {
-            Planet.Type.RED: "#ff0000",
-            Planet.Type.ORANGE: "#ff6600",
-            Planet.Type.WHITE: "#ffffff",
-            Planet.Type.GREY: "#b3b3b3",
-            Planet.Type.YELLOW: "#ffff00",
-            Planet.Type.BROWN: "#663300",
-            Planet.Type.BLUE: "#0000ff",
-            Planet.Type.GAIA: "#00ff00",
-            Planet.Type.TRANSDIM: "#cc00cc",
-            Planet.Type.LOST: "#cc6699"
-        }[self.planet_type]
+        return planet_type_to_hex_color(self.planet_type)
 
     def move_hex(self, new_hex: Hexagon) -> Planet:
         attrs = self.__dict__
@@ -200,7 +177,7 @@ class GameTile(object):
 
             radius = tile["radius"]
             for side in tile["sides"]:
-                planets = [Planet(Hexagon(p["x"], p["z"]), planet_type=Planet.Type[p["type"]]) for p in side]
+                planets = [Planet(Hexagon(p["x"], p["z"]), planet_type=PlanetType[p["type"]]) for p in side]
                 game_tile.sides.append(Sector(planets, radius))
 
         return tile_mapping
