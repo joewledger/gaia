@@ -2,24 +2,26 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import List, Tuple
 from abc import ABC, abstractmethod
+from copy import deepcopy
 
-from gaia.players import Player
-from gaia.map import Map, Hexagon
-from gaia.gamestate import GameState, ResearchBoard
+from gaia.players import Player, Cost
+from gaia.map import Hexagon, InhabitedPlanet
+from gaia.gamestate import GameState
 
 
 @dataclass()
 class Turn(object):
     actions: List[Action]
-    player: Player
+    gamestate: GameState
+    player_id: str
 
-    def validate(self, gamestate: GameState) -> Tuple[bool, List[str]]:
+    def validate(self) -> Tuple[bool, List[str]]:
         validation_errors = []
 
         validation_errors += self._check_action_doesnt_end_prematurely()
         validation_errors += self._check_last_action_ends_turn()
         validation_errors += self._check_partial_action_has_following_action()
-        validation_errors += self._check_all_actions_are_valid(gamestate)
+        validation_errors += self._check_all_actions_are_valid()
 
         return len(validation_errors) == 0, validation_errors
 
@@ -43,19 +45,21 @@ class Turn(object):
 
         for i in range(len(self.actions) - 1):
             action, next_action = self.actions[i], self.actions[i+1]
-            if isinstance(action, PartialAction) and not isinstance(next_action, FullAction):
-                validation_errors.append(
-                    "{} is a partial action, but the action that follows it is not a full action"
-                    .format(str(action))
-                )
+            if isinstance(action, PartialAction):
+                if not any(isinstance(next_action, allowed_type) for allowed_type in action.valid_following_actions):
+                    validation_errors.append(
+                        "{} is a partial action, and the action that follows it is not valid for that partial action"
+                        .format(str(action))
+                    )
 
         return validation_errors
 
-    def _check_all_actions_are_valid(self, gamestate: GameState) -> List[str]:
+    def _check_all_actions_are_valid(self) -> List[str]:
+        gamestate = deepcopy(self.gamestate)
         validation_errors = []
 
         for action in self.actions:
-            valid, reason = action.validate(gamestate, self.player)
+            valid, reason = action.validate(gamestate, self.player_id)
             if not valid:
                 validation_errors.append("{} is not valid for the following reason: {}".format(str(action), reason))
 
@@ -69,7 +73,11 @@ class Action(ABC):
         pass
 
     @abstractmethod
-    def validate(self, gamestate: GameState, player: Player) -> Tuple[bool, str]:
+    def validate(self, gamestate: GameState, player_id: str) -> Tuple[bool, str]:
+        pass
+
+    @abstractmethod
+    def perform_action(self, gamestate: GameState, player_id: str) -> Tuple[bool, str]:
         pass
 
 
@@ -127,9 +135,40 @@ class GainRangeAction(PartialAction):
 
 
 class PlaceMineAction(FullAction):
-    def __init__(self, player: Player, hexagon: Hexagon, map: Map, research_board: ResearchBoard):
+    def __init__(self, hexagon: Hexagon):
+        self.hexagon = hexagon
+
+    def validate(self, gamestate: GameState, player_id: str) -> Tuple[bool, str]:
+        player = gamestate.players[player_id]
+        game_map = gamestate.game_map
+
+        planet = game_map.get_planet(self.hexagon)
+        if planet is None:
+            return False, "There is not planet on the specified hexagon"
+
+        if isinstance(planet, InhabitedPlanet):
+            return False, "This planet is already occupied"
+
+        navigation_range = gamestate.research_board.get_player_navigation_ability(player)
+
+
+
+
+
+
+    def perform_action(self, gamestate: GameState, player_id: str) -> Tuple[bool, str]:
         pass
+
+    @property
+    def cost(self):
+        return Cost(ore=1, credits=2)
 
 
 class StartGaiaProjectAction(FullAction):
     pass
+
+
+class PassAction(FullAction):
+    @abstractmethod
+    def validate(self, gamestate: GameState, player: Player) -> Tuple[bool, str]:
+        return True, "It is always valid to pass at the end of the turn"

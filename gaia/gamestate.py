@@ -1,8 +1,23 @@
+from __future__ import annotations
 from enum import IntEnum
+from dataclasses import dataclass
+from typing import Dict
+
 from gaia.players import Player, Income
+from gaia.bonuses import RoundBonus
+from gaia.map import Map
 
 
+@dataclass
 class GameState(object):
+    players: Dict[str, Player]
+    game_map: Map
+    research_board: ResearchBoard
+    scoring_board: ScoringBoard
+    round_bonuses: RoundBonus
+
+
+class ScoringBoard(object):
     pass
 
 

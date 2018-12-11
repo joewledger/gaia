@@ -1,7 +1,7 @@
 from __future__ import annotations
 from dataclasses import dataclass
 from enum import IntEnum
-from typing import List, Dict
+from typing import List, Dict, Set
 import random
 import json
 from copy import deepcopy
@@ -52,6 +52,16 @@ class Hexagon(object):
 
     def adjust_offset(self, x_offset_diff: int, z_offset_diff: int) -> Hexagon:
         return Hexagon(self.x + x_offset_diff, self.z + z_offset_diff)
+
+    def get_hexagons_in_range(self, distance: int) -> Set[Hexagon]:
+        hexagons_in_range = set()
+
+        for x in range(self.x - distance, self.x + distance + 1):
+            for z in range(self.z - distance, self.z + distance + 1):
+                if self.distance_from_coordinates(x, z) < distance:
+                    hexagons_in_range.add(Hexagon(x, z))
+
+        return hexagons_in_range
 
     def __str__(self) -> str:
         return "({0.x},{0.z})".format(self)
@@ -119,15 +129,11 @@ class Sector(object):
         self.x_offset = x_offset
         self.z_offset = z_offset
 
-        self.hexagons = set()
         planets = [p.move_hex(p.hex.adjust_offset(x_offset, z_offset)) for p in planets]
         self.planets = {p.hex: p for p in planets}
 
         center = Hexagon(self.x_offset, self.z_offset)
-        for x in range(self.x_offset - self.radius, self.x_offset + self.radius + 1):
-            for z in range(self.z_offset - self.radius, self.z_offset + self.radius + 1):
-                if center.distance_from_coordinates(x, z) < self.radius:
-                    self.hexagons.add(Hexagon(x, z))
+        self.hexagons = center.get_hexagons_in_range(self.radius)
 
     def __iter__(self):
         my_dict = deepcopy(self.__dict__)
@@ -143,9 +149,8 @@ class Sector(object):
     def screen_y_factor(self):
         return Hexagon(self.x_offset, self.z_offset).screen_y_factor
 
-    def get_planet(self, x: int, z: int) -> Planet:
-        h = Hexagon(x, z)
-        return self.planets[h] if h in self.planets else None
+    def get_planet(self, hexagon: Hexagon) -> Planet:
+        return self.planets[hexagon] if hexagon in self.planets else None
 
     def rotate(self, degrees: int) -> None:
         self.planets = {hexagon.rotate(degrees): planet.rotate(degrees)
@@ -240,3 +245,22 @@ class Map:
 
     def add_federation(self, federation):
         self.federations.append(federation)
+
+    def get_planet(self, hexagon: Hexagon):
+        for sector in self.sectors:
+            planet = sector.get_planet(hexagon)
+            if planet is not None:
+                return planet
+
+        return None
+
+    def get_planets_in_range(self, hexagon: Hexagon, distance: int, only_inhabited: bool = False) -> Set[Planet]:
+        hexagons_in_range = hexagon.get_hexagons_in_range(distance)
+        planets_in_range = set()
+
+        for hexagon in hexagons_in_range:
+            planet = self.get_planet(hexagon)
+            if planet is not None and (not only_inhabited or planet.is_inhabited()):
+                planets_in_range.add(planet)
+
+        return planets_in_range

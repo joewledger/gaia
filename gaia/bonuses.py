@@ -41,7 +41,7 @@ class IllegalRoundBonusSelectionException(Exception):
 
 
 class AvailableRoundBonuses(object):
-    def __init__(self):
+    def __init__(self, num_bonuses):
         round_bonuses = [
             RoundBonus(
                 id=1,
@@ -118,14 +118,10 @@ class AvailableRoundBonuses(object):
                 )
             )
         ]
-        self.round_bonuses = {
-            bonus.id: bonus for bonus in round_bonuses
-        }
 
-    def randomly_select_round_bonuses(self, num_bonuses):
-        ids_to_keep = random.sample(self.round_bonuses.keys(), num_bonuses)
+        bonuses_to_keep = random.sample(round_bonuses, num_bonuses)
         self.round_bonuses = {
-            round_id: round_bonus for round_id, round_bonus in self.round_bonuses.items() if round_id in ids_to_keep
+            round_bonus.id: round_bonus for round_bonus in bonuses_to_keep
         }
 
     def take_round_bonus(self, player, bonus_id):

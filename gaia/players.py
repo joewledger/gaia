@@ -2,6 +2,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from enum import IntEnum
 from typing import Dict
+from uuid import uuid4
 
 
 class Factions(IntEnum):
@@ -22,10 +23,18 @@ class Factions(IntEnum):
 
 
 class Player(object):
-    def __init__(self):
+    def __init__(self, faction: Factions):
+        self.player_id = str(uuid4())
+        self.faction = faction
         self.player_resources = PlayerResources(ore=4, credits=15, knowledge=3, qic=1, power={0: 4, 1: 4, 2: 0})
         self.board_income = Income(ore=1, knowledge=1)
         self.round_bonus = None
+
+    def __eq__(self, other):
+        return self.player_id == other.player_id
+
+    def __hash__(self):
+        return self.player_id
 
 
 @dataclass
@@ -60,6 +69,24 @@ class Income(object):
     power_tokens: int = 0
 
     def __add__(self, other: Income):
+        return Income(self.ore + other.ore,
+                      self.credits + other.credits,
+                      self.knowledge + other.knowledge,
+                      self.qic + other.qic,
+                      self.power + other.power,
+                      self.power_tokens + other.power_tokens)
+
+
+@dataclass
+class Cost(object):
+    ore: int = 0
+    credits: int = 0
+    knowledge: int = 0
+    qic: int = 0
+    power: int = 0
+    power_tokens: int = 0
+
+    def __add__(self, other: Cost):
         return Income(self.ore + other.ore,
                       self.credits + other.credits,
                       self.knowledge + other.knowledge,

@@ -90,10 +90,10 @@ def test_sector_has_all_planets(planets):
     sector = Sector(planets)
 
     assert len(sector.planets) == len(planets)
-    assert sector.get_planet(0, 0) == planets[0]
-    assert sector.get_planet(0, 2) == planets[1]
-    assert sector.get_planet(-1, 1) == planets[2]
-    assert sector.get_planet(100, -100) is None
+    assert sector.get_planet(Hexagon(0, 0)) == planets[0]
+    assert sector.get_planet(Hexagon(0, 2)) == planets[1]
+    assert sector.get_planet(Hexagon(-1, 1)) == planets[2]
+    assert sector.get_planet(Hexagon(100, -100)) is None
 
 
 @pytest.mark.parametrize("orig_x_offset,orig_z_offset,x_offset,z_offset", [
