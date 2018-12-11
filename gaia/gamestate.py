@@ -2,6 +2,10 @@ from enum import IntEnum
 from gaia.players import Player, Income
 
 
+class GameState(object):
+    pass
+
+
 class ResearchTracks(IntEnum):
     TERRAFORMING = 0
     NAVIGATION = 1
