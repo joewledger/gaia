@@ -51,7 +51,7 @@ class ResearchBoard(object):
     def advance_player(self, player: Player, track: ResearchTracks):
         pass
 
-    def get_player_terraforming_cost(self, player: Player):
+    def get_player_gaiaforming_cost(self, player: Player):
         level = self.get_placement(player, ResearchTracks.TERRAFORMING)
         if level <= 1:
             return 3

@@ -150,11 +150,18 @@ class PlaceMineAction(FullAction):
             return False, "This planet is already occupied"
 
         navigation_range = gamestate.research_board.get_player_navigation_ability(player)
+        planets_in_range = game_map.get_planets_in_range(self.hexagon, navigation_range, only_inhabited=True)
 
+        if not any(planet.faction == player.faction for planet in planets_in_range):
+            return False, "The player is not in range"
 
+        gaiaforming_ability = gamestate.research_board.get_player_gaiaforming_cost(player)
+        total_cost = Cost(ore=gaiaforming_ability*player.get_distance_from_planet_color(planet)) + self.cost
 
+        if not player.can_afford(total_cost):
+            return False, "The player cannot afford to place a mine at {}".format(str(planet.hex))
 
-
+        return True, "The player can place a mine at {}".format(str(planet.hex))
 
     def perform_action(self, gamestate: GameState, player_id: str) -> Tuple[bool, str]:
         pass

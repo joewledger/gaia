@@ -1,7 +1,7 @@
 from __future__ import annotations
 from dataclasses import dataclass
 from enum import IntEnum
-from typing import List, Dict, Set
+from typing import List, Dict, Set, Union
 import random
 import json
 from copy import deepcopy
@@ -254,7 +254,8 @@ class Map:
 
         return None
 
-    def get_planets_in_range(self, hexagon: Hexagon, distance: int, only_inhabited: bool = False) -> Set[Planet]:
+    def get_planets_in_range(self, hexagon: Hexagon, distance: int, only_inhabited: bool = False) \
+            -> Set[Union[Planet, InhabitedPlanet]]:
         hexagons_in_range = hexagon.get_hexagons_in_range(distance)
         planets_in_range = set()
 

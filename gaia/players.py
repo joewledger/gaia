@@ -3,6 +3,9 @@ from dataclasses import dataclass
 from enum import IntEnum
 from typing import Dict
 from uuid import uuid4
+from abc import abstractmethod
+
+from gaia.map import Planet
 
 
 class Factions(IntEnum):
@@ -35,6 +38,13 @@ class Player(object):
 
     def __hash__(self):
         return self.player_id
+
+    @abstractmethod
+    def get_distance_from_planet_color(self, planet: Planet):
+        pass
+
+    def can_afford(self, cost: Cost):
+        return False
 
 
 @dataclass
