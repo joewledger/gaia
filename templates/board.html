@@ -15,9 +15,9 @@
       {% for sector in map.sectors %}
         {% for hexagon in sector.hexagons %}
           <g transform="translate({{ hexagon.screen_x_factor * 100 + sector.screen_x_factor }}, {{ hexagon.screen_y_factor * 100 + sector.screen_y_factor}})">
-              <g class="grid">
-                  <polygon points="100,0 50,-87 -50,-87 -100,-0 -50,87 50,87"></polygon>
-              </g>
+            <g class="grid">
+              <polygon points="100,0 50,-87 -50,-87 -100,-0 -50,87 50,87"></polygon>
+            </g>
           </g>
         {% endfor %}
 
