@@ -20,3 +20,8 @@ def get_map():
     return Response(response=map.to_json(),
                     status=200,
                     mimetype="application/json")
+
+
+@app.route('/react')
+def get_react():
+    return render_template("react.html", development=True)
