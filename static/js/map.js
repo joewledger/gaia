@@ -18,7 +18,7 @@ class Planet extends React.Component {
     let translate = `translate(${this.props.x},${this.props.y})`;
     return (
       <g transform={translate}>
-        <circle cx="0" cy="0" r="70" stroke="black" strokeWidth="3" fill={this.props.hex_color} />
+        <circle cx="0" cy="0" r="70" stroke="black" strokeWidth="3" fill={this.props.color} />
       </g>
     );
   };
@@ -33,6 +33,7 @@ class Sector extends React.Component {
     let sector_translate = `translate(${sector_x_factor},${sector_y_factor})`;
 
     let hexagons = [];
+    let planets = [];
 
     this.props.hexagons.forEach(function(hexagon) {
       let hexagon_x = hexagon.screen_x_factor * size;
@@ -41,8 +42,15 @@ class Sector extends React.Component {
       hexagons.push(<Hexagon x={hexagon_x} y={hexagon_y} />);
     });
 
+    this.props.planets.forEach(function(planet) {
+      let planet_x = planet.hex.screen_x_factor * size;
+      let planet_y = planet.hex.screen_y_factor * size;
+
+      planets.push(<Planet x={planet_x} y={planet_y} color={planet.planet_color} />);
+    });
+
     return (
-      <g transform={sector_translate}>{hexagons}</g >
+      <g transform={sector_translate}>{hexagons} {planets}</g >
     );
   };
 };
@@ -62,6 +70,8 @@ class Board extends React.Component {
     fetch('map').then(results => {
       return results.json();
     }).then(data => {
+      console.log(data);
+
       this.setState({
         sectors: data.sectors,
         federations: data.federations

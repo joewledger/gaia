@@ -9,19 +9,13 @@ config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "configs
 
 @app.route('/')
 def main():
-    map = Map.load_from_config(config_path, game_type="3p_4p_default")
-    return render_template("board.html", map=map)
+    return render_template("board.html", development=True)
 
 
 @app.route('/map')
 def get_map():
-    map = Map.load_from_config(config_path, game_type="1p_2p_default")
+    map = Map.load_from_config(config_path, game_type="3p_4p_default")
 
     return Response(response=map.to_json(),
                     status=200,
                     mimetype="application/json")
-
-
-@app.route('/react')
-def get_react():
-    return render_template("react.html", development=True)

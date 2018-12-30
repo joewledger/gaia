@@ -81,7 +81,7 @@ class Planet(object):
     planet_type: Type
 
     @property
-    def hex_color(self):
+    def planet_color(self):
         return {
             Planet.Type.RED: "#ff0000",
             Planet.Type.ORANGE: "#ff6600",
@@ -105,6 +105,11 @@ class Planet(object):
 
     def is_inhabited(self) -> bool:
         return False
+
+    def __iter__(self):
+        return create_object_property_generator(self, {
+            "planet_color": self.planet_color
+        })
 
 
 @dataclass(frozen=True)
