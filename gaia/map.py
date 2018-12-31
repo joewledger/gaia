@@ -4,11 +4,11 @@ from enum import IntEnum
 from typing import List, Dict
 import random
 import json
-from copy import deepcopy
 from math import sqrt
 
 from gaia.players import Factions
 from gaia.buildings import Buildings
+from gaia.utils import create_object_property_generator
 
 
 @dataclass(frozen=True)
@@ -56,6 +56,12 @@ class Hexagon(object):
     def __str__(self) -> str:
         return "({0.x},{0.z})".format(self)
 
+    def __iter__(self):
+        return create_object_property_generator(self, {
+            "screen_x_factor": self.screen_x_factor,
+            "screen_y_factor": self.screen_y_factor
+        })
+
 
 @dataclass(frozen=True)
 class Planet(object):
@@ -75,7 +81,7 @@ class Planet(object):
     planet_type: Type
 
     @property
-    def hex_color(self):
+    def planet_color(self):
         return {
             Planet.Type.RED: "#ff0000",
             Planet.Type.ORANGE: "#ff6600",
@@ -99,6 +105,11 @@ class Planet(object):
 
     def is_inhabited(self) -> bool:
         return False
+
+    def __iter__(self):
+        return create_object_property_generator(self, {
+            "planet_color": self.planet_color
+        })
 
 
 @dataclass(frozen=True)
@@ -130,18 +141,11 @@ class Sector(object):
                     self.hexagons.add(Hexagon(x, z))
 
     def __iter__(self):
-        my_dict = deepcopy(self.__dict__)
-        my_dict["planets"] = list(self.planets.values())
-        for key, value in my_dict.items():
-            yield key, value
-
-    @property
-    def screen_x_factor(self):
-        return Hexagon(self.x_offset, self.z_offset).screen_x_factor
-
-    @property
-    def screen_y_factor(self):
-        return Hexagon(self.x_offset, self.z_offset).screen_y_factor
+        return create_object_property_generator(self, {
+            "screen_x_factor": Hexagon(self.x_offset, self.z_offset).screen_x_factor,
+            "screen_y_factor": Hexagon(self.x_offset, self.z_offset).screen_y_factor,
+            "planets": list(self.planets.values())
+        })
 
     def get_planet(self, x: int, z: int) -> Planet:
         h = Hexagon(x, z)
@@ -231,7 +235,7 @@ class Map:
             def default(self, obj):
                 if isinstance(obj, set):
                     return list(obj)
-                elif isinstance(obj, Sector):
+                elif hasattr(obj, "__iter__"):
                     return dict(obj)
                 else:
                     return obj.__dict__
