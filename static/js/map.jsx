@@ -76,18 +76,40 @@ let getViewboxSize = function(sectors, hexSize) {
 }
 
 class Board extends React.Component {
+  render() {
+    let sectors = this.props.sectors.map(sector =>
+        <Sector hexagons={sector.hexagons}
+                planets={sector.planets}
+                size={this.props.size}
+                screen_x_factor={sector.screen_x_factor}
+                screen_y_factor={sector.screen_y_factor} />
+    );
+
+    return (
+      <svg viewBox={getViewboxSize(this.props.sectors, this.props.size)} xmlns="http://www.w3.org/2000/svg">
+        {sectors}
+      </svg>
+    );
+  };
+};
+
+class BoardSelector extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
+      game_type: '1p_2p_default',
       size: 100,
       sectors: [],
       federations: []
     };
+
+    this.handleChange = this.handleChange.bind(this);
   };
 
-  componentDidMount() {
-    fetch('map').then(results => {
+  getMapData() {
+    let map_url = `map?game_type=${this.state.game_type}`;
+
+    fetch(map_url).then(results => {
       return results.json();
     }).then(data => {
       this.setState({
@@ -95,24 +117,36 @@ class Board extends React.Component {
         federations: data.federations
       });
     });
+  }
+
+  componentDidMount() {
+    this.getMapData();
+  };
+
+  async handleChange(event) {
+    console.log(event.target.value);
+
+    await this.setState({
+      game_type: event.target.value
+    });
+
+    this.getMapData();
   };
 
   render() {
-    let sectors = this.state.sectors.map(sector =>
-        <Sector hexagons={sector.hexagons}
-                planets={sector.planets}
-                size={this.state.size}
-                screen_x_factor={sector.screen_x_factor}
-                screen_y_factor={sector.screen_y_factor} />
-    );
-
     return (
-      <svg viewBox={getViewboxSize(this.state.sectors, this.state.size)} xmlns="http://www.w3.org/2000/svg">
-        {sectors}
-      </svg>
+      <div>
+        <select onChange={this.handleChange}>
+          <option value="1p_2p_default">1p/2p Default</option>
+          <option value="3p_4p_default">3p/4p Default</option>
+        </select>
+        <Board size={this.state.size}
+               sectors={this.state.sectors}
+               federations={this.state.federations} />
+        </div>
     );
   };
 };
 
 const domContainer = document.querySelector('#map_container');
-ReactDOM.render(React.createElement(Board), domContainer);
+ReactDOM.render(React.createElement(BoardSelector), domContainer);
