@@ -27,33 +27,53 @@ class Planet extends React.Component {
 class Sector extends React.Component {
   render() {
     let size = this.props.size;
+    let sectorStretchFactor = .01;
 
-    let sector_x_factor = this.props.screen_x_factor * size * .01;
-    let sector_y_factor = this.props.screen_y_factor * size * .01;
+    let sector_x_factor = this.props.screen_x_factor * size * sectorStretchFactor;
+    let sector_y_factor = this.props.screen_y_factor * size * sectorStretchFactor;
     let sector_translate = `translate(${sector_x_factor},${sector_y_factor})`;
 
-    let hexagons = [];
-    let planets = [];
+    let hexagons = this.props.hexagons.map(hexagon =>
+      <Hexagon x={hexagon.screen_x_factor * size}
+               y={hexagon.screen_y_factor * size} />
+    );
 
-    this.props.hexagons.forEach(function(hexagon) {
-      let hexagon_x = hexagon.screen_x_factor * size;
-      let hexagon_y = hexagon.screen_y_factor * size;
-
-      hexagons.push(<Hexagon x={hexagon_x} y={hexagon_y} />);
-    });
-
-    this.props.planets.forEach(function(planet) {
-      let planet_x = planet.hex.screen_x_factor * size;
-      let planet_y = planet.hex.screen_y_factor * size;
-
-      planets.push(<Planet x={planet_x} y={planet_y} color={planet.planet_color} />);
-    });
+    let planets = this.props.planets.map(planet =>
+      <Planet x={planet.hex.screen_x_factor * size}
+              y={planet.hex.screen_y_factor * size}
+              color={planet.planet_color} />
+    );
 
     return (
       <g transform={sector_translate}>{hexagons} {planets}</g >
     );
   };
 };
+
+let getViewboxSize = function(sectors, hexSize) {
+  if(sectors.length == 0) {
+    return '0 0 0 0';
+  }
+
+  let hexagons = sectors.flatMap(sector => sector.hexagons);
+  let hex_x = hexagons.map(hex => hex.screen_x_factor);
+  let hex_y = hexagons.map(hex => hex.screen_y_factor);
+
+  //accounts for fact that screen_x_factor and screen_y_factor
+  //correspond to middle of hex, not edge.
+  let viewBoxBorderWidth = 2;
+
+  let min_x = (Math.min(...hex_x) - viewBoxBorderWidth) *  hexSize;
+  let max_x = (Math.max(...hex_x) + viewBoxBorderWidth) * hexSize;
+
+  let min_y = (Math.min(...hex_y) - viewBoxBorderWidth) * hexSize;
+  let max_y = (Math.max(...hex_y) + viewBoxBorderWidth) * hexSize;
+
+  let width = Math.abs(min_x) + Math.abs(max_x);
+  let height = Math.abs(min_y) + Math.abs(max_y);
+
+  return `${min_x} ${min_y} ${width} ${height}`;
+}
 
 class Board extends React.Component {
   constructor(props) {
@@ -70,8 +90,6 @@ class Board extends React.Component {
     fetch('map').then(results => {
       return results.json();
     }).then(data => {
-      console.log(data);
-
       this.setState({
         sectors: data.sectors,
         federations: data.federations
@@ -80,18 +98,16 @@ class Board extends React.Component {
   };
 
   render() {
-    let sectors = [];
-    this.state.sectors.forEach(sector => {
-      sectors.push(<Sector hexagons={sector.hexagons}
-                           planets={sector.planets}
-                           size={100}
-                           screen_x_factor={sector.screen_x_factor}
-                           screen_y_factor={sector.screen_y_factor} />);
-      }
+    let sectors = this.state.sectors.map(sector =>
+        <Sector hexagons={sector.hexagons}
+                planets={sector.planets}
+                size={this.state.size}
+                screen_x_factor={sector.screen_x_factor}
+                screen_y_factor={sector.screen_y_factor} />
     );
 
     return (
-      <svg viewBox="-3000 -1500 6000 3000" xmlns="http://www.w3.org/2000/svg">
+      <svg viewBox={getViewboxSize(this.state.sectors, this.state.size)} xmlns="http://www.w3.org/2000/svg">
         {sectors}
       </svg>
     );
