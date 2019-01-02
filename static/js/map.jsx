@@ -124,8 +124,6 @@ class BoardSelector extends React.Component {
   };
 
   async handleChange(event) {
-    console.log(event.target.value);
-
     await this.setState({
       game_type: event.target.value
     });
