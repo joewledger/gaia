@@ -5,7 +5,7 @@ from flask import Flask, Response, render_template, request
 app = Flask(__name__)
 
 config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "configs", "board.json")
-is_development = os.environ.get("FLASK_DEBUG") == 1
+is_development = os.environ.get("FLASK_DEBUG") == str(1)
 
 
 @app.route('/')
