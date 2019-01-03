@@ -14,8 +14,7 @@ class PlanetType(IntEnum):
     LOST = 10
 
 
-def planet_type_to_hex_color(planet_type: PlanetType) -> str:
-    return {
+planet_colors = {
         PlanetType.RED: "#ff0000",
         PlanetType.ORANGE: "#ff6600",
         PlanetType.WHITE: "#ffffff",
@@ -26,4 +25,8 @@ def planet_type_to_hex_color(planet_type: PlanetType) -> str:
         PlanetType.GAIA: "#00ff00",
         PlanetType.TRANSDIM: "#cc00cc",
         PlanetType.LOST: "#cc6699"
-    }[planet_type]
+    }
+
+
+def planet_type_to_color(planet_type: PlanetType) -> str:
+    return planet_colors[planet_type]

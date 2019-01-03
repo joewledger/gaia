@@ -3,12 +3,12 @@ from dataclasses import dataclass
 from typing import List, Dict, Set, Union
 import random
 import json
-from copy import deepcopy
 from math import sqrt
 
 from gaia.players import Factions
 from gaia.buildings import Building
-from gaia.planet_types import PlanetType, planet_type_to_hex_color
+from gaia.planet_types import PlanetType, planet_type_to_color
+from gaia.utils import create_object_property_generator
 
 
 @dataclass(frozen=True)
@@ -66,6 +66,12 @@ class Hexagon(object):
     def __str__(self) -> str:
         return "({0.x},{0.z})".format(self)
 
+    def __iter__(self):
+        return create_object_property_generator(self, {
+            "screen_x_factor": self.screen_x_factor,
+            "screen_y_factor": self.screen_y_factor
+        })
+
 
 @dataclass(frozen=True)
 class Planet(object):
@@ -73,8 +79,8 @@ class Planet(object):
     planet_type: PlanetType
 
     @property
-    def hex_color(self):
-        return planet_type_to_hex_color(self.planet_type)
+    def planet_color(self):
+        return planet_type_to_color(self.planet_type)
 
     def move_hex(self, new_hex: Hexagon) -> Planet:
         attrs = self.__dict__
@@ -86,6 +92,11 @@ class Planet(object):
 
     def is_inhabited(self) -> bool:
         return False
+
+    def __iter__(self):
+        return create_object_property_generator(self, {
+            "planet_color": self.planet_color
+        })
 
 
 @dataclass(frozen=True)
@@ -113,18 +124,11 @@ class Sector(object):
         self.hexagons = center.get_hexagons_in_range(self.radius)
 
     def __iter__(self):
-        my_dict = deepcopy(self.__dict__)
-        my_dict["planets"] = list(self.planets.values())
-        for key, value in my_dict.items():
-            yield key, value
-
-    @property
-    def screen_x_factor(self):
-        return Hexagon(self.x_offset, self.z_offset).screen_x_factor
-
-    @property
-    def screen_y_factor(self):
-        return Hexagon(self.x_offset, self.z_offset).screen_y_factor
+        return create_object_property_generator(self, {
+            "screen_x_factor": Hexagon(self.x_offset, self.z_offset).screen_x_factor,
+            "screen_y_factor": Hexagon(self.x_offset, self.z_offset).screen_y_factor,
+            "planets": list(self.planets.values())
+        })
 
     def get_planet(self, hexagon: Hexagon) -> Planet:
         return self.planets[hexagon] if hexagon in self.planets else None
@@ -213,7 +217,7 @@ class Map:
             def default(self, obj):
                 if isinstance(obj, set):
                     return list(obj)
-                elif isinstance(obj, Sector):
+                elif hasattr(obj, "__iter__"):
                     return dict(obj)
                 else:
                     return obj.__dict__

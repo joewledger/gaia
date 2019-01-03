@@ -167,13 +167,13 @@ def test_map_to_json(default_map):
     map_json = json.loads(map_str)
     sectors = map_json["sectors"]
     assert len(sectors) == 7
-    assert all(all(prop in sector for prop in ["radius", "x_offset", "z_offset", "hexagons", "planets"]) for sector in sectors)
+    assert all(all(prop in sector for prop in ["radius", "x_offset", "z_offset", "screen_x_factor", "screen_y_factor", "hexagons", "planets"]) for sector in sectors)
     assert all(len(sector["hexagons"]) == 19 for sector in sectors)
 
     for sector in sectors:
         hexagons = sector["hexagons"]
         planets = sector["planets"]
-        assert all(all(prop in hex for prop in ["x", "z"]) for hex in hexagons)
+        assert all(all(prop in hex for prop in ["x", "z", "screen_x_factor", "screen_y_factor"]) for hex in hexagons)
         assert all(all(prop in planet for prop in ["hex", "planet_type"]) for planet in planets)
 
     assert map_json["federations"] == []
