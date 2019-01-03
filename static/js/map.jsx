@@ -141,7 +141,7 @@ class BoardSelector extends React.Component {
         <Board size={this.state.size}
                sectors={this.state.sectors}
                federations={this.state.federations} />
-        </div>
+      </div>
     );
   };
 };
