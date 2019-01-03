@@ -46,11 +46,9 @@ class Turn(object):
         for i in range(len(self.actions) - 1):
             action, next_action = self.actions[i], self.actions[i+1]
             if isinstance(action, PartialAction):
-                if not any(isinstance(next_action, allowed_type) for allowed_type in action.valid_following_actions):
-                    validation_errors.append(
-                        "{} is a partial action, and the action that follows it is not valid for that partial action"
-                        .format(str(action))
-                    )
+                valid, reason = action.validate_next_action(next_action)
+                if not valid:
+                    validation_errors.append(reason)
 
         return validation_errors
 

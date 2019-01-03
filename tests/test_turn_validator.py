@@ -1,7 +1,9 @@
 import pytest
 
 from gaia.turn_validator import Turn
-from gaia.actions import PlaceMineAction, PassAction, GaiaformAction
+from gaia.actions import (PlaceMineAction, PassAction, GaiaformAction,
+                          GainRangeAction, ExchangeOreForCreditAction,
+                          StartGaiaProjectAction)
 from gaia.map import Hexagon
 
 
@@ -16,15 +18,41 @@ from gaia.map import Hexagon
     ),
     (
         [
+            PlaceMineAction(Hexagon(0, 0))
+        ],
+        True,
+        None
+    ),
+    (
+        [
+            ExchangeOreForCreditAction(1),
+            PlaceMineAction(Hexagon(0, 0))
+        ],
+        True,
+        None
+    ),
+    (
+        [
             GaiaformAction(Hexagon(0, 0))
         ],
         False,
         "The last action in a turn must end the turn, but GaiaformAction did not"
     ),
     (
-        [],
+        [
+            GaiaformAction(Hexagon(0, 0)),
+            PlaceMineAction(Hexagon(0, 0))
+        ],
+        True,
+        None
+    ),
+    (
+        [
+            GaiaformAction(Hexagon(0, 0)),
+            PlaceMineAction(Hexagon(1, 0))
+        ],
         False,
-        "The turn had no actions in it"
+        "GaiaformAction must be on the same hexagon as PlaceMineAction"
     ),
     (
         [
@@ -32,7 +60,36 @@ from gaia.map import Hexagon
             PassAction
         ],
         False,
-        'GaiaformAction is a partial action, and the action that follows it is not valid for that partial action'
+        'GaiaformAction must be followed by PlaceMineAction'
+    ),
+    (
+        [
+            GainRangeAction(),
+            PlaceMineAction(Hexagon(0, 0))
+        ],
+        True,
+        None
+    ),
+    (
+        [
+            GainRangeAction(),
+            StartGaiaProjectAction(Hexagon(0, 0))
+        ],
+        True,
+        None
+    ),
+    (
+        [
+            GainRangeAction(),
+            PassAction()
+        ],
+        False,
+        "GainRangeAction must be followed by PlaceMineAction or StartGaiaProjectAction"
+    ),
+    (
+        [],
+        False,
+        "The turn had no actions in it"
     )
 ])
 def test_turn_validity(actions, should_be_valid, main_reason,
@@ -40,8 +97,9 @@ def test_turn_validity(actions, should_be_valid, main_reason,
     turn = Turn(actions, starting_gamestate, "p1")
 
     mocker.patch.object(turn, '_check_all_actions_are_valid')
-    turn._check_all_actions_are_valid.return_value = (True, [])
+    turn._check_all_actions_are_valid.return_value = []
 
     validity, reasons = turn.validate()
     assert validity == should_be_valid
-    assert (main_reason in reasons)
+    if main_reason:
+        assert (main_reason in reasons)

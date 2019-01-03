@@ -7,6 +7,8 @@ from gaia.map import Hexagon, InhabitedPlanet
 
 
 class Action(ABC):
+    valid_str = "Action is valid"
+
     @property
     @abstractmethod
     def ends_turn(self) -> bool:
@@ -43,6 +45,20 @@ class FreeAction(Action):
         return False
 
 
+class ExchangeOreForCreditAction(FreeAction):
+    """
+    Exchange one ore for one credit
+    """
+    def __init__(self, num_times):
+        self.num_times = num_times
+
+    def validate(self, gamestate, player_id: str) -> Tuple[bool, str]:
+        pass
+
+    def perform_action(self, gamestate, player_id: str) -> Tuple[bool, str]:
+        pass
+
+
 class PartialAction(Action):
     """
     Similar to an free action,
@@ -52,15 +68,14 @@ class PartialAction(Action):
     def ends_turn(self) -> bool:
         return False
 
-    @property
     @abstractmethod
-    def valid_following_actions(self):
+    def validate_next_action(self, action: FullAction) -> bool:
         pass
 
 
 class GaiaformAction(PartialAction):
     """
-    Must be followed followed by the PlaceMineAction or StartGaiaProjectAction
+    Must be followed followed by the PlaceMineAction on the same hex
     """
     def __init__(self, hexagon: Hexagon):
         self.hexagon = hexagon
@@ -71,24 +86,28 @@ class GaiaformAction(PartialAction):
     def perform_action(self, gamestate, player_id: str):
         pass
 
-    @property
-    def valid_following_actions(self):
-        return [PlaceMineAction, StartGaiaProjectAction]
+    def validate_next_action(self, action: Action) -> Tuple[bool, str]:
+        if not isinstance(action, PlaceMineAction):
+            return False, "GaiaformAction must be followed by PlaceMineAction"
+        elif not hasattr(action, "hexagon") or action.hexagon != self.hexagon:
+            return False, "GaiaformAction must be on the same hexagon as PlaceMineAction"
+        return True, self.valid_str
 
 
 class GainRangeAction(PartialAction):
     """
     Must be followed followed by the PlaceMineAction or StartGaiaProjectAction
     """
-    @property
-    def valid_following_actions(self):
-        return [PlaceMineAction, StartGaiaProjectAction]
-
     def validate(self, gamestate, player_id: str):
         pass
 
     def perform_action(self, gamestate, player_id: str):
         pass
+
+    def validate_next_action(self, action: Action) -> Tuple[bool, str]:
+        if not (isinstance(action, PlaceMineAction) or isinstance(action, StartGaiaProjectAction)):
+            return False, "GainRangeAction must be followed by PlaceMineAction or StartGaiaProjectAction"
+        return True, self.valid_str
 
 
 class PlaceMineAction(FullAction):
@@ -129,7 +148,14 @@ class PlaceMineAction(FullAction):
 
 
 class StartGaiaProjectAction(FullAction):
-    pass
+    def __init__(self, hexagon: Hexagon):
+        self.hexaon = hexagon
+
+    def validate(self, gamestate, player_id: str):
+        pass
+
+    def perform_action(self, gamestate, player_id: str):
+        pass
 
 
 class PassAction(FullAction):
