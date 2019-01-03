@@ -1,5 +1,4 @@
 from gaia.map import Map
-import gaia.utils
 
 import os
 from flask import Flask, Response, render_template, request
