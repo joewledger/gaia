@@ -1,6 +1,6 @@
 from dataclasses import dataclass
-from typing import List, Union
-from random import random
+from typing import List, Union, Type
+from random import sample
 
 from gaia.map import Map
 from gaia.players import Player, Income
@@ -32,7 +32,7 @@ class GaiaPlanetRoundEndScoringBonus(RoundEndScoringBonus):
 class RoundBonus(object):
     id: int
     income_bonus: Income
-    action_bonus: Union[PartialAction, None]
+    action_bonus: Union[Type[PartialAction], None]
     scoring_bonus: Union[ScoringBonus, None]
 
 
@@ -64,13 +64,13 @@ class AvailableRoundBonuses(object):
             RoundBonus(
                 id=4,
                 income_bonus=Income(credits=2),
-                action_bonus=GaiaformAction(),
+                action_bonus=GaiaformAction,
                 scoring_bonus=None
             ),
             RoundBonus(
                 id=5,
                 income_bonus=Income(power=2),
-                action_bonus=GainRangeAction(),
+                action_bonus=GainRangeAction,
                 scoring_bonus=None
             ),
             RoundBonus(
@@ -78,7 +78,7 @@ class AvailableRoundBonuses(object):
                 income_bonus=Income(ore=1),
                 action_bonus=None,
                 scoring_bonus=BuildingRoundEndScoringBonus(
-                    building_types=[Building.Mine],
+                    building_types=[Building.MINE],
                     scoring_amount=1
                 )
             ),
@@ -119,7 +119,7 @@ class AvailableRoundBonuses(object):
             )
         ]
 
-        bonuses_to_keep = random.sample(round_bonuses, num_bonuses)
+        bonuses_to_keep = sample(round_bonuses, num_bonuses)
         self.round_bonuses = {
             round_bonus.id: round_bonus for round_bonus in bonuses_to_keep
         }

@@ -45,3 +45,13 @@ def starting_gamestate(default_map):
         ScoringBoard(),
         AvailableRoundBonuses(5)
     )
+
+
+@pytest.fixture()
+def patch_check_all_actions(mocker):
+    def patch_turn(turn):
+        mocker.patch.object(turn, '_check_all_actions_are_valid')
+        turn._check_all_actions_are_valid.return_value = (True, [])
+        return turn
+
+    return patch_turn

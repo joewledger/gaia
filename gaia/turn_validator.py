@@ -38,6 +38,8 @@ class Turn(object):
         if not last_action.ends_turn:
             return ["The last action in a turn must end the turn, but {} did not".format(str(last_action))]
 
+        return []
+
     def _check_partial_action_has_following_action(self) -> List[str]:
         validation_errors = []
 

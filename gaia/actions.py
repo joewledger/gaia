@@ -1,8 +1,6 @@
 from __future__ import annotations
-from dataclasses import dataclass
-from typing import List, Tuple
+from typing import Tuple
 from abc import ABC, abstractmethod
-from copy import deepcopy
 
 from gaia.players import Player, Cost
 from gaia.map import Hexagon, InhabitedPlanet
@@ -21,6 +19,9 @@ class Action(ABC):
     @abstractmethod
     def perform_action(self, gamestate, player_id: str) -> Tuple[bool, str]:
         pass
+
+    def __str__(self):
+        return str(type(self).__name__)
 
 
 class FullAction(Action):
@@ -61,6 +62,15 @@ class GaiaformAction(PartialAction):
     """
     Must be followed followed by the PlaceMineAction or StartGaiaProjectAction
     """
+    def __init__(self, hexagon: Hexagon):
+        self.hexagon = hexagon
+
+    def validate(self, gamestate, player_id: str) -> Tuple[bool, str]:
+        pass
+
+    def perform_action(self, gamestate, player_id: str):
+        pass
+
     @property
     def valid_following_actions(self):
         return [PlaceMineAction, StartGaiaProjectAction]
@@ -73,6 +83,12 @@ class GainRangeAction(PartialAction):
     @property
     def valid_following_actions(self):
         return [PlaceMineAction, StartGaiaProjectAction]
+
+    def validate(self, gamestate, player_id: str):
+        pass
+
+    def perform_action(self, gamestate, player_id: str):
+        pass
 
 
 class PlaceMineAction(FullAction):
@@ -119,3 +135,6 @@ class StartGaiaProjectAction(FullAction):
 class PassAction(FullAction):
     def validate(self, gamestate, player: Player) -> Tuple[bool, str]:
         return True, "It is always valid to pass at the end of the turn"
+
+    def perform_action(self, gamestate, player_id: str):
+        pass
