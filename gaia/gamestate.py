@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from typing import Dict
 
 from gaia.players import Player, Income
-from gaia.bonuses import RoundBonus
+from gaia.bonuses import AvailableRoundBonuses
 from gaia.map import Map
 
 
@@ -14,7 +14,7 @@ class GameState(object):
     game_map: Map
     research_board: ResearchBoard
     scoring_board: ScoringBoard
-    round_bonuses: RoundBonus
+    round_bonuses: AvailableRoundBonuses
 
 
 class ScoringBoard(object):

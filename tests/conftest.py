@@ -2,9 +2,10 @@ import pytest
 import os
 
 from gaia.map import Hexagon, Planet, InhabitedPlanet, Map
-from gaia.players import Factions, PlayerResources
+from gaia.players import Factions, Player, PlayerResources
 from gaia.buildings import Building
 from gaia.planet_types import PlanetType
+from gaia.gamestate import GameState, ResearchBoard, ScoringBoard, AvailableRoundBonuses
 
 
 @pytest.fixture()
@@ -30,3 +31,17 @@ def default_map(config_path):
 @pytest.fixture()
 def default_player_resources():
     return PlayerResources(ore=4, credits=15, knowledge=3, qic=1, power={0: 4, 1: 4, 2: 0})
+
+
+@pytest.fixture()
+def starting_gamestate(default_map):
+    return GameState(
+        {
+            "p1": Player(Factions.AMBAS),
+            "p2": Player(Factions.BALTAKS)
+        },
+        default_map,
+        ResearchBoard(),
+        ScoringBoard(),
+        AvailableRoundBonuses(5)
+    )
