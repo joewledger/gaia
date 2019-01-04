@@ -57,8 +57,11 @@ class Turn(object):
         validation_errors = []
 
         for action in self.actions:
-            valid, reason = action.validate(gamestate, self.player_id)
-            if not valid:
-                validation_errors.append("{} is not valid for the following reason: {}".format(str(action), reason))
+            if isinstance(action, PartialAction):
+                self.actions[-1] = action.modify_final_action(self.actions[-1])
+            else:
+                valid, reason = action.validate(gamestate, self.player_id)
+                if not valid:
+                    validation_errors.append("{} is not valid for the following reason: {}".format(str(action), reason))
 
         return validation_errors

@@ -58,7 +58,7 @@ class Hexagon(object):
 
         for x in range(self.x - distance, self.x + distance + 1):
             for z in range(self.z - distance, self.z + distance + 1):
-                if self.distance_from_coordinates(x, z) < distance:
+                if self.distance_from_coordinates(x, z) <= distance:
                     hexagons_in_range.add(Hexagon(x, z))
 
         return hexagons_in_range
@@ -93,6 +93,12 @@ class Planet(object):
     def is_inhabited(self) -> bool:
         return False
 
+    def inhabit(self, faction: Factions, building: Building) -> InhabitedPlanet:
+        return InhabitedPlanet(self.hex,
+                               self.planet_type,
+                               faction,
+                               building)
+
     def __iter__(self):
         return create_object_property_generator(self, {
             "planet_color": self.planet_color
@@ -121,7 +127,7 @@ class Sector(object):
         self.planets = {p.hex: p for p in planets}
 
         center = Hexagon(self.x_offset, self.z_offset)
-        self.hexagons = center.get_hexagons_in_range(self.radius)
+        self.hexagons = center.get_hexagons_in_range(self.radius - 1)
 
     def __iter__(self):
         return create_object_property_generator(self, {
@@ -132,6 +138,9 @@ class Sector(object):
 
     def get_planet(self, hexagon: Hexagon) -> Planet:
         return self.planets[hexagon] if hexagon in self.planets else None
+
+    def replace_planet(self, old_planet: Planet, new_planet: Planet):
+        self.planets[old_planet.hex] = new_planet
 
     def rotate(self, degrees: int) -> None:
         self.planets = {hexagon.rotate(degrees): planet.rotate(degrees)
@@ -234,6 +243,12 @@ class Map:
                 return planet
 
         return None
+
+    def inhabit_planet(self, hexagon: Hexagon, faction: Factions, building: Building):
+        for sector in self.sectors:
+            planet = sector.get_planet(hexagon)
+            if planet is not None:
+                sector.replace_planet(planet, planet.inhabit(faction, building))
 
     def get_planets_in_range(self, hexagon: Hexagon, distance: int, only_inhabited: bool = False) \
             -> Set[Union[Planet, InhabitedPlanet]]:

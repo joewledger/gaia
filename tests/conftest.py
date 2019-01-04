@@ -30,7 +30,7 @@ def default_map(config_path):
 
 @pytest.fixture()
 def default_player_resources():
-    return PlayerResources(ore=4, credits=15, knowledge=3, qic=1, power={0: 4, 1: 4, 2: 0})
+    return PlayerResources(ore=4, credits=15, knowledge=3, qic=1, power_bowls={0: 4, 1: 4, 2: 0})
 
 
 @pytest.fixture()
@@ -45,3 +45,11 @@ def starting_gamestate(default_map):
         ScoringBoard(),
         AvailableRoundBonuses(5)
     )
+
+
+@pytest.fixture()
+def test_range_gamestate(starting_gamestate):
+    player_1 = starting_gamestate.players["p1"]
+    starting_gamestate.game_map.inhabit_planet(Hexagon(0, 1), player_1.faction, Building.MINE)
+
+    return starting_gamestate

@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import List, Union, Type
 from random import sample
+from enum import IntEnum
 
 from gaia.map import Map
 from gaia.players import Player, Income

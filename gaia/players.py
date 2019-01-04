@@ -6,6 +6,7 @@ from uuid import uuid4
 from abc import abstractmethod
 
 from gaia.planet_types import PlanetType
+from gaia.utils import create_object_property_generator
 
 
 class Factions(IntEnum):
@@ -29,7 +30,7 @@ class Player(object):
     def __init__(self, faction: Factions):
         self.player_id = str(uuid4())
         self.faction = faction
-        self.player_resources = PlayerResources(ore=4, credits=15, knowledge=3, qic=1, power={0: 4, 1: 4, 2: 0})
+        self.player_resources = PlayerResources(ore=4, credits=15, knowledge=3, qic=1, power_bowls={0: 4, 1: 4, 2: 0})
         self.board_income = Income(ore=1, knowledge=1)
         self.round_bonus = None
 
@@ -44,7 +45,10 @@ class Player(object):
         pass
 
     def can_afford(self, cost: Cost):
-        return False
+        player_resources = dict(self.player_resources)
+
+        return all(player_resources[key] >= cost[key] for key in list(cost.__dict__.keys())
+                   if key in player_resources)
 
 
 @dataclass
@@ -53,7 +57,7 @@ class PlayerResources(object):
     credits: int
     knowledge: int
     qic: int
-    power: Dict[int, int]
+    power_bowls: Dict[int, int]
 
     MAX_ORE = 15
     MAX_KNOWLEDGE = 15
@@ -61,12 +65,17 @@ class PlayerResources(object):
 
     def gain_power(self, power: int):
         for i in range(power):
-            if self.power[0] > 0:
-                self.power[1] += 1
-                self.power[0] -= 1
-            elif self.power[1] > 0:
-                self.power[2] += 1
-                self.power[1] -= 1
+            if self.power_bowls[0] > 0:
+                self.power_bowls[1] += 1
+                self.power_bowls[0] -= 1
+            elif self.power_bowls[1] > 0:
+                self.power_bowls[2] += 1
+                self.power_bowls[1] -= 1
+
+    def __iter__(self):
+        return create_object_property_generator(self, {
+            "power": self.power_bowls[2]
+        })
 
 
 @dataclass
@@ -97,9 +106,12 @@ class Cost(object):
     power_tokens: int = 0
 
     def __add__(self, other: Cost):
-        return Income(self.ore + other.ore,
-                      self.credits + other.credits,
-                      self.knowledge + other.knowledge,
-                      self.qic + other.qic,
-                      self.power + other.power,
-                      self.power_tokens + other.power_tokens)
+        return Cost(self.ore + other.ore,
+                    self.credits + other.credits,
+                    self.knowledge + other.knowledge,
+                    self.qic + other.qic,
+                    self.power + other.power,
+                    self.power_tokens + other.power_tokens)
+
+    def __getitem__(self, item):
+        return self.__dict__[item]

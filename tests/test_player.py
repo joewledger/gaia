@@ -19,6 +19,6 @@ from gaia.players import PlayerResources
     ({0: 0, 1: 0, 2: 4}, 2, {0: 0, 1: 0, 2: 4}, "Third bowl overfull power gain"),
 ])
 def test_gain_power(power_before, gain_amount, power_after, description, default_player_resources):
-    default_player_resources.power = power_before
+    default_player_resources.power_bowls = power_before
     default_player_resources.gain_power(gain_amount)
-    assert default_player_resources.power == power_after, "Failed: " + description
+    assert default_player_resources.power_bowls == power_after, "Failed: " + description

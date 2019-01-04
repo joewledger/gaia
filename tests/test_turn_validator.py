@@ -103,3 +103,35 @@ def test_turn_validity(actions, should_be_valid, main_reason,
     assert validity == should_be_valid
     if main_reason:
         assert (main_reason in reasons)
+
+
+@pytest.mark.parametrize("actions,should_be_valid", [
+    (
+        [
+            PlaceMineAction(Hexagon(0, -1))
+        ],
+        True
+    ),
+    (
+        [
+            PlaceMineAction(Hexagon(5, -3))
+        ],
+        False
+    ),
+    (
+        [
+            GainRangeAction(),
+            PlaceMineAction(Hexagon(5, -3))
+        ],
+        True
+    )
+])
+def test_final_action_modification(actions, should_be_valid,
+                                   test_range_gamestate, mocker):
+
+    mocker.patch.object(test_range_gamestate, "research_board")
+    test_range_gamestate.research_board.get_player_navigation_ability.return_value = 2
+
+    turn = Turn(actions, test_range_gamestate, "p1")
+    valid, reasons = turn.validate()
+    assert valid == should_be_valid
