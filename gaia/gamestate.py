@@ -1,7 +1,7 @@
 from __future__ import annotations
 from enum import IntEnum
 from dataclasses import dataclass
-from typing import Dict
+from typing import Dict, Tuple
 
 from gaia.players import Player, Income
 from gaia.bonuses import AvailableRoundBonuses
@@ -15,6 +15,12 @@ class GameState(object):
     research_board: ResearchBoard
     scoring_board: ScoringBoard
     round_bonuses: AvailableRoundBonuses
+    
+    def add_player(self, player: Player):
+        self.players[player.player_id] = player
+
+    def get_player(self, player_id: str):
+        return self.players.get(player_id)
 
 
 class ScoringBoard(object):
@@ -63,21 +69,21 @@ class ResearchBoard(object):
         level = self.get_placement(player, ResearchTracks.NAVIGATION)
         if level <= 1:
             return 1
-        elif level <= 2:
+        elif level <= 3:
             return 2
         elif level <= 4:
             return 3
         return 4
 
-    def get_player_available_gaiaformers(self, player: Player):
+    def get_player_available_gaiaformers_and_cost(self, player: Player) -> Tuple[int, int]:
         level = self.get_placement(player, ResearchTracks.GAIA_PROJECT)
         if level == 0:
-            return 0
-        elif level <= 1:
-            return 1
+            return 0, 0
+        elif level <= 2:
+            return 1, 6
         elif level <= 3:
-            return 2
-        return 3
+            return 2, 4
+        return 3, 3
 
     def get_player_economy_bonus(self, player: Player):
         level = self.get_placement(player, ResearchTracks.ECONOMY)

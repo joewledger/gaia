@@ -6,6 +6,7 @@ from copy import deepcopy
 from gaia.players import Player, Cost
 from gaia.map import Hexagon, InhabitedPlanet
 from gaia.planet_types import PlanetType
+from gaia.buildings import Building
 
 
 class Action(ABC):
@@ -172,7 +173,11 @@ class PlaceMineAction(FinalAction):
         return True, "The player can place a mine at {}".format(str(planet.hex))
 
     def perform_action(self, gamestate, player_id: str) -> Tuple[bool, str]:
-        pass
+        player = gamestate.players[player_id]
+        result = gamestate.game_map.inhabit_planet(self.hexagon, player.faction, Building.MINE)
+        return result, ("Successfully built mine"
+                        if result else
+                        "Unable to build mine")
 
     @property
     def cost(self):

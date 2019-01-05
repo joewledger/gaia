@@ -28,17 +28,21 @@ class Factions(IntEnum):
 
 class Player(object):
     def __init__(self, faction: Factions):
-        self.player_id = str(uuid4())
+        self._player_id = uuid4()
         self.faction = faction
         self.player_resources = PlayerResources(ore=4, credits=15, knowledge=3, qic=1, power_bowls={0: 4, 1: 4, 2: 0})
         self.board_income = Income(ore=1, knowledge=1)
         self.round_bonus = None
 
+    @property
+    def player_id(self):
+        return str(self._player_id)
+
     def __eq__(self, other):
         return self.player_id == other.player_id
 
     def __hash__(self):
-        return self.player_id
+        return self._player_id.int
 
     @abstractmethod
     def get_distance_from_planet_color(self, planet: PlanetType) -> int:

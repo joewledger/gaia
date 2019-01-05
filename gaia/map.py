@@ -241,14 +241,15 @@ class Map:
             planet = sector.get_planet(hexagon)
             if planet is not None:
                 return planet
-
         return None
 
-    def inhabit_planet(self, hexagon: Hexagon, faction: Factions, building: Building):
+    def inhabit_planet(self, hexagon: Hexagon, faction: Factions, building: Building) -> bool:
         for sector in self.sectors:
             planet = sector.get_planet(hexagon)
             if planet is not None:
                 sector.replace_planet(planet, planet.inhabit(faction, building))
+                return True
+        return False
 
     def get_planets_in_range(self, hexagon: Hexagon, distance: int, only_inhabited: bool = False) \
             -> Set[Union[Planet, InhabitedPlanet]]:
