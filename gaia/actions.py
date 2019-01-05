@@ -157,10 +157,10 @@ class PlaceMineAction(FinalAction):
         planets_in_range = game_map.get_planets_in_range(self.hexagon, navigation_range, only_inhabited=True)
 
         if not any(planet.faction == player.faction for planet in planets_in_range):
-            return False, "The player is not in range"
+            return False, "The planet is not in range"
 
-        if planet.planet_type == PlanetType.LOST:
-            return False, "Cannot build on lost planets"
+        if planet.planet_type == PlanetType.TRANSDIM:
+            return False, "Cannot build on transdim planets"
         elif planet.planet_type == PlanetType.GAIA:
             total_cost = self.cost + Cost(qic=1)
         else:

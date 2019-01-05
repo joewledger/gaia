@@ -69,7 +69,7 @@ def test_range_gamestate(starting_gamestate):
 
 @pytest.fixture()
 def one_sector_map(planets):
-    sector = Sector(planets)
+    sector = Sector(planets, radius=10)
     return Map([sector])
 
 
