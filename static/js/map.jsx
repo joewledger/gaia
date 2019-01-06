@@ -140,6 +140,7 @@ class BoardSelector extends React.Component {
         <select onChange={this.handleChange}>
           <option value="1p_2p_default">1p/2p Default</option>
           <option value="3p_4p_default">3p/4p Default</option>
+          <option value="lots_o_buildings">lots o' buildings</option>
         </select>
         <Board size={this.state.size}
                sectors={this.state.sectors}

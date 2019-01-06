@@ -3,7 +3,7 @@ import pytest
 from gaia.map import Planet, InhabitedPlanet, Hexagon, PlanetType
 from gaia.buildings import Building
 from gaia.actions import PlaceMineAction
-from gaia.players import Cost, PlayerResources
+from gaia.players import PlayerResources
 
 from tests.util import TestFaction
 
@@ -264,4 +264,4 @@ def test_place_mine_perform_action(planets, action, one_sector_gamestate):
     assert original_planet.hex == inhabited_planet.hex
     assert original_planet.planet_type == inhabited_planet.planet_type
     assert inhabited_planet.faction == player.faction
-    assert inhabited_planet.buildings == Building.MINE
+    assert inhabited_planet.building == Building.MINE

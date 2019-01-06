@@ -108,10 +108,17 @@ class Planet(object):
 @dataclass(frozen=True)
 class InhabitedPlanet(Planet):
     faction: Factions
-    buildings: Building
+    building: Building
 
     def is_inhabited(self) -> bool:
         return True
+
+    def __iter__(self):
+        return create_object_property_generator(self, {
+            "planet_color": self.planet_color,
+            "faction": self.faction,
+            "building": self.building
+        })
 
 
 class Sector(object):
@@ -262,3 +269,8 @@ class Map:
                 planets_in_range.add(planet)
 
         return planets_in_range
+
+    def add_buildings_to_all_planets(self):
+        for sector in self.sectors:
+            for hexagon in sector.planets.keys():
+                self.inhabit_planet(hexagon, random.choice(list(Factions)), random.choice(list(Building)))
