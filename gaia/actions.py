@@ -109,11 +109,11 @@ class GaiaformAction(PartialAction):
         return True, self.valid_str
 
     def modify_final_action(self, action: PlaceMineAction) -> PlaceMineAction:
-        if not hasattr(action, "base_gaiaforming"):
-            raise IllegalFinalActionException("Final action must have property base_gaiaforming")
+        if not hasattr(action, "free_gaiaforming"):
+            raise IllegalFinalActionException("Final action must have property free_gaiaforming")
 
         copy_action = deepcopy(action)
-        copy_action.base_gaiaforming += 3
+        copy_action.free_gaiaforming += 1
         return copy_action
 
 
@@ -140,7 +140,7 @@ class PlaceMineAction(FinalAction):
     def __init__(self, hexagon: Hexagon):
         self.hexagon = hexagon
         self.base_navigation = 0
-        self.base_gaiaforming = 0
+        self.free_gaiaforming = 0
 
     def validate(self, gamestate, player_id: str) -> Tuple[bool, str]:
         player = gamestate.players[player_id]
@@ -164,11 +164,11 @@ class PlaceMineAction(FinalAction):
         elif planet.planet_type == PlanetType.GAIA:
             total_cost = self.cost + Cost(qic=1)
         else:
-            gaiaforming_ability = self.base_gaiaforming + gamestate.research_board.get_player_gaiaforming_cost(player)
-            total_cost = Cost(ore=gaiaforming_ability * player.get_distance_from_planet_color(planet)) + self.cost
+            num_gaiaforms_required = player.get_distance_from_planet_color(planet) - self.free_gaiaforming
+            total_cost = Cost(ore=num_gaiaforms_required * gamestate.research_board.get_player_gaiaforming_cost(player))
 
         if not player.can_afford(total_cost):
-            return False, "The player cannot afford to place a mine at {}".format(str(planet.hex))
+            return False, "The player cannot afford to place a mine"
 
         return True, "The player can place a mine at {}".format(str(planet.hex))
 

@@ -236,7 +236,7 @@ class Map:
     def add_federation(self, federation):
         self.federations.append(federation)
 
-    def get_planet(self, hexagon: Hexagon):
+    def get_planet(self, hexagon: Hexagon) -> Union[Planet, None]:
         for sector in self.sectors:
             planet = sector.get_planet(hexagon)
             if planet is not None:
