@@ -142,6 +142,10 @@ class PlaceMineAction(FinalAction):
         self.base_navigation = 0
         self.free_gaiaforming = 0
 
+    @property
+    def cost(self):
+        return Cost(ore=1, credits=2)
+
     def validate(self, gamestate, player_id: str) -> Tuple[bool, str]:
         player = gamestate.players[player_id]
         game_map = gamestate.game_map
@@ -153,10 +157,7 @@ class PlaceMineAction(FinalAction):
         if isinstance(planet, InhabitedPlanet):
             return False, "This planet is already occupied"
 
-        navigation_range = self.base_navigation + gamestate.research_board.get_player_navigation_ability(player)
-        planets_in_range = game_map.get_planets_in_range(self.hexagon, navigation_range, only_inhabited=True)
-
-        if not any(planet.faction == player.faction for planet in planets_in_range):
+        if not self._planet_is_in_range(gamestate, game_map, player):
             return False, "The planet is not in range"
 
         if planet.planet_type == PlanetType.TRANSDIM:
@@ -172,16 +173,16 @@ class PlaceMineAction(FinalAction):
 
         return True, "The player can place a mine at {}".format(str(planet.hex))
 
+    def _planet_is_in_range(self, gamestate, game_map, player) -> bool:
+        navigation_range = self.base_navigation + gamestate.research_board.get_player_navigation_ability(player)
+        planets_in_range = game_map.get_planets_in_range(self.hexagon, navigation_range, only_inhabited=True)
+
+        return any(planet.faction == player.faction for planet in planets_in_range)
+
     def perform_action(self, gamestate, player_id: str) -> Tuple[bool, str]:
         player = gamestate.players[player_id]
-        result = gamestate.game_map.inhabit_planet(self.hexagon, player.faction, Building.MINE)
-        return result, ("Successfully built mine"
-                        if result else
-                        "Unable to build mine")
-
-    @property
-    def cost(self):
-        return Cost(ore=1, credits=2)
+        if not gamestate.game_map.inhabit_planet(self.hexagon, player.faction, Building.MINE):
+            raise RuntimeError("Unable to inhabit planet")
 
 
 class StartGaiaProjectAction(FinalAction):

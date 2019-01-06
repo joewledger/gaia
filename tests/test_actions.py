@@ -257,8 +257,7 @@ def test_place_mine_cost_validation(planets, action, player_resources, free_gaia
 def test_place_mine_perform_action(planets, action, one_sector_gamestate):
     player = list(one_sector_gamestate.players.values())[0]
 
-    result, reason = action.perform_action(one_sector_gamestate, player.player_id)
-    assert result
+    action.perform_action(one_sector_gamestate, player.player_id)
 
     original_planet = planets[0]
     inhabited_planet = one_sector_gamestate.game_map.get_planet(original_planet.hex)
