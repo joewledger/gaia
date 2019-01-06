@@ -17,17 +17,6 @@ def main():
     return render_template("board.html", development=is_development)
 
 
-@app.route('/map')
-def get_map():
-    game_type = request.args.get('game_type', '1p_2p_default')
-
-    map = Map.load_from_config(config_path, game_type=game_type)
-
-    return Response(response=map.to_json(),
-                    status=200,
-                    mimetype="application/json")
-
-
 # API
 valid_moves_example_response = [
     { # Behaves uniquely. Must choose to do before other moves. This must be remembered between player turns. There can be multiple.
@@ -62,7 +51,19 @@ valid_moves_example_response = [
 ]
 
 
-@api.route('/valid moves')
+@api.route('/valid-moves')
 class ValidMoves(Resource):
     def get(self):
         return valid_moves_example_response
+
+
+@api.route('/map')
+class Maps(Resource):
+    def get(self):
+        game_type = request.args.get('game_type', '1p_2p_default')
+
+        map = Map.load_from_config(config_path, game_type=game_type)
+
+        return Response(response=map.to_json(),
+                        status=200,
+                        mimetype="application/json")
