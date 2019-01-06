@@ -3,10 +3,11 @@
 class Hexagon extends React.Component {
   render() {
     let translate = `translate(${this.props.x},${this.props.y})`;
+    let poly_id = `(${this.props.hex_x},${this.props.hex_z})`;
     return (
       <g transform={translate}>
         <g stroke="white" strokeWidth="1">
-          <polygon points="100,0 50,-87 -50,-87 -100,-0 -50,87 50,87"></polygon>
+          <polygon id={poly_id} points="100,0 50,-87 -50,-87 -100,-0 -50,87 50,87"></polygon>
         </g>
       </g>
     );
@@ -35,7 +36,9 @@ class Sector extends React.Component {
 
     let hexagons = this.props.hexagons.map(hexagon =>
       <Hexagon x={hexagon.screen_x_factor * size}
-               y={hexagon.screen_y_factor * size} />
+               y={hexagon.screen_y_factor * size}
+               hex_x={hexagon.x}
+               hex_z={hexagon.z} />
     );
 
     let planets = this.props.planets.map(planet =>

@@ -4,7 +4,8 @@ import json
 
 from gaia.map import Hexagon, Planet, InhabitedPlanet, Sector, Map, GameTile
 from gaia.players import Factions
-from gaia.buildings import Buildings
+from gaia.buildings import Building
+from gaia.planet_types import PlanetType
 
 
 @pytest.mark.parametrize("hex1,hex2,distance", [
@@ -40,10 +41,10 @@ def test_hexagon_adjust_offset(hex1, hex2, x_offset_diff, z_offset_diff):
 ])
 def test_hexagon_rotation(orig, new, degrees):
     assert orig.rotate(degrees) == new
-    assert (Planet(orig, Planet.Type.ORANGE).rotate(degrees) ==
-            Planet(new, Planet.Type.ORANGE))
-    assert (InhabitedPlanet(orig, Planet.Type.ORANGE, Factions.AMBAS, Buildings.MINE).rotate(degrees) ==
-            InhabitedPlanet(new, Planet.Type.ORANGE, Factions.AMBAS, Buildings.MINE))
+    assert (Planet(orig, PlanetType.ORANGE).rotate(degrees) ==
+            Planet(new, PlanetType.ORANGE))
+    assert (InhabitedPlanet(orig, PlanetType.ORANGE, Factions.AMBAS, Building.MINE).rotate(degrees) ==
+            InhabitedPlanet(new, PlanetType.ORANGE, Factions.AMBAS, Building.MINE))
 
 
 @pytest.mark.parametrize("degrees", [
@@ -90,10 +91,10 @@ def test_sector_has_all_planets(planets):
     sector = Sector(planets)
 
     assert len(sector.planets) == len(planets)
-    assert sector.get_planet(0, 0) == planets[0]
-    assert sector.get_planet(0, 2) == planets[1]
-    assert sector.get_planet(-1, 1) == planets[2]
-    assert sector.get_planet(100, -100) is None
+    assert sector.get_planet(Hexagon(0, 0)) == planets[0]
+    assert sector.get_planet(Hexagon(0, 2)) == planets[1]
+    assert sector.get_planet(Hexagon(-1, 1)) == planets[2]
+    assert sector.get_planet(Hexagon(100, -100)) is None
 
 
 @pytest.mark.parametrize("orig_x_offset,orig_z_offset,x_offset,z_offset", [
@@ -139,7 +140,7 @@ def test_load_gametile_mapping_from_config(config_path):
     for sector in sectors:
         planets = sector.planets.values()
         assert all(planet.hex.x in range(-2, 3) and planet.hex.z in range(-2, 3) for planet in planets)
-        assert all(isinstance(planet.planet_type, Planet.Type) for planet in planets)
+        assert all(isinstance(planet.planet_type, PlanetType) for planet in planets)
 
 
 @pytest.mark.integration
