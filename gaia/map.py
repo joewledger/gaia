@@ -203,6 +203,13 @@ class GameTile(object):
         return tile_mapping
 
 
+@dataclass(frozen=True)
+class Federation:
+    hexagons: List[Hexagon]
+    faction: Factions
+    activated: bool = False
+
+
 class Map:
     def __init__(self, sectors: List[Sector]):
         self.sectors = sectors
@@ -240,7 +247,7 @@ class Map:
 
         return json.dumps(self, cls=MapEncoder)
 
-    def add_federation(self, federation):
+    def add_federation(self, federation: Federation):
         self.federations.append(federation)
 
     def get_planet(self, hexagon: Hexagon) -> Union[Planet, None]:
@@ -269,6 +276,10 @@ class Map:
                 planets_in_range.add(planet)
 
         return planets_in_range
+
+    def calculate_smallest_federation(self, planets: List[Planet]) -> List[Hexagon]:
+        # TODO: implement
+        pass
 
     def add_buildings_to_all_planets(self):
         for sector in self.sectors:

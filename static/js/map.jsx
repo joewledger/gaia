@@ -101,6 +101,7 @@ class BoardSelector extends React.Component {
     super(props);
     this.state = {
       game_type: '1p_2p_default',
+      board_options: null,
       size: 100,
       sectors: [],
       federations: []
@@ -111,6 +112,9 @@ class BoardSelector extends React.Component {
 
   getMapData() {
     let map_url = `map?game_type=${this.state.game_type}`;
+    if(this.state.board_options !=null) {
+      map_url += "&board_options=" + this.state.board_options;
+    }
 
     fetch(map_url).then(results => {
       return results.json();
@@ -127,9 +131,19 @@ class BoardSelector extends React.Component {
   };
 
   async handleChange(event) {
-    await this.setState({
-      game_type: event.target.value
-    });
+    let special_game_types = ["lots_o_buildings", "lots_o_federations"];
+    let target = event.target.value;
+
+    if(special_game_types.includes(target)) {
+      await this.setState({
+        game_type: "3p_4p_default",
+        board_options: target
+      });
+    } else {
+      await this.setState({
+        game_type: target
+      });
+    }
 
     this.getMapData();
   };
@@ -141,6 +155,7 @@ class BoardSelector extends React.Component {
           <option value="1p_2p_default">1p/2p Default</option>
           <option value="3p_4p_default">3p/4p Default</option>
           <option value="lots_o_buildings">lots o' buildings</option>
+          <option value="lots_o_federations">lots o' federations</option>
         </select>
         <Board size={this.state.size}
                sectors={this.state.sectors}
