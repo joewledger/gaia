@@ -29,11 +29,14 @@ class ValidMoves(Resource):
 class Maps(Resource):
     def get(self):
         game_type = request.args.get('game_type', '1p_2p_default')
-        if game_type == 'lots_o_buildings':
-            map = Map.load_from_config(config_path, game_type='3p_4p_default')
+        board_options = request.args.get('board_options', None)
+
+        map = Map.load_from_config(config_path, game_type=game_type)
+        if board_options == "lots_o_buildings":
             map.add_buildings_to_all_planets()
-        else:
-            map = Map.load_from_config(config_path, game_type=game_type)
+        if board_options == "lots_o_federations":
+            # TODO: Add code to randomly generate federations
+            pass
 
         return Response(response=map.to_json(),
                         status=200,
