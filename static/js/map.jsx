@@ -59,20 +59,18 @@ class Hexagon extends React.Component {
 class Planet extends React.Component {
   render() {
     let translate = `translate(${this.props.x},${this.props.y})`;
+    let buildings = [];
+
     if (this.props.building !== undefined && this.props.faction !== undefined) {
-      return (
-        <g transform={translate}>
-          <circle cx="0" cy="0" r="70" stroke="black" strokeWidth="3" fill={this.props.color} />
-          <Building type={this.props.building} faction={this.props.faction} />
-        </g>
-      )
-    } else {
-      return (
-        <g transform={translate}>
-          <circle cx="0" cy="0" r="70" stroke="black" strokeWidth="3" fill={this.props.color} />
-        </g>
-      );
+      buildings.push(<Building type={this.props.building} faction={this.props.faction} />);
     }
+
+    return (
+      <g transform={translate}>
+        <circle cx="0" cy="0" r="70" stroke="black" strokeWidth="3" fill={this.props.color} />
+        {buildings}
+      </g>
+    );
   };
 };
 
@@ -194,7 +192,8 @@ class BoardSelector extends React.Component {
       });
     } else {
       await this.setState({
-        game_type: target
+        game_type: target,
+        board_options: null
       });
     }
 
