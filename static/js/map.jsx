@@ -1,57 +1,21 @@
 'use strict';
 
-class Hexagon extends React.Component {
-  render() {
-    let translate = `translate(${this.props.x},${this.props.y})`;
-    let poly_id = `(${this.props.hex_x},${this.props.hex_z})`;
-    return (
-      <g transform={translate}>
-        <g stroke="white" strokeWidth="1">
-          <polygon id={poly_id} points="100,0 50,-87 -50,-87 -100,-0 -50,87 50,87"></polygon>
-        </g>
-      </g>
-    );
-  }
-};
-
-class Planet extends React.Component {
-  render() {
-    let translate = `translate(${this.props.x},${this.props.y})`;
-    return (
-      <g transform={translate}>
-        <circle cx="0" cy="0" r="70" stroke="black" strokeWidth="3" fill={this.props.color} />
-      </g>
-    );
-  };
-};
-
-class Sector extends React.Component {
-  render() {
-    let size = this.props.size;
-    let sectorStretchFactor = .01;
-
-    let sector_x_factor = this.props.screen_x_factor * size * sectorStretchFactor;
-    let sector_y_factor = this.props.screen_y_factor * size * sectorStretchFactor;
-    let sector_translate = `translate(${sector_x_factor},${sector_y_factor})`;
-
-    let hexagons = this.props.hexagons.map(hexagon =>
-      <Hexagon x={hexagon.screen_x_factor * size}
-               y={hexagon.screen_y_factor * size}
-               hex_x={hexagon.x}
-               hex_z={hexagon.z} />
-    );
-
-    let planets = this.props.planets.map(planet =>
-      <Planet x={planet.hex.screen_x_factor * size}
-              y={planet.hex.screen_y_factor * size}
-              color={planet.planet_color} />
-    );
-
-    return (
-      <g transform={sector_translate}>{hexagons} {planets}</g >
-    );
-  };
-};
+const FactionColors = {
+  0: 'blue',
+  1: 'blue',
+  2: 'yellow',
+  3: 'yellow',
+  4: 'brown',
+  5: 'brown',
+  6: 'red',
+  7: 'red',
+  8: 'orange',
+  9: 'orange',
+  10: 'grey',
+  11: 'grey',
+  12: 'white',
+  13: 'white'
+}
 
 let getViewboxSize = function(sectors, hexSize) {
   if(sectors.length == 0) {
@@ -77,6 +41,95 @@ let getViewboxSize = function(sectors, hexSize) {
 
   return `${min_x} ${min_y} ${width} ${height}`;
 }
+
+class Hexagon extends React.Component {
+  render() {
+    let translate = `translate(${this.props.x},${this.props.y})`;
+    let poly_id = `(${this.props.hex_x},${this.props.hex_z})`;
+    return (
+      <g transform={translate}>
+        <g stroke="white" strokeWidth="1">
+          <polygon id={poly_id} points="100,0 50,-87 -50,-87 -100,-0 -50,87 50,87"></polygon>
+        </g>
+      </g>
+    );
+  }
+};
+
+class Planet extends React.Component {
+  render() {
+    let translate = `translate(${this.props.x},${this.props.y})`;
+    if (this.props.building !== undefined && this.props.faction !== undefined) {
+      return (
+        <g transform={translate}>
+          <circle cx="0" cy="0" r="70" stroke="black" strokeWidth="3" fill={this.props.color} />
+          <Building type={this.props.building} faction={this.props.faction} />
+        </g>
+      )
+    } else {
+      return (
+        <g transform={translate}>
+          <circle cx="0" cy="0" r="70" stroke="black" strokeWidth="3" fill={this.props.color} />
+        </g>
+      );
+    }
+  };
+};
+
+class Building extends React.Component {
+  render() {
+    let faction_color = FactionColors[this.props.faction];
+    switch(this.props.type) {
+      case(0):
+        return(<polyline points="30,-10 30,30 -30,30 -30,-10 0,-30 30,-10" fill={faction_color} stroke="black" strokeWidth="3" />)
+        break;
+      case(1):
+        return(<polyline points="35,-10 35,25 -35,25 -35,-30 -20,-40 0,-30 0,-10 35,-10" fill={faction_color} stroke="black" strokeWidth="3" />)
+        break;
+      case(2):
+        return(<g><circle cx="0" cy="0" r="35" stroke="black" fill={faction_color} strokeWidth="3" /></g>)
+        break;
+      case(3):
+        return(<g><polyline points="36,-36 36,36 -36,36 -36,-36 36,-36" fill={faction_color} stroke="black" strokeWidth="3" /></g>)
+        break;
+      case(4):
+        return(<g><ellipse cx="0" cy="0" rx="50" ry="30" fill={faction_color} stroke="black" strokeWidth="3" /></g>)
+        break;
+      default:
+        return(null)
+    }
+  }
+}
+
+class Sector extends React.Component {
+  render() {
+    let size = this.props.size;
+    let sectorStretchFactor = .01;
+
+    let sector_x_factor = this.props.screen_x_factor * size * sectorStretchFactor;
+    let sector_y_factor = this.props.screen_y_factor * size * sectorStretchFactor;
+    let sector_translate = `translate(${sector_x_factor},${sector_y_factor})`;
+
+    let hexagons = this.props.hexagons.map(hexagon =>
+      <Hexagon x={hexagon.screen_x_factor * size}
+               y={hexagon.screen_y_factor * size}
+               hex_x={hexagon.x}
+               hex_z={hexagon.z} />
+    );
+
+    let planets = this.props.planets.map(planet =>
+      <Planet x={planet.hex.screen_x_factor * size}
+              y={planet.hex.screen_y_factor * size}
+              color={planet.planet_color}
+              building={planet.building}
+              faction={planet.faction} />
+    );
+
+    return (
+      <g transform={sector_translate}>{hexagons} {planets}</g >
+    );
+  };
+};
 
 class Board extends React.Component {
   render() {
