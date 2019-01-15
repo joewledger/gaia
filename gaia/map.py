@@ -277,7 +277,7 @@ class Map:
 
         return planets_in_range
 
-    def calculate_smallest_federation(self, planets: List[Planet]) -> List[Hexagon]:
+    def calculate_hexagons_of_smallest_federation(self, planets: List[Planet]) -> List[Hexagon]:
         # TODO: implement
         pass
 
