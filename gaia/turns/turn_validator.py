@@ -3,8 +3,8 @@ from typing import List, Tuple
 from dataclasses import dataclass
 from copy import deepcopy
 
-from gaia.actions import Action, PartialAction
-from gaia.gamestate import GameState
+from gaia.turns.actions import Action, PartialAction
+from gaia.gamestate.gamestate import GameState
 
 
 @dataclass()

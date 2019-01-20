@@ -5,8 +5,8 @@ import random
 import json
 from math import sqrt
 
-from gaia.enums import PlanetType, Factions, Building
-from gaia.utils import create_object_property_generator
+from gaia.utils.enums import PlanetType, Factions, Building
+from gaia.utils.utils import create_object_property_generator
 
 
 @dataclass(frozen=True)

@@ -3,9 +3,9 @@ from typing import List, Union, Type
 from random import sample
 
 from gaia.board.map import Map
-from gaia.players import Player, Income
-from gaia.actions import PartialAction, GaiaformAction, GainRangeAction
-from gaia.enums import Building
+from gaia.gamestate.players import Player, Income
+from gaia.turns.actions import PartialAction, GaiaformAction, GainRangeAction
+from gaia.utils.enums import Building
 
 
 class ScoringBonus(object):

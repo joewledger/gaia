@@ -3,7 +3,7 @@ from copy import copy, deepcopy
 import json
 
 from gaia.board.map import Hexagon, Planet, InhabitedPlanet, Sector, Map, GameTile
-from gaia.enums import PlanetType, Factions, Building
+from gaia.utils.enums import PlanetType, Factions, Building
 
 
 @pytest.mark.parametrize("hex1,hex2,distance", [

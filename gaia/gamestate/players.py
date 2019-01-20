@@ -4,8 +4,9 @@ from typing import Dict
 from uuid import uuid4
 from abc import abstractmethod
 
-from gaia.enums import PlanetType, Factions
-from gaia.utils import create_object_property_generator
+from gaia.utils.enums import PlanetType, Factions
+from gaia.utils.utils import create_object_property_generator
+
 
 class Player(object):
     def __init__(self, faction: Factions):
