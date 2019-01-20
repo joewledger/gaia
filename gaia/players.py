@@ -1,30 +1,11 @@
 from __future__ import annotations
 from dataclasses import dataclass
-from enum import IntEnum
 from typing import Dict
 from uuid import uuid4
 from abc import abstractmethod
 
-from gaia.planet_types import PlanetType
+from gaia.enums import PlanetType, Factions
 from gaia.utils import create_object_property_generator
-
-
-class Factions(IntEnum):
-    TERRANS = 0
-    LANTIDS = 1
-    XENOS = 2
-    GLEENS = 3
-    TAKLONS = 4
-    AMBAS = 5
-    HADSCH_HALLAS = 6
-    IVITS = 7
-    GEODENS = 8
-    BALTAKS = 9
-    FIRAKS = 10
-    BESCODS = 11
-    NEVLAS = 12
-    ITARS = 13
-
 
 class Player(object):
     def __init__(self, faction: Factions):

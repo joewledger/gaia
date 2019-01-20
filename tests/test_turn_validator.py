@@ -4,7 +4,7 @@ from gaia.turn_validator import Turn
 from gaia.actions import (PlaceMineAction, PassAction, GaiaformAction,
                           GainRangeAction, ExchangeOreForCreditAction,
                           StartGaiaProjectAction)
-from gaia.map import Hexagon
+from gaia.board.map import Hexagon
 
 
 @pytest.mark.parametrize("actions,should_be_valid,main_reason", [

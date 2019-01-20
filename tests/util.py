@@ -1,6 +1,7 @@
 from enum import IntEnum
 
-from gaia.gamestate import ResearchTracks, ResearchBoard
+from gaia.enums import ResearchTracks
+from gaia.gamestate import ResearchBoard
 
 
 class TestFaction(IntEnum):

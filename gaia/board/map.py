@@ -5,9 +5,7 @@ import random
 import json
 from math import sqrt
 
-from gaia.players import Factions
-from gaia.buildings import Building
-from gaia.planet_types import PlanetType, planet_type_to_color
+from gaia.enums import PlanetType, Factions, Building
 from gaia.utils import create_object_property_generator
 
 
@@ -101,7 +99,7 @@ class Planet(object):
 
     def __iter__(self):
         return create_object_property_generator(self, {
-            "planet_color": self.planet_color
+            "planet_type": self.planet_type
         })
 
 
@@ -115,7 +113,7 @@ class InhabitedPlanet(Planet):
 
     def __iter__(self):
         return create_object_property_generator(self, {
-            "planet_color": self.planet_color,
+            "planet_type": self.planet_type,
             "faction": self.faction,
             "building": self.building
         })

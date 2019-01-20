@@ -1,4 +1,4 @@
-from gaia.map import Map
+from gaia.board.map import Map
 
 import os
 import example_responses
