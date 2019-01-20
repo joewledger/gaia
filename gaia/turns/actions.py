@@ -5,7 +5,7 @@ from copy import deepcopy
 
 from gaia.gamestate.players import Player, Cost
 from gaia.board.map import Hexagon, InhabitedPlanet
-from gaia.utils.enums import PlanetType, Building
+from gaia.utils.enums import PlanetType, BuildingType
 
 
 class Action(ABC):
@@ -180,7 +180,7 @@ class PlaceMineAction(FinalAction):
 
     def perform_action(self, gamestate, player_id: str) -> Tuple[bool, str]:
         player = gamestate.players[player_id]
-        if not gamestate.game_map.inhabit_planet(self.hexagon, player.faction, Building.MINE):
+        if not gamestate.game_map.inhabit_planet(self.hexagon, player.faction, BuildingType.MINE):
             raise RuntimeError("Unable to inhabit planet")
 
 

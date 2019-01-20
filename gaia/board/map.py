@@ -3,7 +3,7 @@ from typing import List, Dict, Set, Union
 import random
 import json
 
-from gaia.utils.enums import PlanetType, Factions, Building
+from gaia.utils.enums import PlanetType, Factions, BuildingType
 
 from gaia.board.sectors import Sector
 from gaia.board.federations import Federation
@@ -88,7 +88,7 @@ class Map:
                 return planet
         return None
 
-    def inhabit_planet(self, hexagon: Hexagon, faction: Factions, building: Building) -> bool:
+    def inhabit_planet(self, hexagon: Hexagon, faction: Factions, building: BuildingType) -> bool:
         for sector in self.sectors:
             planet = sector.get_planet(hexagon)
             if planet is not None:
@@ -115,4 +115,4 @@ class Map:
     def add_buildings_to_all_planets(self):
         for sector in self.sectors:
             for hexagon in sector.planets.keys():
-                self.inhabit_planet(hexagon, random.choice(list(Factions)), random.choice(list(Building)))
+                self.inhabit_planet(hexagon, random.choice(list(Factions)), random.choice(list(BuildingType)))

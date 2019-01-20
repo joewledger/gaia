@@ -13,7 +13,6 @@ class PlanetType(IntEnum):
     TRANSDIM = 9
     LOST = 10
 
-
 class Factions(IntEnum):
     TERRANS = 0
     LANTIDS = 1
@@ -30,7 +29,7 @@ class Factions(IntEnum):
     NEVLAS = 12
     ITARS = 13
 
-class Building(IntEnum):
+class BuildingType(IntEnum):
     MINE = 0
     TRADING_STATION = 1
     RESEARCH_LAB = 2

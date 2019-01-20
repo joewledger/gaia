@@ -1,7 +1,7 @@
 from __future__ import annotations
 from dataclasses import dataclass
 
-from gaia.utils.enums import PlanetType, Factions, Building
+from gaia.utils.enums import PlanetType, Factions, BuildingType
 from gaia.utils.utils import create_object_property_generator
 from gaia.board.hexagons import Hexagon
 
@@ -25,7 +25,7 @@ class Planet(object):
     def is_inhabited(self) -> bool:
         return False
 
-    def inhabit(self, faction: Factions, building: Building) -> InhabitedPlanet:
+    def inhabit(self, faction: Factions, building: BuildingType) -> InhabitedPlanet:
         return InhabitedPlanet(self.hex,
                                self.planet_type,
                                faction,
@@ -40,7 +40,7 @@ class Planet(object):
 @dataclass(frozen=True)
 class InhabitedPlanet(Planet):
     faction: Factions
-    building: Building
+    building: BuildingType
 
     def is_inhabited(self) -> bool:
         return True
