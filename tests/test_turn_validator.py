@@ -1,7 +1,7 @@
 import pytest
 
-from gaia.turn_validator import Turn
-from gaia.actions import (PlaceMineAction, PassAction, GaiaformAction,
+from gaia.turns.turn_validator import Turn
+from gaia.turns.actions import (PlaceMineAction, PassAction, GaiaformAction,
                           GainRangeAction, ExchangeOreForCreditAction,
                           StartGaiaProjectAction)
 from gaia.board.map import Hexagon

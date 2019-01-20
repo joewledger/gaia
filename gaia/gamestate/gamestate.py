@@ -2,10 +2,10 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Dict, Tuple
 
-from gaia.players import Player, Income
-from gaia.bonuses import AvailableRoundBonuses
+from gaia.gamestate.players import Player, Income
+from gaia.turns.bonuses import AvailableRoundBonuses
 from gaia.board.map import Map
-from gaia.enums import ResearchTracks
+from gaia.utils.enums import ResearchTracks
 
 
 @dataclass

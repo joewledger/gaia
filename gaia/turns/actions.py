@@ -3,9 +3,10 @@ from typing import Tuple
 from abc import ABC, abstractmethod
 from copy import deepcopy
 
-from gaia.players import Player, Cost
+from gaia.gamestate.players import Player, Cost
 from gaia.board.map import Hexagon, InhabitedPlanet
-from gaia.enums import PlanetType, Building
+from gaia.utils.enums import PlanetType, Building
+
 
 class Action(ABC):
     valid_str = "Action is valid"

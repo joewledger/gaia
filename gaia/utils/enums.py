@@ -1,5 +1,6 @@
 from enum import IntEnum
 
+
 class PlanetType(IntEnum):
     RED = 1
     ORANGE = 2
@@ -11,6 +12,7 @@ class PlanetType(IntEnum):
     GAIA = 8
     TRANSDIM = 9
     LOST = 10
+
 
 class Factions(IntEnum):
     TERRANS = 0

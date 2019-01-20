@@ -1,9 +1,9 @@
 import pytest
 
 from gaia.board.map import Planet, InhabitedPlanet, Hexagon, PlanetType
-from gaia.enums import Building
-from gaia.actions import PlaceMineAction
-from gaia.players import PlayerResources
+from gaia.utils.enums import Building
+from gaia.turns.actions import PlaceMineAction
+from gaia.gamestate.players import PlayerResources
 
 from tests.util import TestFaction
 
