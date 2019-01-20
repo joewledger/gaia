@@ -1,10 +1,9 @@
 import pytest
 import os
 
-from gaia.map import Hexagon, Planet, InhabitedPlanet, Map, Sector
-from gaia.players import Factions, Player, PlayerResources
-from gaia.buildings import Building
-from gaia.planet_types import PlanetType
+from gaia.board.map import Hexagon, Planet, InhabitedPlanet, Map, Sector
+from gaia.players import Player, PlayerResources
+from gaia.enums import PlanetType, Factions, Building
 from gaia.gamestate import GameState, ResearchBoard, ScoringBoard, AvailableRoundBonuses
 
 from tests.util import TestFaction

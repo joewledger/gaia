@@ -1,12 +1,11 @@
 from dataclasses import dataclass
 from typing import List, Union, Type
 from random import sample
-from enum import IntEnum
 
-from gaia.map import Map
+from gaia.board.map import Map
 from gaia.players import Player, Income
 from gaia.actions import PartialAction, GaiaformAction, GainRangeAction
-from gaia.buildings import Building
+from gaia.enums import Building
 
 
 class ScoringBonus(object):

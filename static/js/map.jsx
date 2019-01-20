@@ -17,6 +17,19 @@ const FactionColors = {
   13: 'white'
 }
 
+const PlanetColors = {
+    1: 'red',
+    2: "orange",
+    3: "white",
+    4: "grey",
+    5: "yellow",
+    6: "brown",
+    7: "blue",
+    8: "green",
+    9: "purple",
+    10: "#708090"
+}
+
 let getViewboxSize = function(sectors, hexSize) {
   if(sectors.length == 0) {
     return '0 0 0 0';
@@ -67,7 +80,7 @@ class Planet extends React.Component {
 
     return (
       <g transform={translate}>
-        <circle cx="0" cy="0" r="70" stroke="black" strokeWidth="3" fill={this.props.color} />
+        <circle cx="0" cy="0" r="70" stroke="black" strokeWidth="3" fill={PlanetColors[this.props.type]} />
         {buildings}
       </g>
     );
@@ -118,7 +131,7 @@ class Sector extends React.Component {
     let planets = this.props.planets.map(planet =>
       <Planet x={planet.hex.screen_x_factor * size}
               y={planet.hex.screen_y_factor * size}
-              color={planet.planet_color}
+              type={planet.planet_type}
               building={planet.building}
               faction={planet.faction} />
     );

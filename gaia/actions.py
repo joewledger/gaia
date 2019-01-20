@@ -4,10 +4,8 @@ from abc import ABC, abstractmethod
 from copy import deepcopy
 
 from gaia.players import Player, Cost
-from gaia.map import Hexagon, InhabitedPlanet
-from gaia.planet_types import PlanetType
-from gaia.buildings import Building
-
+from gaia.board.map import Hexagon, InhabitedPlanet
+from gaia.enums import PlanetType, Building
 
 class Action(ABC):
     valid_str = "Action is valid"

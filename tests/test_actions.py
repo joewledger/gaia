@@ -1,7 +1,7 @@
 import pytest
 
-from gaia.map import Planet, InhabitedPlanet, Hexagon, PlanetType
-from gaia.buildings import Building
+from gaia.board.map import Planet, InhabitedPlanet, Hexagon, PlanetType
+from gaia.enums import Building
 from gaia.actions import PlaceMineAction
 from gaia.players import PlayerResources
 

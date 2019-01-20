@@ -1,6 +1,7 @@
 import pytest
 
-from gaia.gamestate import ResearchBoard, ResearchTracks
+from gaia.gamestate import ResearchBoard
+from gaia.enums import ResearchTracks
 from gaia.players import Income
 from tests.util import get_research_bonus_func_for_track
 

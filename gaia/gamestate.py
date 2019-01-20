@@ -1,11 +1,11 @@
 from __future__ import annotations
-from enum import IntEnum
 from dataclasses import dataclass
 from typing import Dict, Tuple
 
 from gaia.players import Player, Income
 from gaia.bonuses import AvailableRoundBonuses
-from gaia.map import Map
+from gaia.board.map import Map
+from gaia.enums import ResearchTracks
 
 
 @dataclass
@@ -25,15 +25,6 @@ class GameState(object):
 
 class ScoringBoard(object):
     pass
-
-
-class ResearchTracks(IntEnum):
-    TERRAFORMING = 0
-    NAVIGATION = 1
-    ARTIFICIAL_INTELLIGENCE = 2
-    GAIA_PROJECT = 3
-    ECONOMY = 4
-    SCIENCE = 5
 
 
 class ResearchBoard(object):
