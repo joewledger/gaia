@@ -1,174 +1,15 @@
 from __future__ import annotations
-from dataclasses import dataclass
 from typing import List, Dict, Set, Union
 import random
 import json
-from math import sqrt
 
 from gaia.utils.enums import PlanetType, Factions, Building
-from gaia.utils.utils import create_object_property_generator
 
-
-@dataclass(frozen=True)
-class Hexagon(object):
-    x: int
-    z: int
-
-    @property
-    def y(self) -> int:
-        return -self.x - self.z
-
-    @property
-    def q(self) -> int:
-        return self.z + self.x
-
-    @property
-    def r(self) -> int:
-        return -self.x
-
-    @property
-    def screen_x_factor(self) -> float:
-        return self.q * (3/2)
-
-    @property
-    def screen_y_factor(self) -> float:
-        return (sqrt(3) / 2) * self.q + sqrt(3) * self.r
-
-    def distance_from_coordinates(self, x: int, z: int) -> int:
-        return (abs(self.x - x) + abs(self.y - (-x - z)) + abs(self.z - z)) // 2
-
-    def distance(self, other: Hexagon) -> int:
-        return self.distance_from_coordinates(other.x, other.z)
-
-    def rotate(self, degrees: int) -> Hexagon:
-        assert degrees % 60 == 0
-        x, y, z = self.x, self.y, self.z
-        num_turns = degrees // 60
-        for i in range(num_turns):
-            x, y, z = -z, -x, -y
-        return Hexagon(x, z)
-
-    def adjust_offset(self, x_offset_diff: int, z_offset_diff: int) -> Hexagon:
-        return Hexagon(self.x + x_offset_diff, self.z + z_offset_diff)
-
-    def get_hexagons_in_range(self, distance: int) -> Set[Hexagon]:
-        hexagons_in_range = set()
-
-        for x in range(self.x - distance, self.x + distance + 1):
-            for z in range(self.z - distance, self.z + distance + 1):
-                if self.distance_from_coordinates(x, z) <= distance:
-                    hexagons_in_range.add(Hexagon(x, z))
-
-        return hexagons_in_range
-
-    def __str__(self) -> str:
-        return "({0.x},{0.z})".format(self)
-
-    def __iter__(self):
-        return create_object_property_generator(self, {
-            "screen_x_factor": self.screen_x_factor,
-            "screen_y_factor": self.screen_y_factor
-        })
-
-
-@dataclass(frozen=True)
-class Planet(object):
-    hex: Hexagon
-    planet_type: PlanetType
-
-    @property
-    def planet_color(self):
-        return planet_type_to_color(self.planet_type)
-
-    def move_hex(self, new_hex: Hexagon) -> Planet:
-        attrs = self.__dict__
-        attrs['hex'] = new_hex
-        return type(self)(**attrs)
-
-    def rotate(self, degrees: int) -> Planet:
-        return self.move_hex(self.hex.rotate(degrees))
-
-    def is_inhabited(self) -> bool:
-        return False
-
-    def inhabit(self, faction: Factions, building: Building) -> InhabitedPlanet:
-        return InhabitedPlanet(self.hex,
-                               self.planet_type,
-                               faction,
-                               building)
-
-    def __iter__(self):
-        return create_object_property_generator(self, {
-            "planet_type": self.planet_type
-        })
-
-
-@dataclass(frozen=True)
-class InhabitedPlanet(Planet):
-    faction: Factions
-    building: Building
-
-    def is_inhabited(self) -> bool:
-        return True
-
-    def __iter__(self):
-        return create_object_property_generator(self, {
-            "planet_type": self.planet_type,
-            "faction": self.faction,
-            "building": self.building
-        })
-
-
-class Sector(object):
-    def __init__(self, planets: List[Planet], radius: int=3, x_offset: int=0, z_offset: int=0):
-        assert radius >= 1, "Radius must be greater or equal to zero"
-        assert isinstance(planets, list), "Planets must be a list"
-
-        self.radius = radius
-        self.x_offset = x_offset
-        self.z_offset = z_offset
-
-        planets = [p.move_hex(p.hex.adjust_offset(x_offset, z_offset)) for p in planets]
-        self.planets = {p.hex: p for p in planets}
-
-        center = Hexagon(self.x_offset, self.z_offset)
-        self.hexagons = center.get_hexagons_in_range(self.radius - 1)
-
-    def __iter__(self):
-        return create_object_property_generator(self, {
-            "screen_x_factor": Hexagon(self.x_offset, self.z_offset).screen_x_factor,
-            "screen_y_factor": Hexagon(self.x_offset, self.z_offset).screen_y_factor,
-            "planets": list(self.planets.values())
-        })
-
-    def get_planet(self, hexagon: Hexagon) -> Planet:
-        return self.planets[hexagon] if hexagon in self.planets else None
-
-    def replace_planet(self, old_planet: Planet, new_planet: Planet):
-        self.planets[old_planet.hex] = new_planet
-
-    def rotate(self, degrees: int) -> None:
-        self.planets = {hexagon.rotate(degrees): planet.rotate(degrees)
-                        for hexagon, planet in self.planets.items()}
-
-    def random_rotate(self) -> None:
-        self.rotate(random.randint(0, 6) * 60)
-
-    def adjust_offset(self, x_offset: int, z_offset: int) -> None:
-        x_offset_diff = x_offset - self.x_offset
-        z_offset_diff = z_offset - self.z_offset
-
-        self.x_offset, self.z_offset = x_offset, z_offset
-        new_hexagons = set()
-        new_planets = dict()
-        for old_hex in self.hexagons:
-            new_hex = old_hex.adjust_offset(x_offset_diff, z_offset_diff)
-            new_hexagons.add(new_hex)
-            if old_hex in self.planets:
-                new_planets[new_hex] = self.planets[old_hex].move_hex(new_hex)
-
-        self.hexagons = new_hexagons
-        self.planets = new_planets
+from gaia.board.sectors import Sector
+from gaia.board.federations import Federation
+from gaia.board.hexagons import Hexagon
+from gaia.board.planets import Planet
+from gaia.board.planets import InhabitedPlanet
 
 
 class GameTile(object):
@@ -199,14 +40,6 @@ class GameTile(object):
                 game_tile.sides.append(Sector(planets, radius))
 
         return tile_mapping
-
-
-@dataclass(frozen=True)
-class Federation:
-    hexagons: List[Hexagon]
-    faction: Factions
-    activated: bool = False
-
 
 class Map:
     def __init__(self, sectors: List[Sector]):
