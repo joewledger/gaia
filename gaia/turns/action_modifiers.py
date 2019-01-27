@@ -1,3 +1,8 @@
+class HasHexagonLocation:
+    def __init__(self, hexagon):
+        self.hexagon = hexagon
+
+
 class NavigationModifiable:
     def __init__(self):
         self._base_navigation = 0

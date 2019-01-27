@@ -7,7 +7,7 @@ from gaia.board.map import Hexagon, InhabitedPlanet
 from gaia.utils.enums import PlanetType, Building
 
 from gaia.turns.action_types import Action, FreeAction, PartialAction, FinalAction
-from gaia.turns.action_modifiers import NavigationModifiable, GaiaformingRequirementsModifiable
+from gaia.turns.action_modifiers import NavigationModifiable, GaiaformingRequirementsModifiable, HasHexagonLocation
 
 
 class ExchangeOreForCreditAction(FreeAction):
@@ -28,18 +28,19 @@ class IllegalFinalActionException(Exception):
     pass
 
 
-class GaiaformAction(PartialAction):
+class GaiaformAction(PartialAction, HasHexagonLocation):
     FREE_GAIAFORM_BONUS = 1
     ILLEGAL_ACTION_MESSAGE = "GaiaformAction must be followed by a final action that requires gaiaforming"
+    ILLEGAL_PLACEMENT_MESSAGE = "GaiaformAction must be used on the same hexagon as the action it modifies"
 
     def __init__(self, hexagon: Hexagon):
-        self.hexagon = hexagon
+        HasHexagonLocation.__init__(self, hexagon)
 
     def validate_next_action(self, action: Action) -> Tuple[bool, str]:
-        if not isinstance(action, PlaceMineAction):
-            return False, "GaiaformAction must be followed by PlaceMineAction"
-        elif not hasattr(action, "hexagon") or action.hexagon != self.hexagon:
-            return False, "GaiaformAction must be on the same hexagon as PlaceMineAction"
+        if not isinstance(action, GaiaformingRequirementsModifiable):
+            return False, self.ILLEGAL_ACTION_MESSAGE
+        elif not isinstance(action, HasHexagonLocation) or action.hexagon != self.hexagon:
+            return False, self.ILLEGAL_PLACEMENT_MESSAGE
         return True, self.valid_str
 
     def modify_final_action(self, action: GaiaformingRequirementsModifiable) -> GaiaformingRequirementsModifiable:
@@ -72,11 +73,11 @@ class GainRangeAction(PartialAction):
         return copy_action
 
 
-class PlaceMineAction(FinalAction, NavigationModifiable, GaiaformingRequirementsModifiable):
+class PlaceMineAction(FinalAction, NavigationModifiable, GaiaformingRequirementsModifiable, HasHexagonLocation):
     def __init__(self, hexagon: Hexagon):
         NavigationModifiable.__init__(self)
         GaiaformingRequirementsModifiable.__init__(self)
-        self.hexagon = hexagon
+        HasHexagonLocation.__init__(self, hexagon)
 
     @property
     def cost(self):
@@ -122,10 +123,10 @@ class PlaceMineAction(FinalAction, NavigationModifiable, GaiaformingRequirements
         return True, self.valid_str
 
 
-class StartGaiaProjectAction(FinalAction, NavigationModifiable):
+class StartGaiaProjectAction(FinalAction, NavigationModifiable, HasHexagonLocation):
     def __init__(self, hexagon: Hexagon):
         NavigationModifiable.__init__(self)
-        self.hexagon = hexagon
+        HasHexagonLocation.__init__(self, hexagon)
 
     def validate(self, gamestate, player_id: str):
         pass
