@@ -84,7 +84,7 @@ from gaia.board.map import Hexagon
             PassAction()
         ],
         False,
-        "GainRangeAction must be followed by PlaceMineAction or StartGaiaProjectAction"
+        GainRangeAction.ILLEGAL_ACTION_MESSAGE
     ),
     (
         [],

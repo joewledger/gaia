@@ -230,7 +230,7 @@ def test_place_mine_cost_validation(planets, action, player_resources, free_gaia
     mocker.patch.object(player, 'get_distance_from_planet_color')
     player.get_distance_from_planet_color.return_value = planet_distance
 
-    action.free_gaiaforming = free_gaiaforming
+    action.base_free_gaiaforming = free_gaiaforming
 
     valid, reason = action.validate(one_sector_gamestate, player.player_id)
     assert valid == should_be_valid
