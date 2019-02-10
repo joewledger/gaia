@@ -1,78 +1,13 @@
 from __future__ import annotations
 from typing import Tuple
-from abc import ABC, abstractmethod
 from copy import deepcopy
 
 from gaia.gamestate.players import Player, Cost
 from gaia.board.map import Hexagon, InhabitedPlanet
 from gaia.utils.enums import PlanetType, Building
 
-
-class Action(ABC):
-    valid_str = "Action is valid"
-
-    @property
-    @abstractmethod
-    def ends_turn(self) -> bool:
-        pass
-
-    def __str__(self):
-        return str(type(self).__name__)
-
-
-class ModifiesFinalActionWithBonus(object):
-    @abstractmethod
-    def modify_final_action(self, action: FinalAction) -> FinalAction:
-        pass
-
-
-class FinalAction(Action):
-    """
-    Any action that when taken will end the players turn
-    """
-    @property
-    def ends_turn(self) -> bool:
-        return True
-
-    @abstractmethod
-    def validate(self, gamestate, player_id: str) -> Tuple[bool, str]:
-        pass
-
-    @abstractmethod
-    def perform_action(self, gamestate, player_id: str) -> Tuple[bool, str]:
-        pass
-
-
-class FreeAction(Action):
-    """
-    Any action that does not end a players turn.
-    These include currency conversion actions (i.e. power -> gold)
-    """
-    @property
-    def ends_turn(self) -> bool:
-        return False
-
-    @abstractmethod
-    def validate(self, gamestate, player_id: str) -> Tuple[bool, str]:
-        pass
-
-    @abstractmethod
-    def perform_action(self, gamestate, player_id: str) -> Tuple[bool, str]:
-        pass
-
-
-class PartialAction(Action, ModifiesFinalActionWithBonus):
-    """
-    Similar to an free action,
-    but must be played in conjunction with an action that will end the players turn.
-    """
-    @property
-    def ends_turn(self) -> bool:
-        return False
-
-    @abstractmethod
-    def validate_next_action(self, action: FinalAction) -> bool:
-        pass
+from gaia.turns.action_types import Action, FreeAction, PartialAction, FinalAction
+from gaia.turns.action_modifiers import NavigationModifiable, GaiaformingRequirementsModifiable, HasHexagonLocation
 
 
 class ExchangeOreForCreditAction(FreeAction):
@@ -93,26 +28,27 @@ class IllegalFinalActionException(Exception):
     pass
 
 
-class GaiaformAction(PartialAction):
-    """
-    Must be followed followed by the PlaceMineAction on the same hex
-    """
+class GaiaformAction(PartialAction, HasHexagonLocation):
+    FREE_GAIAFORM_BONUS = 1
+    ILLEGAL_ACTION_MESSAGE = "GaiaformAction must be followed by a final action that requires gaiaforming"
+    ILLEGAL_PLACEMENT_MESSAGE = "GaiaformAction must be used on the same hexagon as the action it modifies"
+
     def __init__(self, hexagon: Hexagon):
-        self.hexagon = hexagon
+        HasHexagonLocation.__init__(self, hexagon)
 
     def validate_next_action(self, action: Action) -> Tuple[bool, str]:
-        if not isinstance(action, PlaceMineAction):
-            return False, "GaiaformAction must be followed by PlaceMineAction"
-        elif not hasattr(action, "hexagon") or action.hexagon != self.hexagon:
-            return False, "GaiaformAction must be on the same hexagon as PlaceMineAction"
+        if not isinstance(action, GaiaformingRequirementsModifiable):
+            return False, self.ILLEGAL_ACTION_MESSAGE
+        elif not isinstance(action, HasHexagonLocation) or action.hexagon != self.hexagon:
+            return False, self.ILLEGAL_PLACEMENT_MESSAGE
         return True, self.valid_str
 
-    def modify_final_action(self, action: PlaceMineAction) -> PlaceMineAction:
-        if not hasattr(action, "free_gaiaforming"):
-            raise IllegalFinalActionException("Final action must have property free_gaiaforming")
+    def modify_final_action(self, action: GaiaformingRequirementsModifiable) -> GaiaformingRequirementsModifiable:
+        if not isinstance(action, GaiaformingRequirementsModifiable):
+            raise IllegalFinalActionException(self.ILLEGAL_ACTION_MESSAGE)
 
         copy_action = deepcopy(action)
-        copy_action.free_gaiaforming += 1
+        copy_action.base_free_gaiaforming += self.FREE_GAIAFORM_BONUS
         return copy_action
 
 
@@ -120,26 +56,28 @@ class GainRangeAction(PartialAction):
     """
     Must be followed followed by the PlaceMineAction or StartGaiaProjectAction
     """
+    NAVIGATION_BONUS = 3
+    ILLEGAL_ACTION_MESSAGE = "GainRangeAction must be followed by a final action that requires navigation"
 
-    def validate_next_action(self, action: Action) -> Tuple[bool, str]:
-        if not (isinstance(action, PlaceMineAction) or isinstance(action, StartGaiaProjectAction)):
-            return False, "GainRangeAction must be followed by PlaceMineAction or StartGaiaProjectAction"
+    def validate_next_action(self, action: NavigationModifiable) -> Tuple[bool, str]:
+        if not (isinstance(action, NavigationModifiable) and isinstance(action, FinalAction)):
+            return False, self.ILLEGAL_ACTION_MESSAGE
         return True, self.valid_str
 
-    def modify_final_action(self, action: FinalAction) -> FinalAction:
-        if not hasattr(action, "base_navigation"):
-            raise IllegalFinalActionException("Final action must have property base_navigation")
+    def modify_final_action(self, action: NavigationModifiable) -> NavigationModifiable:
+        if not isinstance(action, NavigationModifiable):
+            raise IllegalFinalActionException(self.ILLEGAL_ACTION_MESSAGE)
 
         copy_action = deepcopy(action)
-        copy_action.base_navigation += 3
+        copy_action.base_navigation += self.NAVIGATION_BONUS
         return copy_action
 
 
-class PlaceMineAction(FinalAction):
+class PlaceMineAction(FinalAction, NavigationModifiable, GaiaformingRequirementsModifiable, HasHexagonLocation):
     def __init__(self, hexagon: Hexagon):
-        self.hexagon = hexagon
-        self.base_navigation = 0
-        self.free_gaiaforming = 0
+        NavigationModifiable.__init__(self)
+        GaiaformingRequirementsModifiable.__init__(self)
+        HasHexagonLocation.__init__(self, hexagon)
 
     @property
     def cost(self):
@@ -164,7 +102,7 @@ class PlaceMineAction(FinalAction):
         elif planet.planet_type == PlanetType.GAIA:
             total_cost = self.cost + Cost(qic=1)
         else:
-            num_gaiaforms_required = player.get_distance_from_planet_color(planet) - self.free_gaiaforming
+            num_gaiaforms_required = max(player.get_distance_from_planet_color(planet) - self.base_free_gaiaforming, 0)
             total_cost = Cost(ore=num_gaiaforms_required * gamestate.research_board.get_player_gaiaforming_cost(player))
 
         if not player.can_afford(total_cost):
@@ -181,13 +119,14 @@ class PlaceMineAction(FinalAction):
     def perform_action(self, gamestate, player_id: str) -> Tuple[bool, str]:
         player = gamestate.players[player_id]
         if not gamestate.game_map.inhabit_planet(self.hexagon, player.faction, Building.MINE):
-            raise RuntimeError("Unable to inhabit planet")
+            return False, "Could not inhabit planet at {}".format(str(self.hexagon))
+        return True, self.valid_str
 
 
-class StartGaiaProjectAction(FinalAction):
+class StartGaiaProjectAction(FinalAction, NavigationModifiable, HasHexagonLocation):
     def __init__(self, hexagon: Hexagon):
-        self.hexagon = hexagon
-        self.base_navigation = 0
+        NavigationModifiable.__init__(self)
+        HasHexagonLocation.__init__(self, hexagon)
 
     def validate(self, gamestate, player_id: str):
         pass

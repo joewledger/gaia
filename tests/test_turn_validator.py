@@ -52,7 +52,7 @@ from gaia.board.map import Hexagon
             PlaceMineAction(Hexagon(1, 0))
         ],
         False,
-        "GaiaformAction must be on the same hexagon as PlaceMineAction"
+        GaiaformAction.ILLEGAL_PLACEMENT_MESSAGE
     ),
     (
         [
@@ -60,7 +60,7 @@ from gaia.board.map import Hexagon
             PassAction
         ],
         False,
-        'GaiaformAction must be followed by PlaceMineAction'
+        GaiaformAction.ILLEGAL_ACTION_MESSAGE
     ),
     (
         [
@@ -84,7 +84,7 @@ from gaia.board.map import Hexagon
             PassAction()
         ],
         False,
-        "GainRangeAction must be followed by PlaceMineAction or StartGaiaProjectAction"
+        GainRangeAction.ILLEGAL_ACTION_MESSAGE
     ),
     (
         [],
