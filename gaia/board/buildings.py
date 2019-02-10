@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from gaia.utils.enums import Factions, BuildingType
 from gaia.utils.utils import create_object_property_generator
 
+
 @dataclass(frozen=True)
 class Building(object):
     faction: Factions
