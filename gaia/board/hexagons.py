@@ -1,14 +1,14 @@
 from __future__ import annotations
 from dataclasses import dataclass
-from typing import Set, Union
+from typing import Union
 from math import sqrt
 
 from gaia.board.planets import Planet
-from gaia.utils.utils import create_object_property_generator
+from gaia.utils.utils import CustomJSONSerialization, obj_to_json
 
 
 @dataclass(frozen=True)
-class Hexagon(object):
+class Hexagon(CustomJSONSerialization):
     x: int
     z: int
     planet: Union[Planet, None] = None
@@ -50,14 +50,14 @@ class Hexagon(object):
     def adjust_offset(self, x_offset_diff: int, z_offset_diff: int) -> Hexagon:
         return Hexagon(self.x + x_offset_diff, self.z + z_offset_diff)
 
-    def __str__(self) -> str:
-        return "({0.x},{0.z})".format(self)
-
-    def __iter__(self):
-        return create_object_property_generator(self, {
+    def to_json(self):
+        return obj_to_json(self, {
             "screen_x_factor": self.screen_x_factor,
             "screen_y_factor": self.screen_y_factor
         })
+
+    def __str__(self) -> str:
+        return "({0.x},{0.z})".format(self)
 
     def __eq__(self, other):
         return self.x == other.x and self.z == other.z

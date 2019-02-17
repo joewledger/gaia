@@ -5,10 +5,11 @@ from dataclasses import dataclass
 
 from gaia.board.sectors import Sector
 from gaia.board.federations import Federation
+from gaia.utils.utils import CustomJSONSerialization
 
 
 @dataclass(frozen=True)
-class Map:
+class Map(object):
     sectors: List[Sector]
     federations: List[Federation]
 
@@ -17,8 +18,8 @@ class Map:
             def default(self, obj):
                 if isinstance(obj, set):
                     return list(obj)
-                elif hasattr(obj, "__iter__"):
-                    return dict(obj)
+                elif isinstance(obj, CustomJSONSerialization):
+                    return obj.to_json()
                 else:
                     return obj.__dict__
 

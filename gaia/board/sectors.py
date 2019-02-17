@@ -2,11 +2,11 @@ from __future__ import annotations
 from typing import Set
 import random
 
-from gaia.utils.utils import create_object_property_generator
+from gaia.utils.utils import CustomJSONSerialization, obj_to_json
 from gaia.board.hexagons import Hexagon
 
 
-class Sector(object):
+class Sector(CustomJSONSerialization):
     def __init__(self, planet_hexagons: Set[Hexagon], radius: int=3, x_offset: int=0, z_offset: int=0):
         assert radius >= 1, "Radius must be greater or equal to zero"
 
@@ -54,8 +54,8 @@ class Sector(object):
 
         self.hexagons = new_hexagons
 
-    def __iter__(self):
-        return create_object_property_generator(self, {
+    def to_json(self):
+        return obj_to_json(self, {
             "screen_x_factor": Hexagon(self.x_offset, self.z_offset).screen_x_factor,
             "screen_y_factor": Hexagon(self.x_offset, self.z_offset).screen_y_factor,
             "hexagons": list(self.hexagons)

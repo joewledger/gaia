@@ -5,7 +5,7 @@ from uuid import uuid4
 from abc import abstractmethod
 
 from gaia.utils.enums import PlanetType, Factions
-from gaia.utils.utils import create_object_property_generator
+from gaia.utils.utils import CustomJSONSerialization, obj_to_json
 
 
 class Player(object):
@@ -38,7 +38,7 @@ class Player(object):
 
 
 @dataclass
-class PlayerResources(object):
+class PlayerResources(CustomJSONSerialization):
     ore: int
     credits: int
     knowledge: int
@@ -58,8 +58,8 @@ class PlayerResources(object):
                 self.power_bowls[2] += 1
                 self.power_bowls[1] -= 1
 
-    def __iter__(self):
-        return create_object_property_generator(self, {
+    def to_json(self):
+        return obj_to_json(self, {
             "power": self.power_bowls[2]
         })
 
