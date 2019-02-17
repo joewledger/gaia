@@ -60,3 +60,7 @@ class Sector(CustomJSONSerialization):
             "screen_y_factor": Hexagon(self.x_offset, self.z_offset).screen_y_factor,
             "hexagons": list(self.hexagons)
         })
+
+    def get_hexagon(self, hexagon: Hexagon) -> Hexagon:
+        sector_hexagon = [h for h in self.hexagons if h == hexagon]
+        return sector_hexagon[0] if len(sector_hexagon) == 1 else None

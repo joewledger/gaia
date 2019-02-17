@@ -3,6 +3,7 @@ from typing import List
 import json
 from dataclasses import dataclass
 
+from gaia.board.hexagons import Hexagon
 from gaia.board.sectors import Sector
 from gaia.board.federations import Federation
 from gaia.utils.utils import CustomJSONSerialization
@@ -27,6 +28,12 @@ class Map(object):
 
     def add_federation(self, federation: Federation):
         self.federations.append(federation)
+
+    def get_hexagon(self, hexagon: Hexagon) -> Hexagon:
+        for sector in self.sectors:
+            sector_hexagon = sector.get_hexagon(hexagon)
+            if sector_hexagon is not None:
+                return sector_hexagon
 
     # TODO: Reimpliment
     # def inhabit_planet(self, hexagon: Hexagon, faction: Factions, building: BuildingType) -> bool:

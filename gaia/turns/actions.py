@@ -87,7 +87,8 @@ class PlaceMineAction(FinalAction, NavigationModifiable, GaiaformingRequirements
         player = gamestate.players[player_id]
         game_map = gamestate.game_map
 
-        planet = game_map.get_planet(self.hexagon)
+        map_hexagon = game_map.get_hexagon(self.hexagon)
+        planet = map_hexagon.planet
         if planet is None:
             return False, "There is not planet on the specified hexagon"
 
