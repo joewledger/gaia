@@ -3,7 +3,7 @@ from typing import Tuple
 from copy import deepcopy
 
 from gaia.gamestate.players import Player, Cost
-from gaia.board.map import Hexagon
+from gaia.board.hexagons import Hexagon
 from gaia.utils.enums import PlanetType, BuildingType
 
 from gaia.turns.action_types import Action, FreeAction, PartialAction, FinalAction

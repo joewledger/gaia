@@ -1,6 +1,6 @@
 import pytest
 
-from gaia.board.planets import Planet, InhabitedPlanet
+from gaia.board.planets import Planet
 from gaia.board.hexagons import Hexagon
 
 from gaia.utils.enums import BuildingType, PlanetType
