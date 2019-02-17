@@ -2,8 +2,12 @@ import pytest
 from copy import copy, deepcopy
 import json
 
-from gaia.board.map import Hexagon, Planet, InhabitedPlanet, Sector, Map, GameTile
-from gaia.utils.enums import PlanetType, Factions, Building
+from gaia.board.hexagons import Hexagon
+from gaia.board.planets import Planet, InhabitedPlanet
+from gaia.board.sectors import Sector
+from gaia.board.map import Map, GameTile
+
+from gaia.utils.enums import PlanetType, Factions, BuildingType
 
 
 @pytest.mark.parametrize("hex1,hex2,distance", [
@@ -41,8 +45,8 @@ def test_hexagon_rotation(orig, new, degrees):
     assert orig.rotate(degrees) == new
     assert (Planet(orig, PlanetType.ORANGE).rotate(degrees) ==
             Planet(new, PlanetType.ORANGE))
-    assert (InhabitedPlanet(orig, PlanetType.ORANGE, Factions.AMBAS, Building.MINE).rotate(degrees) ==
-            InhabitedPlanet(new, PlanetType.ORANGE, Factions.AMBAS, Building.MINE))
+    assert (InhabitedPlanet(orig, PlanetType.ORANGE, Factions.AMBAS, BuildingType.MINE).rotate(degrees) ==
+            InhabitedPlanet(new, PlanetType.ORANGE, Factions.AMBAS, BuildingType.MINE))
 
 
 @pytest.mark.parametrize("degrees", [

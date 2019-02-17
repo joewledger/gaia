@@ -1,8 +1,9 @@
 from __future__ import annotations
 from dataclasses import dataclass
-from typing import Set
+from typing import Set, Union
 from math import sqrt
 
+from gaia.board.planets import Planet
 from gaia.utils.utils import create_object_property_generator
 
 
@@ -10,6 +11,7 @@ from gaia.utils.utils import create_object_property_generator
 class Hexagon(object):
     x: int
     z: int
+    planet: Union[Planet, None] = None
 
     @property
     def y(self) -> int:
@@ -48,16 +50,6 @@ class Hexagon(object):
     def adjust_offset(self, x_offset_diff: int, z_offset_diff: int) -> Hexagon:
         return Hexagon(self.x + x_offset_diff, self.z + z_offset_diff)
 
-    def get_hexagons_in_range(self, distance: int) -> Set[Hexagon]:
-        hexagons_in_range = set()
-
-        for x in range(self.x - distance, self.x + distance + 1):
-            for z in range(self.z - distance, self.z + distance + 1):
-                if self.distance_from_coordinates(x, z) <= distance:
-                    hexagons_in_range.add(Hexagon(x, z))
-
-        return hexagons_in_range
-
     def __str__(self) -> str:
         return "({0.x},{0.z})".format(self)
 
@@ -66,3 +58,9 @@ class Hexagon(object):
             "screen_x_factor": self.screen_x_factor,
             "screen_y_factor": self.screen_y_factor
         })
+
+    def __eq__(self, other):
+        return self.x == other.x and self.z == other.z
+
+    def __hash__(self):
+        return (str(self.x) + ',' + str(self.z)).__hash__()

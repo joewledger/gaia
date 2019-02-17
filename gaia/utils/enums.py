@@ -30,12 +30,14 @@ class Factions(IntEnum):
     NEVLAS = 12
     ITARS = 13
 
-class Building(IntEnum):
+
+class BuildingType(IntEnum):
     MINE = 0
     TRADING_STATION = 1
     RESEARCH_LAB = 2
     PLANETARY_INSTITUTE = 3
     ACADEMY = 4
+
 
 class ResearchTracks(IntEnum):
     TERRAFORMING = 0

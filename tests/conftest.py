@@ -1,9 +1,13 @@
 import pytest
 import os
 
-from gaia.board.map import Hexagon, Planet, InhabitedPlanet, Map, Sector
+from gaia.board.hexagons import Hexagon
+from gaia.board.planets import Planet, InhabitedPlanet
+from gaia.board.map import Map
+from gaia.board.sectors import Sector
+
 from gaia.gamestate.players import Player, PlayerResources
-from gaia.utils.enums import PlanetType, Factions, Building
+from gaia.utils.enums import PlanetType, Factions, BuildingType
 from gaia.gamestate.gamestate import GameState, ResearchBoard, ScoringBoard, AvailableRoundBonuses
 
 from tests.util import TestFaction
@@ -14,7 +18,7 @@ def planets():
     return [
         Planet(Hexagon(0, 0), PlanetType.BLUE),
         Planet(Hexagon(0, 2), PlanetType.RED),
-        InhabitedPlanet(Hexagon(-1, 1), PlanetType.ORANGE, Factions.AMBAS, Building.MINE)
+        InhabitedPlanet(Hexagon(-1, 1), PlanetType.ORANGE, Factions.AMBAS, BuildingType.MINE)
     ]
 
 
@@ -61,7 +65,7 @@ def starting_gamestate(default_players, default_map):
 @pytest.fixture()
 def test_range_gamestate(starting_gamestate):
     player_1 = starting_gamestate.players["p1"]
-    starting_gamestate.game_map.inhabit_planet(Hexagon(0, 1), player_1.faction, Building.MINE)
+    starting_gamestate.game_map.inhabit_planet(Hexagon(0, 1), player_1.faction, BuildingType.MINE)
 
     return starting_gamestate
 

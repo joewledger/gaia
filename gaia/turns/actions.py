@@ -3,8 +3,8 @@ from typing import Tuple
 from copy import deepcopy
 
 from gaia.gamestate.players import Player, Cost
-from gaia.board.map import Hexagon, InhabitedPlanet
-from gaia.utils.enums import PlanetType, Building
+from gaia.board.map import Hexagon
+from gaia.utils.enums import PlanetType, BuildingType
 
 from gaia.turns.action_types import Action, FreeAction, PartialAction, FinalAction
 from gaia.turns.action_modifiers import NavigationModifiable, GaiaformingRequirementsModifiable, HasHexagonLocation
@@ -116,11 +116,11 @@ class PlaceMineAction(FinalAction, NavigationModifiable, GaiaformingRequirements
 
         return any(planet.faction == player.faction for planet in planets_in_range)
 
-    def perform_action(self, gamestate, player_id: str) -> Tuple[bool, str]:
+    def perform_action(self, gamestate, player_id: str):
         player = gamestate.players[player_id]
-        if not gamestate.game_map.inhabit_planet(self.hexagon, player.faction, Building.MINE):
-            return False, "Could not inhabit planet at {}".format(str(self.hexagon))
-        return True, self.valid_str
+
+        if not gamestate.game_map.inhabit_planet(self.hexagon, player.faction, BuildingType.MINE):
+            raise RuntimeError("Unable to inhabit planet")
 
 
 class StartGaiaProjectAction(FinalAction, NavigationModifiable, HasHexagonLocation):
