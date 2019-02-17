@@ -91,7 +91,7 @@ class PlaceMineAction(FinalAction, NavigationModifiable, GaiaformingRequirements
         if planet is None:
             return False, "There is not planet on the specified hexagon"
 
-        if isinstance(planet, InhabitedPlanet):
+        if planet.building is not None:
             return False, "This planet is already occupied"
 
         if not self._planet_is_in_range(gamestate, game_map, player):

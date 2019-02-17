@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import List, Set
+from typing import Set
 import random
 
 from gaia.utils.utils import create_object_property_generator

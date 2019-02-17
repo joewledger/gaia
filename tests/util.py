@@ -1,7 +1,13 @@
 from enum import IntEnum
 
-from gaia.utils.enums import ResearchTracks
+from gaia.utils.enums import ResearchTracks, BuildingType
 from gaia.gamestate.gamestate import ResearchBoard
+from gaia.board.buildings import Building
+
+
+class TestBuilding(Building):
+    def __init__(self, building_type: BuildingType):
+        Building.__init__(self, TestFaction.TEST, building_type)
 
 
 class TestFaction(IntEnum):
