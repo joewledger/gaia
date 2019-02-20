@@ -19,7 +19,7 @@ from tests.util import TestFaction
 def planet_hexagons():
     return {
         Hexagon(0, 0, planet=Planet(PlanetType.BLUE)),
-        Hexagon(0, 1, planet=Planet(PlanetType.RED)),
+        Hexagon(0, 2, planet=Planet(PlanetType.RED)),
         Hexagon(-1, 1, planet=Planet(
             PlanetType.ORANGE,
             building=Building(Factions.AMBAS, BuildingType.MINE)
@@ -70,7 +70,7 @@ def starting_gamestate(default_players, default_map):
 @pytest.fixture()
 def test_range_gamestate(starting_gamestate):
     player_1 = starting_gamestate.players["p1"]
-    starting_gamestate.game_map.inhabit_planet(Hexagon(0, 1), player_1.faction, BuildingType.MINE)
+    starting_gamestate.game_map.inhabit_planet(Hexagon(0, 1), Building(player_1.faction, BuildingType.MINE))
 
     return starting_gamestate
 
