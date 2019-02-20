@@ -19,7 +19,7 @@ from tests.util import TestFaction
 def planet_hexagons():
     return {
         Hexagon(0, 0, planet=Planet(PlanetType.BLUE)),
-        Hexagon(0, 2, planet=Planet(PlanetType.RED)),
+        Hexagon(0, 1, planet=Planet(PlanetType.RED)),
         Hexagon(-1, 1, planet=Planet(
             PlanetType.ORANGE,
             building=Building(Factions.AMBAS, BuildingType.MINE)

@@ -262,9 +262,9 @@ def test_place_mine_perform_action(planet_hexagons, action, one_sector_gamestate
 
     action.perform_action(one_sector_gamestate, player.player_id)
 
-    original_planet = planets[0]
-    inhabited_planet = one_sector_gamestate.game_map.get_planet(original_planet.hex)
-    assert original_planet.hex == inhabited_planet.hex
-    assert original_planet.planet_type == inhabited_planet.planet_type
-    assert inhabited_planet.faction == player.faction
-    assert inhabited_planet.building == BuildingType.MINE
+    original_hexagon = list(planet_hexagons)[0]
+    inhabited_hexagon = one_sector_gamestate.game_map.get_hexagon(original_hexagon)
+    assert original_hexagon == inhabited_hexagon
+    assert original_hexagon.planet.planet_type == inhabited_hexagon.planet.planet_type
+    assert inhabited_hexagon.planet.building.faction == player.faction
+    assert inhabited_hexagon.planet.building.type == BuildingType.MINE

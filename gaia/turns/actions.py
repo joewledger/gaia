@@ -4,6 +4,7 @@ from copy import deepcopy
 
 from gaia.gamestate.players import Player, Cost
 from gaia.board.hexagons import Hexagon
+from gaia.board.buildings import Building
 from gaia.utils.enums import PlanetType, BuildingType
 
 from gaia.turns.action_types import Action, FreeAction, PartialAction, FinalAction
@@ -113,14 +114,14 @@ class PlaceMineAction(FinalAction, NavigationModifiable, GaiaformingRequirements
 
     def _planet_is_in_range(self, gamestate, game_map, player) -> bool:
         navigation_range = self.base_navigation + gamestate.research_board.get_player_navigation_ability(player)
-        planets_in_range = game_map.get_planets_in_range(self.hexagon, navigation_range, only_inhabited=True)
+        planets_in_range = game_map.get_hexagons_in_range(self.hexagon, navigation_range, only_inhabited=True)
 
         return any(planet.faction == player.faction for planet in planets_in_range)
 
     def perform_action(self, gamestate, player_id: str):
         player = gamestate.players[player_id]
 
-        if not gamestate.game_map.inhabit_planet(self.hexagon, player.faction, BuildingType.MINE):
+        if not gamestate.game_map.inhabit_planet(self.hexagon, Building(player.faction, BuildingType.MINE)):
             raise RuntimeError("Unable to inhabit planet")
 
 

@@ -1,12 +1,15 @@
 from __future__ import annotations
-from typing import List
-import json
+from typing import List, Set
 from dataclasses import dataclass
+import json
+import random
 
 from gaia.board.hexagons import Hexagon
 from gaia.board.sectors import Sector
 from gaia.board.federations import Federation
+from gaia.board.buildings import Building
 from gaia.utils.utils import CustomJSONSerialization
+from gaia.utils.enums import Factions, BuildingType
 
 
 @dataclass(frozen=True)
@@ -35,33 +38,30 @@ class Map(object):
             if sector_hexagon is not None:
                 return sector_hexagon
 
-    # TODO: Reimpliment
-    # def inhabit_planet(self, hexagon: Hexagon, faction: Factions, building: BuildingType) -> bool:
-        # for sector in self.sectors:
-        #     planet = sector.get_planet(hexagon)
-        #     if planet is not None:
-        #         sector.replace_planet(planet, planet.inhabit(faction, building))
-        #         return True
-        # return False
+    def get_hexagons_in_range(self, hexagon: Hexagon, distance: int, only_inhabited: bool = False) \
+            -> Set[Hexagon]:
+        hexagons_in_range = hexagon.get_hexagons_in_range(distance)
+        map_hexagons_in_range = set()
 
-    # TODO: Reimplement
-    # def get_planets_in_range(self, hexagon: Hexagon, distance: int, only_inhabited: bool = False) \
-    #         -> Set[Union[Planet, InhabitedPlanet]]:
-    #     hexagons_in_range = hexagon.get_hexagons_in_range(distance)
-    #     planets_in_range = set()
-    #
-    #     for hexagon in hexagons_in_range:
-    #         planet = self.get_planet(hexagon)
-    #         if planet is not None and (not only_inhabited or planet.is_inhabited()):
-    #             planets_in_range.add(planet)
-    #
-    #     return planets_in_range
+        for hexagon in hexagons_in_range:
+            map_hexagon = self.get_hexagon(hexagon)
+            if only_inhabited:
+                if map_hexagon.planet is not None and map_hexagon.planet.is_inhabited():
+                    map_hexagons_in_range.add(map_hexagon)
+            else:
+                map_hexagons_in_range.add(map_hexagon)
 
-    # TODO: implement
-    # def calculate_hexagons_of_smallest_federation(self, planets: List[Planet]) -> List[Hexagon]:
+        return map_hexagons_in_range
 
-    # TODO: Reimplement
-    # def add_buildings_to_all_planets(self):
-    #     for sector in self.sectors:
-    #         for hexagon in sector.planets.keys():
-    #             self.inhabit_planet(hexagon, random.choice(list(Factions)), random.choice(list(BuildingType)))
+    def inhabit_planet(self, hexagon: Hexagon, building: Building) -> bool:
+        for sector in self.sectors:
+            map_hexagon = sector.get_hexagon(hexagon)
+            if map_hexagon is not None and map_hexagon.planet is not None:
+                map_hexagon.planet.building = building
+                return True
+        return False
+
+    def add_buildings_to_all_planets(self):
+        for sector in self.sectors:
+            for hexagon in sector.hexagons:
+                self.inhabit_planet(hexagon, Building(random.choice(list(Factions)), random.choice(list(BuildingType))))

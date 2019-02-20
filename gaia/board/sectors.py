@@ -25,13 +25,7 @@ class Sector(CustomJSONSerialization):
         self.hexagons = self.create_sector_hexagons(center, planet_hexagons)
 
     def create_sector_hexagons(self, central_hexagon: Hexagon, planet_hexagons: Set[Hexagon]) -> Set[Hexagon]:
-        radius = self.radius
-        sector_hexagons = set()
-
-        for x in range(self.x_offset - radius, self.x_offset + radius + 1):
-            for z in range(self.z_offset - radius, self.z_offset + radius + 1):
-                if central_hexagon.distance_from_coordinates(x, z) < radius and Hexagon(x, z) not in planet_hexagons:
-                    sector_hexagons.add(Hexagon(x, z))
+        sector_hexagons = central_hexagon.get_hexagons_in_range(self.radius) - planet_hexagons
 
         sector_hexagons.update(planet_hexagons)
         return sector_hexagons

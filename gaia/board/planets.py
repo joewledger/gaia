@@ -6,7 +6,7 @@ from gaia.utils.enums import PlanetType
 from gaia.board.buildings import Building
 
 
-@dataclass(frozen=True)
+@dataclass()
 class Planet(object):
     planet_type: PlanetType
     building: Union[Building, None] = None
