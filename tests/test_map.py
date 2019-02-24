@@ -52,17 +52,17 @@ def test_sector_rotation(planet_hexagons, degrees):
 
 
 @pytest.mark.parametrize("radius,num_hexagons", [
-    (1, 1),
-    (2, 7),
-    (3, 19)
+    (0, 1),
+    (1, 7),
+    (2, 19)
 ])
 def test_sector_has_correct_number_of_tiles(radius, num_hexagons):
     assert len(Sector(set(), radius=radius).hexagons) == num_hexagons
 
 
 @pytest.mark.parametrize("sector,hexagons", [
-    (Sector(set(), radius=1), {Hexagon(0, 0)}),
-    (Sector(set(), radius=2), {
+    (Sector(set(), radius=0), {Hexagon(0, 0)}),
+    (Sector(set(), radius=1), {
         Hexagon(0, 0),
         Hexagon(0, -1),
         Hexagon(0, 1),
@@ -71,7 +71,7 @@ def test_sector_has_correct_number_of_tiles(radius, num_hexagons):
         Hexagon(-1, 1),
         Hexagon(-1, 0)
     }),
-    (Sector(set(), radius=2, x_offset=2, z_offset=-1), {
+    (Sector(set(), radius=1, x_offset=2, z_offset=-1), {
         Hexagon(2, -1),
         Hexagon(2, -2),
         Hexagon(2, 0),
@@ -118,7 +118,7 @@ def test_load_gametile_mapping_from_config(config_path):
     for gt in gametiles.values():
         sectors.update(gt.sides)
 
-    assert all(s.radius == 3 for s in sectors)
+    assert all(s.radius == 2 for s in sectors)
     assert all(s.x_offset == 0 and s.z_offset == 0 for s in sectors)
 
     for sector in sectors:

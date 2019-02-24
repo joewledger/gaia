@@ -44,7 +44,7 @@ from tests.util import TestBuilding
         ],
         PlaceMineAction(Hexagon(0, 1)),
         False,
-        "There is not planet on the specified hexagon"
+        "There is no planet on the specified hexagon"
     )
 ])
 def test_place_mine_destination_planet_validation(planet_hexagons, action,

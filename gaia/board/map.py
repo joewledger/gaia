@@ -46,7 +46,7 @@ class Map(object):
         for hexagon in hexagons_in_range:
             map_hexagon = self.get_hexagon(hexagon)
             if only_inhabited:
-                if map_hexagon.planet is not None and map_hexagon.planet.is_inhabited():
+                if map_hexagon is not None and map_hexagon.planet is not None and map_hexagon.planet.is_inhabited():
                     map_hexagons_in_range.add(map_hexagon)
             else:
                 map_hexagons_in_range.add(map_hexagon)

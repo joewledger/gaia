@@ -48,14 +48,14 @@ class Hexagon(CustomJSONSerialization):
         return Hexagon(x, z)
 
     def adjust_offset(self, x_offset_diff: int, z_offset_diff: int) -> Hexagon:
-        return Hexagon(self.x + x_offset_diff, self.z + z_offset_diff)
+        return Hexagon(self.x + x_offset_diff, self.z + z_offset_diff, planet=self.planet)
 
-    def get_hexagons_in_range(self, distance:int) -> Set[Hexagon]:
+    def get_hexagons_in_range(self, distance: int) -> Set[Hexagon]:
         hexagons = set()
 
         for x in range(self.x - distance, self.x + distance + 1):
             for z in range(self.z - distance, self.z + distance + 1):
-                if self.distance_from_coordinates(x, z) < distance:
+                if self.distance_from_coordinates(x, z) <= distance:
                     hexagons.add(Hexagon(x, z))
 
         return hexagons

@@ -31,7 +31,7 @@ class Player(object):
         pass
 
     def can_afford(self, cost: Cost):
-        player_resources = dict(self.player_resources)
+        player_resources = self.player_resources.to_json()
 
         return all(player_resources[key] >= cost[key] for key in list(cost.__dict__.keys())
                    if key in player_resources)

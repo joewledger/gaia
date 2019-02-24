@@ -7,8 +7,8 @@ from gaia.board.hexagons import Hexagon
 
 
 class Sector(CustomJSONSerialization):
-    def __init__(self, planet_hexagons: Set[Hexagon], radius: int=3, x_offset: int=0, z_offset: int=0):
-        assert radius >= 1, "Radius must be greater or equal to zero"
+    def __init__(self, planet_hexagons: Set[Hexagon], radius: int=2, x_offset: int=0, z_offset: int=0):
+        assert radius >= 0, "Radius must be greater or equal to zero"
 
         self.radius = radius
         self.x_offset = x_offset
