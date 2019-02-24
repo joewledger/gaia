@@ -267,4 +267,4 @@ def test_place_mine_perform_action(planet_hexagons, action, one_sector_gamestate
     assert original_hexagon == inhabited_hexagon
     assert original_hexagon.planet.planet_type == inhabited_hexagon.planet.planet_type
     assert inhabited_hexagon.planet.building.faction == player.faction
-    assert inhabited_hexagon.planet.building.type == BuildingType.MINE
+    assert inhabited_hexagon.planet.building.building_type == BuildingType.MINE

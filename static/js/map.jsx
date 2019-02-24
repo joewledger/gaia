@@ -59,11 +59,18 @@ class Hexagon extends React.Component {
   render() {
     let translate = `translate(${this.props.x},${this.props.y})`;
     let poly_id = `(${this.props.hex_x},${this.props.hex_z})`;
+
+    let planet = [];
+
+    planet.push(<Planet planet={this.props.planet} />);
+
+
     return (
       <g transform={translate}>
         <g stroke="white" strokeWidth="1">
           <polygon id={poly_id} points="100,0 50,-87 -50,-87 -100,-0 -50,87 50,87"></polygon>
         </g>
+        {planet}
       </g>
     );
   }
@@ -71,17 +78,16 @@ class Hexagon extends React.Component {
 
 class Planet extends React.Component {
   render() {
-    let translate = `translate(${this.props.x},${this.props.y})`;
-    let buildings = [];
+    let planet = this.props.planet;
 
-    if (this.props.building !== undefined && this.props.faction !== undefined) {
-      buildings.push(<Building type={this.props.building} faction={this.props.faction} />);
+    if(planet == null) {
+      return null;
     }
 
     return (
-      <g transform={translate}>
-        <circle cx="0" cy="0" r="70" stroke="black" strokeWidth="3" fill={PlanetColors[this.props.type]} />
-        {buildings}
+      <g>
+        <circle cx="0" cy="0" r="70" stroke="black" strokeWidth="3" fill={PlanetColors[planet.planet_type]} />
+        <Building building={planet.building} />
       </g>
     );
   };
@@ -89,8 +95,14 @@ class Planet extends React.Component {
 
 class Building extends React.Component {
   render() {
-    let faction_color = FactionColors[this.props.faction];
-    switch(this.props.type) {
+    let building = this.props.building;
+
+    if(building == null) {
+      return null;
+    }
+
+    let faction_color = FactionColors[building.faction];
+    switch(building.building_type) {
       case(0):
         return(<polyline points="30,-10 30,30 -30,30 -30,-10 0,-30 30,-10" fill={faction_color} stroke="black" strokeWidth="3" />)
         break;
@@ -98,13 +110,13 @@ class Building extends React.Component {
         return(<polyline points="35,-10 35,25 -35,25 -35,-30 -20,-40 0,-30 0,-10 35,-10" fill={faction_color} stroke="black" strokeWidth="3" />)
         break;
       case(2):
-        return(<g><circle cx="0" cy="0" r="35" stroke="black" fill={faction_color} strokeWidth="3" /></g>)
+        return(<circle cx="0" cy="0" r="35" stroke="black" fill={faction_color} strokeWidth="3" />)
         break;
       case(3):
-        return(<g><polyline points="36,-36 36,36 -36,36 -36,-36 36,-36" fill={faction_color} stroke="black" strokeWidth="3" /></g>)
+        return(<polyline points="36,-36 36,36 -36,36 -36,-36 36,-36" fill={faction_color} stroke="black" strokeWidth="3" />)
         break;
       case(4):
-        return(<g><ellipse cx="0" cy="0" rx="50" ry="30" fill={faction_color} stroke="black" strokeWidth="3" /></g>)
+        return(<ellipse cx="0" cy="0" rx="50" ry="30" fill={faction_color} stroke="black" strokeWidth="3" />)
         break;
       default:
         return(null)
@@ -125,19 +137,12 @@ class Sector extends React.Component {
       <Hexagon x={hexagon.screen_x_factor * size}
                y={hexagon.screen_y_factor * size}
                hex_x={hexagon.x}
-               hex_z={hexagon.z} />
-    );
-
-    let planets = this.props.planets.map(planet =>
-      <Planet x={planet.hex.screen_x_factor * size}
-              y={planet.hex.screen_y_factor * size}
-              type={planet.planet_type}
-              building={planet.building}
-              faction={planet.faction} />
+               hex_z={hexagon.z}
+               planet={hexagon.planet} />
     );
 
     return (
-      <g transform={sector_translate}>{hexagons} {planets}</g >
+      <g transform={sector_translate}>{hexagons}</g >
     );
   };
 };
@@ -146,7 +151,6 @@ class Board extends React.Component {
   render() {
     let sectors = this.props.sectors.map(sector =>
         <Sector hexagons={sector.hexagons}
-                planets={sector.planets}
                 size={this.props.size}
                 screen_x_factor={sector.screen_x_factor}
                 screen_y_factor={sector.screen_y_factor} />
