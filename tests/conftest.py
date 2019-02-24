@@ -1,21 +1,30 @@
 import pytest
 import os
 
-from gaia.board.map import Hexagon, Planet, InhabitedPlanet, Map, Sector
+from gaia.board.hexagons import Hexagon
+from gaia.board.planets import Planet
+from gaia.board.map import Map
+from gaia.board.sectors import Sector
+from gaia.board.buildings import Building
+from gaia.board.map_loader import MapLoader
+
 from gaia.gamestate.players import Player, PlayerResources
-from gaia.utils.enums import PlanetType, Factions, Building
+from gaia.utils.enums import PlanetType, Factions, BuildingType
 from gaia.gamestate.gamestate import GameState, ResearchBoard, ScoringBoard, AvailableRoundBonuses
 
 from tests.util import TestFaction
 
 
 @pytest.fixture()
-def planets():
-    return [
-        Planet(Hexagon(0, 0), PlanetType.BLUE),
-        Planet(Hexagon(0, 2), PlanetType.RED),
-        InhabitedPlanet(Hexagon(-1, 1), PlanetType.ORANGE, Factions.AMBAS, Building.MINE)
-    ]
+def planet_hexagons():
+    return {
+        Hexagon(0, 0, planet=Planet(PlanetType.BLUE)),
+        Hexagon(0, 2, planet=Planet(PlanetType.RED)),
+        Hexagon(-1, 1, planet=Planet(
+            PlanetType.ORANGE,
+            building=Building(Factions.AMBAS, BuildingType.MINE)
+        ))
+    }
 
 
 @pytest.fixture()
@@ -25,8 +34,8 @@ def config_path():
 
 @pytest.fixture()
 def default_map(config_path):
-    return Map.load_from_config(config_path=config_path,
-                                game_type="1p_2p_default")
+    return MapLoader.load_from_config(config_path=config_path,
+                                      game_type="1p_2p_default")
 
 
 @pytest.fixture()
@@ -61,15 +70,15 @@ def starting_gamestate(default_players, default_map):
 @pytest.fixture()
 def test_range_gamestate(starting_gamestate):
     player_1 = starting_gamestate.players["p1"]
-    starting_gamestate.game_map.inhabit_planet(Hexagon(0, 1), player_1.faction, Building.MINE)
+    starting_gamestate.game_map.inhabit_planet(Hexagon(0, 1), Building(player_1.faction, BuildingType.MINE))
 
     return starting_gamestate
 
 
 @pytest.fixture()
-def one_sector_map(planets):
-    sector = Sector(planets, radius=10)
-    return Map([sector])
+def one_sector_map(planet_hexagons):
+    sector = Sector(planet_hexagons, radius=10)
+    return Map([sector], [])
 
 
 @pytest.fixture()

@@ -114,7 +114,7 @@
   "tiles": [
     {
       "number": 1,
-      "radius": 3,
+      "radius": 2,
       "sides": [
         [
           {
@@ -152,7 +152,7 @@
     },
     {
       "number": 2,
-      "radius": 3,
+      "radius": 2,
       "sides": [
         [
           {
@@ -195,7 +195,7 @@
     },
     {
       "number": 3,
-      "radius": 3,
+      "radius": 2,
       "sides": [
         [
           {
@@ -233,7 +233,7 @@
     },
     {
       "number": 4,
-      "radius": 3,
+      "radius": 2,
       "sides": [
         [
           {
@@ -271,7 +271,7 @@
     },
     {
       "number": 5,
-      "radius": 3,
+      "radius": 2,
       "sides": [
         [
           {
@@ -336,7 +336,7 @@
     },
     {
       "number": 6,
-      "radius": 3,
+      "radius": 2,
       "sides": [
         [
           {
@@ -401,7 +401,7 @@
     },
     {
       "number": 7,
-      "radius": 3,
+      "radius": 2,
       "sides": [
         [
           {
@@ -466,7 +466,7 @@
     },
     {
       "number": 8,
-      "radius": 3,
+      "radius": 2,
       "sides": [
         [
           {
@@ -504,7 +504,7 @@
     },
     {
       "number": 9,
-      "radius": 3,
+      "radius": 2,
       "sides": [
         [
           {
@@ -542,7 +542,7 @@
     },
     {
       "number": 10,
-      "radius": 3,
+      "radius": 2,
       "sides": [
         [
           {

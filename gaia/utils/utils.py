@@ -1,8 +1,14 @@
 from copy import deepcopy
+from abc import ABC, abstractmethod
 
 
-def create_object_property_generator(obj, substitutions):
+class CustomJSONSerialization(ABC):
+    @abstractmethod
+    def to_json(self):
+        pass
+
+
+def obj_to_json(obj, substitutions):
     obj_dict = deepcopy(obj.__dict__)
     obj_dict.update(substitutions)
-    for key, value in obj_dict.items():
-        yield key, value
+    return obj_dict

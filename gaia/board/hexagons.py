@@ -1,15 +1,17 @@
 from __future__ import annotations
 from dataclasses import dataclass
-from typing import Set
+from typing import Union, Set
 from math import sqrt
 
-from gaia.utils.utils import create_object_property_generator
+from gaia.board.planets import Planet
+from gaia.utils.utils import CustomJSONSerialization, obj_to_json
 
 
 @dataclass(frozen=True)
-class Hexagon(object):
+class Hexagon(CustomJSONSerialization):
     x: int
     z: int
+    planet: Union[Planet, None] = None
 
     @property
     def y(self) -> int:
@@ -46,23 +48,29 @@ class Hexagon(object):
         return Hexagon(x, z)
 
     def adjust_offset(self, x_offset_diff: int, z_offset_diff: int) -> Hexagon:
-        return Hexagon(self.x + x_offset_diff, self.z + z_offset_diff)
+        return Hexagon(self.x + x_offset_diff, self.z + z_offset_diff, planet=self.planet)
 
     def get_hexagons_in_range(self, distance: int) -> Set[Hexagon]:
-        hexagons_in_range = set()
+        hexagons = set()
 
         for x in range(self.x - distance, self.x + distance + 1):
             for z in range(self.z - distance, self.z + distance + 1):
                 if self.distance_from_coordinates(x, z) <= distance:
-                    hexagons_in_range.add(Hexagon(x, z))
+                    hexagons.add(Hexagon(x, z))
 
-        return hexagons_in_range
+        return hexagons
+
+    def to_json(self):
+        return obj_to_json(self, {
+            "screen_x_factor": self.screen_x_factor,
+            "screen_y_factor": self.screen_y_factor
+        })
 
     def __str__(self) -> str:
         return "({0.x},{0.z})".format(self)
 
-    def __iter__(self):
-        return create_object_property_generator(self, {
-            "screen_x_factor": self.screen_x_factor,
-            "screen_y_factor": self.screen_y_factor
-        })
+    def __eq__(self, other):
+        return self.x == other.x and self.z == other.z
+
+    def __hash__(self):
+        return (str(self.x) + ',' + str(self.z)).__hash__()

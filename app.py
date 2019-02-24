@@ -1,4 +1,4 @@
-from gaia.board.map import Map
+from gaia.board.map_loader import MapLoader
 
 import os
 import example_responses
@@ -31,7 +31,7 @@ class Maps(Resource):
         game_type = request.args.get('game_type', '1p_2p_default')
         board_options = request.args.get('board_options', None)
 
-        map = Map.load_from_config(config_path, game_type=game_type)
+        map = MapLoader.load_from_config(config_path, game_type=game_type)
         if board_options == "lots_o_buildings":
             map.add_buildings_to_all_planets()
         if board_options == "lots_o_federations":

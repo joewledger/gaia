@@ -1,18 +1,20 @@
 import pytest
 
-from gaia.board.map import Planet, InhabitedPlanet, Hexagon, PlanetType
-from gaia.utils.enums import Building
+from gaia.board.planets import Planet
+from gaia.board.hexagons import Hexagon
+
+from gaia.utils.enums import BuildingType, PlanetType
 from gaia.turns.actions import PlaceMineAction
 from gaia.gamestate.players import PlayerResources
 
-from tests.util import TestFaction
+from tests.util import TestBuilding
 
 
-@pytest.mark.parametrize("planets,action,should_be_valid,main_reason", [
+@pytest.mark.parametrize("planet_hexagons,action,should_be_valid,main_reason", [
     (
         [
-            Planet(Hexagon(0, 1), PlanetType.WHITE),
-            InhabitedPlanet(Hexagon(0, 0), PlanetType.WHITE, TestFaction.TEST, Building.MINE)
+            Hexagon(0, 1, planet=Planet(PlanetType.WHITE)),
+            Hexagon(0, 0, planet=Planet(PlanetType.WHITE, building=TestBuilding(BuildingType.MINE)))
         ],
         PlaceMineAction(Hexagon(0, 1)),
         True,
@@ -20,8 +22,8 @@ from tests.util import TestFaction
     ),
     (
         [
-            Planet(Hexagon(0, 1), PlanetType.TRANSDIM),
-            InhabitedPlanet(Hexagon(0, 0), PlanetType.WHITE, TestFaction.TEST, Building.MINE)
+            Hexagon(0, 1, planet=Planet(PlanetType.TRANSDIM)),
+            Hexagon(0, 0, planet=Planet(PlanetType.WHITE, building=TestBuilding(BuildingType.MINE)))
         ],
         PlaceMineAction(Hexagon(0, 1)),
         False,
@@ -29,8 +31,8 @@ from tests.util import TestFaction
     ),
     (
         [
-            InhabitedPlanet(Hexagon(0, 1), PlanetType.WHITE, TestFaction.TEST, Building.MINE),
-            InhabitedPlanet(Hexagon(0, 0), PlanetType.WHITE, TestFaction.TEST, Building.MINE)
+            Hexagon(0, 1, planet=Planet(PlanetType.WHITE, building=TestBuilding(BuildingType.MINE))),
+            Hexagon(0, 0, planet=Planet(PlanetType.WHITE, building=TestBuilding(BuildingType.MINE)))
         ],
         PlaceMineAction(Hexagon(0, 1)),
         False,
@@ -38,14 +40,14 @@ from tests.util import TestFaction
     ),
     (
         [
-            InhabitedPlanet(Hexagon(0, 0), PlanetType.WHITE, TestFaction.TEST, Building.MINE)
+            Hexagon(0, 0, planet=Planet(PlanetType.WHITE, building=TestBuilding(BuildingType.MINE)))
         ],
         PlaceMineAction(Hexagon(0, 1)),
         False,
-        "There is not planet on the specified hexagon"
+        "There is no planet on the specified hexagon"
     )
 ])
-def test_place_mine_destination_planet_validation(planets, action,
+def test_place_mine_destination_planet_validation(planet_hexagons, action,
                                                   should_be_valid, main_reason,
                                                   one_sector_gamestate, mocker):
     player = list(one_sector_gamestate.players.values())[0]
@@ -59,11 +61,11 @@ def test_place_mine_destination_planet_validation(planets, action,
         assert reason == main_reason
 
 
-@pytest.mark.parametrize("planets,action,base_navigation,research_navigation,should_be_valid,main_reason", [
+@pytest.mark.parametrize("planet_hexagons,action,base_navigation,research_navigation,should_be_valid,main_reason", [
     (
         [
-            Planet(Hexagon(0, 1), PlanetType.WHITE),
-            InhabitedPlanet(Hexagon(0, 0), PlanetType.WHITE, TestFaction.TEST, Building.MINE)
+            Hexagon(0, 1, planet=Planet(PlanetType.WHITE)),
+            Hexagon(0, 0, planet=Planet(PlanetType.WHITE, building=TestBuilding(BuildingType.MINE)))
         ],
         PlaceMineAction(Hexagon(0, 1)),
         0,
@@ -73,8 +75,8 @@ def test_place_mine_destination_planet_validation(planets, action,
     ),
     (
         [
-            Planet(Hexagon(0, 2), PlanetType.WHITE),
-            InhabitedPlanet(Hexagon(0, 0), PlanetType.WHITE, TestFaction.TEST, Building.MINE)
+            Hexagon(0, 2, planet=Planet(PlanetType.WHITE)),
+            Hexagon(0, 0, planet=Planet(PlanetType.WHITE, building=TestBuilding(BuildingType.MINE)))
         ],
         PlaceMineAction(Hexagon(0, 2)),
         0,
@@ -84,8 +86,8 @@ def test_place_mine_destination_planet_validation(planets, action,
     ),
     (
         [
-            Planet(Hexagon(0, 4), PlanetType.WHITE),
-            InhabitedPlanet(Hexagon(0, 0), PlanetType.WHITE, TestFaction.TEST, Building.MINE)
+            Hexagon(0, 4, planet=Planet(PlanetType.WHITE)),
+            Hexagon(0, 0, planet=Planet(PlanetType.WHITE, building=TestBuilding(BuildingType.MINE)))
         ],
         PlaceMineAction(Hexagon(0, 4)),
         2,
@@ -95,8 +97,8 @@ def test_place_mine_destination_planet_validation(planets, action,
     ),
     (
         [
-            Planet(Hexagon(0, 4), PlanetType.WHITE),
-            InhabitedPlanet(Hexagon(0, 0), PlanetType.WHITE, TestFaction.TEST, Building.MINE)
+            Hexagon(0, 4, planet=Planet(PlanetType.WHITE)),
+            Hexagon(0, 0, planet=Planet(PlanetType.WHITE, TestBuilding(BuildingType.MINE)))
         ],
         PlaceMineAction(Hexagon(0, 4)),
         2,
@@ -105,7 +107,7 @@ def test_place_mine_destination_planet_validation(planets, action,
         None
     )
 ])
-def test_place_mine_range_validation(planets, action, base_navigation, research_navigation,
+def test_place_mine_range_validation(planet_hexagons, action, base_navigation, research_navigation,
                                      should_be_valid, main_reason,
                                      one_sector_gamestate, mocker):
     player = list(one_sector_gamestate.players.values())[0]
@@ -125,11 +127,12 @@ def test_place_mine_range_validation(planets, action, base_navigation, research_
 
 
 @pytest.mark.parametrize(
-    "planets,action,player_resources,free_gaiaforming,terraforming_cost,planet_distance,should_be_valid,main_reason", [
+    "planet_hexagons,action,player_resources,free_gaiaforming," +
+    "terraforming_cost,planet_distance,should_be_valid,main_reason", [
     (
         [
-            Planet(Hexagon(0, 1), PlanetType.WHITE),
-            InhabitedPlanet(Hexagon(0, 0), PlanetType.WHITE, TestFaction.TEST, Building.MINE)
+            Hexagon(0, 1, planet=Planet(PlanetType.WHITE)),
+            Hexagon(0, 0, planet=Planet(PlanetType.WHITE, building=TestBuilding(BuildingType.MINE)))
         ],
         PlaceMineAction(Hexagon(0, 1)),
         PlayerResources(ore=1, credits=2, knowledge=0, qic=0, power_bowls={0: 0, 1: 0, 2: 0}),
@@ -141,8 +144,8 @@ def test_place_mine_range_validation(planets, action, base_navigation, research_
     ),
     (
         [
-            Planet(Hexagon(0, 1), PlanetType.WHITE),
-            InhabitedPlanet(Hexagon(0, 0), PlanetType.WHITE, TestFaction.TEST, Building.MINE)
+            Hexagon(0, 1, planet=Planet(PlanetType.WHITE)),
+            Hexagon(0, 0, planet=Planet(PlanetType.WHITE, building=TestBuilding(BuildingType.MINE)))
         ],
         PlaceMineAction(Hexagon(0, 1)),
         PlayerResources(ore=1, credits=1, knowledge=0, qic=0, power_bowls={0: 0, 1: 0, 2: 0}),
@@ -154,8 +157,8 @@ def test_place_mine_range_validation(planets, action, base_navigation, research_
     ),
     (
         [
-            Planet(Hexagon(0, 1), PlanetType.WHITE),
-            InhabitedPlanet(Hexagon(0, 0), PlanetType.WHITE, TestFaction.TEST, Building.MINE)
+            Hexagon(0, 1, planet=Planet(PlanetType.WHITE)),
+            Hexagon(0, 0, planet=Planet(PlanetType.WHITE, building=TestBuilding(BuildingType.MINE)))
         ],
         PlaceMineAction(Hexagon(0, 1)),
         PlayerResources(ore=1, credits=2, knowledge=0, qic=0, power_bowls={0: 0, 1: 0, 2: 0}),
@@ -167,8 +170,8 @@ def test_place_mine_range_validation(planets, action, base_navigation, research_
     ),
     (
         [
-            Planet(Hexagon(0, 1), PlanetType.WHITE),
-            InhabitedPlanet(Hexagon(0, 0), PlanetType.WHITE, TestFaction.TEST, Building.MINE)
+            Hexagon(0, 1, planet=Planet(PlanetType.WHITE)),
+            Hexagon(0, 0, planet=Planet(PlanetType.WHITE, building=TestBuilding(BuildingType.MINE)))
         ],
         PlaceMineAction(Hexagon(0, 1)),
         PlayerResources(ore=4, credits=2, knowledge=0, qic=0, power_bowls={0: 0, 1: 0, 2: 0}),
@@ -180,8 +183,8 @@ def test_place_mine_range_validation(planets, action, base_navigation, research_
     ),
     (
         [
-            Planet(Hexagon(0, 1), PlanetType.WHITE),
-            InhabitedPlanet(Hexagon(0, 0), PlanetType.WHITE, TestFaction.TEST, Building.MINE)
+            Hexagon(0, 1, planet=Planet(PlanetType.WHITE)),
+            Hexagon(0, 0, planet=Planet(PlanetType.WHITE, building=TestBuilding(BuildingType.MINE)))
         ],
         PlaceMineAction(Hexagon(0, 1)),
         PlayerResources(ore=1, credits=2, knowledge=0, qic=0, power_bowls={0: 0, 1: 0, 2: 0}),
@@ -193,8 +196,8 @@ def test_place_mine_range_validation(planets, action, base_navigation, research_
     ),
     (
         [
-            Planet(Hexagon(0, 1), PlanetType.GAIA),
-            InhabitedPlanet(Hexagon(0, 0), PlanetType.WHITE, TestFaction.TEST, Building.MINE)
+            Hexagon(0, 1, planet=Planet(PlanetType.GAIA)),
+            Hexagon(0, 0, planet=Planet(PlanetType.WHITE, building=TestBuilding(BuildingType.MINE)))
         ],
         PlaceMineAction(Hexagon(0, 1)),
         PlayerResources(ore=1, credits=2, knowledge=0, qic=0, power_bowls={0: 0, 1: 0, 2: 0}),
@@ -206,8 +209,8 @@ def test_place_mine_range_validation(planets, action, base_navigation, research_
     ),
     (
         [
-            Planet(Hexagon(0, 1), PlanetType.GAIA),
-            InhabitedPlanet(Hexagon(0, 0), PlanetType.WHITE, TestFaction.TEST, Building.MINE)
+            Hexagon(0, 1, planet=Planet(PlanetType.GAIA)),
+            Hexagon(0, 0, planet=Planet(PlanetType.WHITE, building=TestBuilding(BuildingType.MINE)))
         ],
         PlaceMineAction(Hexagon(0, 1)),
         PlayerResources(ore=1, credits=2, knowledge=0, qic=1, power_bowls={0: 0, 1: 0, 2: 0}),
@@ -218,7 +221,7 @@ def test_place_mine_range_validation(planets, action, base_navigation, research_
         "The player has a QIC, and can afford to place a mine on a gaia project"
     )
 ])
-def test_place_mine_cost_validation(planets, action, player_resources, free_gaiaforming, terraforming_cost, planet_distance,
+def test_place_mine_cost_validation(planet_hexagons, action, player_resources, free_gaiaforming, terraforming_cost, planet_distance,
                                     should_be_valid, main_reason,
                                     one_sector_gamestate, mocker):
     player = list(one_sector_gamestate.players.values())[0]
@@ -238,30 +241,30 @@ def test_place_mine_cost_validation(planets, action, player_resources, free_gaia
         assert main_reason == reason
 
 
-@pytest.mark.parametrize("planets, action", [
+@pytest.mark.parametrize("planet_hexagons, action", [
     (
         [
-            Planet(Hexagon(0, 1), PlanetType.WHITE),
-            InhabitedPlanet(Hexagon(0, 0), PlanetType.WHITE, TestFaction.TEST, Building.MINE)
+            Hexagon(0, 1, planet=Planet(PlanetType.WHITE)),
+            Hexagon(0, 0, planet=Planet(PlanetType.WHITE, building=TestBuilding(BuildingType.MINE)))
         ],
         PlaceMineAction(Hexagon(0, 1)),
     ),
     (
         [
-            Planet(Hexagon(0, 1), PlanetType.GAIA),
-            InhabitedPlanet(Hexagon(0, 0), PlanetType.WHITE, TestFaction.TEST, Building.MINE)
+            Hexagon(0, 1, planet=Planet(PlanetType.GAIA)),
+            Hexagon(0, 0, planet=Planet(PlanetType.WHITE, building=TestBuilding(BuildingType.MINE)))
         ],
         PlaceMineAction(Hexagon(0, 1)),
     )
 ])
-def test_place_mine_perform_action(planets, action, one_sector_gamestate):
+def test_place_mine_perform_action(planet_hexagons, action, one_sector_gamestate):
     player = list(one_sector_gamestate.players.values())[0]
 
     action.perform_action(one_sector_gamestate, player.player_id)
 
-    original_planet = planets[0]
-    inhabited_planet = one_sector_gamestate.game_map.get_planet(original_planet.hex)
-    assert original_planet.hex == inhabited_planet.hex
-    assert original_planet.planet_type == inhabited_planet.planet_type
-    assert inhabited_planet.faction == player.faction
-    assert inhabited_planet.building == Building.MINE
+    original_hexagon = list(planet_hexagons)[0]
+    inhabited_hexagon = one_sector_gamestate.game_map.get_hexagon(original_hexagon)
+    assert original_hexagon == inhabited_hexagon
+    assert original_hexagon.planet.planet_type == inhabited_hexagon.planet.planet_type
+    assert inhabited_hexagon.planet.building.faction == player.faction
+    assert inhabited_hexagon.planet.building.building_type == BuildingType.MINE

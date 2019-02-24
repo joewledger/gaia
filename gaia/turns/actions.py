@@ -3,8 +3,9 @@ from typing import Tuple
 from copy import deepcopy
 
 from gaia.gamestate.players import Player, Cost
-from gaia.board.map import Hexagon, InhabitedPlanet
-from gaia.utils.enums import PlanetType, Building
+from gaia.board.hexagons import Hexagon
+from gaia.board.buildings import Building
+from gaia.utils.enums import PlanetType, BuildingType
 
 from gaia.turns.action_types import Action, FreeAction, PartialAction, FinalAction
 from gaia.turns.action_modifiers import NavigationModifiable, GaiaformingRequirementsModifiable, HasHexagonLocation
@@ -54,7 +55,7 @@ class GaiaformAction(PartialAction, HasHexagonLocation):
 
 class GainRangeAction(PartialAction):
     """
-    Must be followed followed by the PlaceMineAction or StartGaiaProjectAction
+    Must be followed followed by an Action that requires navigation (i.e. implements NavigationModifiable)
     """
     NAVIGATION_BONUS = 3
     ILLEGAL_ACTION_MESSAGE = "GainRangeAction must be followed by a final action that requires navigation"
@@ -87,11 +88,12 @@ class PlaceMineAction(FinalAction, NavigationModifiable, GaiaformingRequirements
         player = gamestate.players[player_id]
         game_map = gamestate.game_map
 
-        planet = game_map.get_planet(self.hexagon)
+        map_hexagon = game_map.get_hexagon(self.hexagon)
+        planet = map_hexagon.planet
         if planet is None:
-            return False, "There is not planet on the specified hexagon"
+            return False, "There is no planet on the specified hexagon"
 
-        if isinstance(planet, InhabitedPlanet):
+        if planet.building is not None:
             return False, "This planet is already occupied"
 
         if not self._planet_is_in_range(gamestate, game_map, player):
@@ -108,19 +110,19 @@ class PlaceMineAction(FinalAction, NavigationModifiable, GaiaformingRequirements
         if not player.can_afford(total_cost):
             return False, "The player cannot afford to place a mine"
 
-        return True, "The player can place a mine at {}".format(str(planet.hex))
+        return True, "The player can place a mine at {}".format(str(self.hexagon))
 
     def _planet_is_in_range(self, gamestate, game_map, player) -> bool:
         navigation_range = self.base_navigation + gamestate.research_board.get_player_navigation_ability(player)
-        planets_in_range = game_map.get_planets_in_range(self.hexagon, navigation_range, only_inhabited=True)
+        hexagons_in_range = game_map.get_hexagons_in_range(self.hexagon, navigation_range, only_inhabited=True)
 
-        return any(planet.faction == player.faction for planet in planets_in_range)
+        return any(hexagon.planet.building.faction == player.faction for hexagon in hexagons_in_range)
 
-    def perform_action(self, gamestate, player_id: str) -> Tuple[bool, str]:
+    def perform_action(self, gamestate, player_id: str):
         player = gamestate.players[player_id]
-        if not gamestate.game_map.inhabit_planet(self.hexagon, player.faction, Building.MINE):
-            return False, "Could not inhabit planet at {}".format(str(self.hexagon))
-        return True, self.valid_str
+
+        if not gamestate.game_map.inhabit_planet(self.hexagon, Building(player.faction, BuildingType.MINE)):
+            raise RuntimeError("Unable to inhabit planet")
 
 
 class StartGaiaProjectAction(FinalAction, NavigationModifiable, HasHexagonLocation):
