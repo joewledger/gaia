@@ -5,7 +5,7 @@ from gaia.board.hexagons import Hexagon
 
 from gaia.utils.enums import BuildingType, PlanetType
 from gaia.turns.actions import PlaceMineAction
-from gaia.gamestate.players import PlayerResources
+from gaia.players.players import PlayerResources
 
 from tests.util import TestBuilding
 

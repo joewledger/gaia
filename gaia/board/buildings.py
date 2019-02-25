@@ -1,13 +1,13 @@
 from __future__ import annotations
 from dataclasses import dataclass
 
-from gaia.utils.enums import Factions, BuildingType
+from gaia.utils.enums import FactionType, BuildingType
 from gaia.utils.utils import CustomJSONSerialization, obj_to_json
 
 
 @dataclass(frozen=True)
 class Building(CustomJSONSerialization):
-    faction: Factions
+    faction: FactionType
     building_type: BuildingType
 
     def to_json(self):

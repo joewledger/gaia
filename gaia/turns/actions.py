@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import Tuple
 from copy import deepcopy
 
-from gaia.gamestate.players import Player, Cost
+from gaia.players.players import Player, Cost
 from gaia.board.hexagons import Hexagon
 from gaia.board.buildings import Building
 from gaia.utils.enums import PlanetType, BuildingType
@@ -75,6 +75,14 @@ class GainRangeAction(PartialAction):
 
 
 class PlaceMineAction(FinalAction, NavigationModifiable, GaiaformingRequirementsModifiable, HasHexagonLocation):
+    ILLEGAL_HEXAGON_MESSAGE = "The hexagon provided is not part of the map"
+    MISSING_PLANET_MESSAGE = "There is no planet on the specified hexagon"
+    OCCUPIED_PLANET_MESSAGE = "This planet is already occupied"
+    PLANET_OUT_OF_RANGE_MESSAGE = "The planet is not in range"
+    TRANSDIM_PLANET_MESSAGE = "Cannot build on transdim planets"
+    EXPENSIVE_MINE_MESSAGE = "The player cannot afford to place a mine"
+    MINE_FAILURE_MESSAGE = "Unable to inhabit planet"
+
     def __init__(self, hexagon: Hexagon):
         NavigationModifiable.__init__(self)
         GaiaformingRequirementsModifiable.__init__(self)
@@ -89,18 +97,22 @@ class PlaceMineAction(FinalAction, NavigationModifiable, GaiaformingRequirements
         game_map = gamestate.game_map
 
         map_hexagon = game_map.get_hexagon(self.hexagon)
+
+        if map_hexagon is None:
+            return False, self.ILLEGAL_HEXAGON_MESSAGE
+
         planet = map_hexagon.planet
         if planet is None:
-            return False, "There is no planet on the specified hexagon"
+            return False, self.MISSING_PLANET_MESSAGE
 
         if planet.building is not None:
-            return False, "This planet is already occupied"
+            return False, self.OCCUPIED_PLANET_MESSAGE
 
         if not self._planet_is_in_range(gamestate, game_map, player):
-            return False, "The planet is not in range"
+            return False, self.PLANET_OUT_OF_RANGE_MESSAGE
 
         if planet.planet_type == PlanetType.TRANSDIM:
-            return False, "Cannot build on transdim planets"
+            return False, self.TRANSDIM_PLANET_MESSAGE
         elif planet.planet_type == PlanetType.GAIA:
             total_cost = self.cost + Cost(qic=1)
         else:
@@ -108,7 +120,7 @@ class PlaceMineAction(FinalAction, NavigationModifiable, GaiaformingRequirements
             total_cost = Cost(ore=num_gaiaforms_required * gamestate.research_board.get_player_gaiaforming_cost(player))
 
         if not player.can_afford(total_cost):
-            return False, "The player cannot afford to place a mine"
+            return False, self.EXPENSIVE_MINE_MESSAGE
 
         return True, "The player can place a mine at {}".format(str(self.hexagon))
 
@@ -122,7 +134,37 @@ class PlaceMineAction(FinalAction, NavigationModifiable, GaiaformingRequirements
         player = gamestate.players[player_id]
 
         if not gamestate.game_map.inhabit_planet(self.hexagon, Building(player.faction, BuildingType.MINE)):
-            raise RuntimeError("Unable to inhabit planet")
+            raise RuntimeError(self.MINE_FAILURE_MESSAGE)
+
+
+class UpgradeBuildingAction(FinalAction, HasHexagonLocation):
+    def __init__(self, hexagon: Hexagon, target_building: BuildingType):
+        self.target_building = target_building
+        HasHexagonLocation.__init__(self, hexagon)
+
+    def validate(self, gamestate, player_id: str) -> Tuple[bool, str]:
+        player = gamestate.players[player_id]
+        game_map = gamestate.game_map
+
+        map_hexagon = game_map.get_hexagon(self.hexagon)
+        if map_hexagon is None:
+            return False, self.ILLEGAL_HEXAGON_MESSAGE
+
+        planet = map_hexagon.planet
+        if planet is None:
+            return False, self.MISSING_PLANET_MESSAGE
+
+        building = planet.building
+        if building is None:
+            return False, self.MISSING_BUILDING_MESSAGE
+
+        if building.faction != player.faction:
+            return False, self.INVALID_FACTION_MESSAGE
+
+        pass
+
+    def perform_action(self, gamestate, player_id: str) -> Tuple[bool, str]:
+        pass
 
 
 class StartGaiaProjectAction(FinalAction, NavigationModifiable, HasHexagonLocation):
