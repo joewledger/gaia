@@ -3,7 +3,7 @@ from typing import List, Union, Type
 from random import sample
 
 from gaia.board.map import Map
-from gaia.gamestate.players import Player, Income
+from gaia.players.players import Player, Income
 from gaia.turns.actions import PartialAction, GaiaformAction, GainRangeAction
 from gaia.utils.enums import BuildingType
 

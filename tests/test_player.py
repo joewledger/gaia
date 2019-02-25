@@ -1,5 +1,4 @@
 import pytest
-from gaia.gamestate.players import PlayerResources
 
 
 @pytest.mark.parametrize("power_before, gain_amount, power_after, description", [
