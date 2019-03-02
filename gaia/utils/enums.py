@@ -14,7 +14,7 @@ class PlanetType(IntEnum):
     LOST = 10
 
 
-class Factions(IntEnum):
+class FactionTypes(IntEnum):
     TERRANS = 0
     LANTIDS = 1
     XENOS = 2

@@ -4,12 +4,12 @@ from typing import Dict
 from uuid import uuid4
 from abc import abstractmethod
 
-from gaia.utils.enums import PlanetType, Factions
+from gaia.utils.enums import PlanetType, FactionTypes
 from gaia.utils.utils import CustomJSONSerialization, obj_to_json
 
 
 class Player(object):
-    def __init__(self, faction: Factions):
+    def __init__(self, faction: FactionTypes):
         self._player_id = uuid4()
         self.faction = faction
         self.player_resources = PlayerResources(ore=4, credits=15, knowledge=3, qic=1, power_bowls={0: 4, 1: 4, 2: 0})
