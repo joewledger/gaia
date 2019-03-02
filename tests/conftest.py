@@ -9,7 +9,7 @@ from gaia.board.buildings import Building
 from gaia.board.map_loader import MapLoader
 
 from gaia.gamestate.players import Player, PlayerResources
-from gaia.utils.enums import PlanetType, FactionTypes, BuildingType
+from gaia.utils.enums import PlanetType, FactionType, BuildingType
 from gaia.gamestate.gamestate import GameState, ResearchBoard, ScoringBoard, AvailableRoundBonuses
 
 from tests.util import TestFaction
@@ -22,7 +22,7 @@ def planet_hexagons():
         Hexagon(0, 2, planet=Planet(PlanetType.RED)),
         Hexagon(-1, 1, planet=Planet(
             PlanetType.ORANGE,
-            building=Building(FactionTypes.AMBAS, BuildingType.MINE)
+            building=Building(FactionType.AMBAS, BuildingType.MINE)
         ))
     }
 
@@ -41,8 +41,8 @@ def default_map(config_path):
 @pytest.fixture()
 def default_players():
     return {
-        "p1": Player(FactionTypes.AMBAS),
-        "p2": Player(FactionTypes.BALTAKS)
+        "p1": Player(FactionType.AMBAS),
+        "p2": Player(FactionType.BALTAKS)
     }
 
 

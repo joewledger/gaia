@@ -9,7 +9,7 @@ from gaia.board.sectors import Sector
 from gaia.board.federations import Federation
 from gaia.board.buildings import Building
 from gaia.utils.utils import CustomJSONSerialization
-from gaia.utils.enums import FactionTypes, BuildingType
+from gaia.utils.enums import FactionType, BuildingType
 
 
 @dataclass(frozen=True)
@@ -64,4 +64,4 @@ class Map(object):
     def add_buildings_to_all_planets(self):
         for sector in self.sectors:
             for hexagon in sector.hexagons:
-                self.inhabit_planet(hexagon, Building(random.choice(list(FactionTypes)), random.choice(list(BuildingType))))
+                self.inhabit_planet(hexagon, Building(random.choice(list(FactionType)), random.choice(list(BuildingType))))
