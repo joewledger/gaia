@@ -8,8 +8,9 @@ from gaia.board.sectors import Sector
 from gaia.board.buildings import Building
 from gaia.board.map_loader import MapLoader
 
-from gaia.gamestate.players import Player, PlayerResources
-from gaia.utils.enums import PlanetType, Factions, BuildingType
+from gaia.players.players import BasePlayer, PlayerResources
+from gaia.players.player_types import PlayerFactory
+from gaia.utils.enums import PlanetType, FactionType, BuildingType
 from gaia.gamestate.gamestate import GameState, ResearchBoard, ScoringBoard, AvailableRoundBonuses
 
 from tests.util import TestFaction
@@ -22,7 +23,7 @@ def planet_hexagons():
         Hexagon(0, 2, planet=Planet(PlanetType.RED)),
         Hexagon(-1, 1, planet=Planet(
             PlanetType.ORANGE,
-            building=Building(Factions.AMBAS, BuildingType.MINE)
+            building=Building(FactionType.AMBAS, BuildingType.MINE)
         ))
     }
 
@@ -39,21 +40,41 @@ def default_map(config_path):
 
 
 @pytest.fixture()
-def default_players():
-    return {
-        "p1": Player(Factions.AMBAS),
-        "p2": Player(Factions.BALTAKS)
-    }
+def default_player_resources():
+    return PlayerResources(ore=4, credits=15, knowledge=3, qic=1, power_bowls={0: 4, 1: 4, 2: 0})
+
+
+class TestPlayer(BasePlayer):
+    def __init__(self, faction: TestFaction):
+        super().__init__()
+        self._faction = faction
+
+    @property
+    def faction(self) -> TestFaction:
+        return self._faction
+
+    @property
+    def native_planet(self) -> PlanetType:
+        return PlanetType.WHITE
+
+    def get_starting_resources(self):
+        return default_player_resources()
+
+    def get_starting_board_income(self):
+        pass
 
 
 @pytest.fixture()
 def test_player():
-    return Player(TestFaction.TEST)
+    return TestPlayer(TestFaction.TEST)
 
 
 @pytest.fixture()
-def default_player_resources():
-    return PlayerResources(ore=4, credits=15, knowledge=3, qic=1, power_bowls={0: 4, 1: 4, 2: 0})
+def default_players(test_player):
+    return {
+        "p1": TestPlayer(TestFaction.TEST),
+        "p2": TestPlayer(TestFaction.TEST2)
+    }
 
 
 @pytest.fixture()

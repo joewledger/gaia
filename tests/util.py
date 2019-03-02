@@ -12,6 +12,7 @@ class TestBuilding(Building):
 
 class TestFaction(IntEnum):
     TEST = 14
+    TEST2 = 15
 
 
 def get_research_bonus_func_for_track(track: ResearchTracks):
