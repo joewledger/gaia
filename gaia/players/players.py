@@ -6,6 +6,7 @@ from abc import ABC, abstractmethod
 
 from gaia.utils.enums import PlanetType, FactionType, BuildingType
 from gaia.utils.utils import CustomJSONSerialization, obj_to_json
+from gaia.board.planets import Planet
 
 
 class BasePlayer(ABC):
@@ -29,9 +30,8 @@ class BasePlayer(ABC):
     def native_planet(self) -> PlanetType:
         pass
 
-    @abstractmethod
-    def get_distance_from_planet_color(self, planet: PlanetType) -> int:
-        pass
+    def get_distance_from_planet_color(self, target_planet: PlanetType) -> int:
+        return Planet.get_terraforming_distance(self.native_planet, target_planet)
 
     @abstractmethod
     def get_starting_resources(self) -> PlayerResources:

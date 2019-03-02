@@ -3,8 +3,11 @@ from copy import copy
 import json
 
 from gaia.board.hexagons import Hexagon
+from gaia.board.planets import Planet
 from gaia.board.sectors import Sector
 from gaia.board.map_loader import GameTile, MapLoader
+
+from gaia.utils.enums import PlanetType
 
 
 @pytest.mark.parametrize("hex1,hex2,distance", [
@@ -161,3 +164,18 @@ def test_map_to_json(default_map):
                    for hexagon in hexagons)
 
     assert map_json["federations"] == []
+
+
+@pytest.mark.parametrize("home_planet,target_planet,distance", [
+    (PlanetType.BLUE, PlanetType.BLUE, 0),
+    (PlanetType.BLUE, PlanetType.RED, 1),
+    (PlanetType.BLUE, PlanetType.GREY, 2),
+    (PlanetType.BLUE, PlanetType.YELLOW, 3),
+    (PlanetType.BROWN, PlanetType.BROWN, 0),
+    (PlanetType.BROWN, PlanetType.YELLOW, 1),
+    (PlanetType.BROWN, PlanetType.WHITE, 2),
+    (PlanetType.BROWN, PlanetType.RED, 3)
+])
+def test_terraforming_distance(home_planet, target_planet, distance):
+    assert Planet.get_terraforming_distance(home_planet, target_planet) == distance
+    assert Planet.get_terraforming_distance(target_planet, home_planet) == distance

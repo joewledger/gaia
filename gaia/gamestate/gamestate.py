@@ -2,7 +2,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Dict, Tuple
 
-from gaia.gamestate.players import Player, Income
+from gaia.players.players import BasePlayer, Income
 from gaia.turns.bonuses import AvailableRoundBonuses
 from gaia.board.map import Map
 from gaia.utils.enums import ResearchTracks
@@ -10,13 +10,13 @@ from gaia.utils.enums import ResearchTracks
 
 @dataclass
 class GameState(object):
-    players: Dict[str, Player]
+    players: Dict[str, BasePlayer]
     game_map: Map
     research_board: ResearchBoard
     scoring_board: ScoringBoard
     round_bonuses: AvailableRoundBonuses
     
-    def add_player(self, player: Player):
+    def add_player(self, player: BasePlayer):
         self.players[player.player_id] = player
 
     def get_player(self, player_id: str):
@@ -39,16 +39,16 @@ class ResearchBoard(object):
             track: dict() for track in ResearchTracks
         }
 
-    def place_player(self, player: Player, track: ResearchTracks, level: int = 0):
+    def place_player(self, player: BasePlayer, track: ResearchTracks, level: int = 0):
         self.player_placements[track][player] = level
 
-    def get_placement(self, player: Player, track: ResearchTracks):
+    def get_placement(self, player: BasePlayer, track: ResearchTracks):
         return self.player_placements[track].get(player, 0)
 
-    def advance_player(self, player: Player, track: ResearchTracks):
+    def advance_player(self, player: BasePlayer, track: ResearchTracks):
         pass
 
-    def get_player_gaiaforming_cost(self, player: Player):
+    def get_player_gaiaforming_cost(self, player: BasePlayer):
         level = self.get_placement(player, ResearchTracks.TERRAFORMING)
         if level <= 1:
             return 3
@@ -56,7 +56,7 @@ class ResearchBoard(object):
             return 2
         return 1
 
-    def get_player_navigation_ability(self, player: Player):
+    def get_player_navigation_ability(self, player: BasePlayer):
         level = self.get_placement(player, ResearchTracks.NAVIGATION)
         if level <= 1:
             return 1
@@ -66,7 +66,7 @@ class ResearchBoard(object):
             return 3
         return 4
 
-    def get_player_available_gaiaformers_and_cost(self, player: Player) -> Tuple[int, int]:
+    def get_player_available_gaiaformers_and_cost(self, player: BasePlayer) -> Tuple[int, int]:
         level = self.get_placement(player, ResearchTracks.GAIA_PROJECT)
         if level == 0:
             return 0, 0
@@ -76,7 +76,7 @@ class ResearchBoard(object):
             return 2, 4
         return 3, 3
 
-    def get_player_economy_bonus(self, player: Player):
+    def get_player_economy_bonus(self, player: BasePlayer):
         level = self.get_placement(player, ResearchTracks.ECONOMY)
         if level == 1:
             return Income(credits=2, power=1)
@@ -88,7 +88,7 @@ class ResearchBoard(object):
             return Income(ore=2, credits=4, power=4)
         return Income()
 
-    def get_player_science_bonus(self, player: Player):
+    def get_player_science_bonus(self, player: BasePlayer):
         level = self.get_placement(player, ResearchTracks.SCIENCE)
         if level <= 4:
             return level

@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import Tuple
 from copy import deepcopy
 
-from gaia.gamestate.players import Player, Cost
+from gaia.players.players import BasePlayer, Cost
 from gaia.board.hexagons import Hexagon
 from gaia.board.buildings import Building
 from gaia.utils.enums import PlanetType, BuildingType
@@ -138,7 +138,7 @@ class StartGaiaProjectAction(FinalAction, NavigationModifiable, HasHexagonLocati
 
 
 class PassAction(FinalAction):
-    def validate(self, gamestate, player: Player) -> Tuple[bool, str]:
+    def validate(self, gamestate, player: BasePlayer) -> Tuple[bool, str]:
         return True, "It is always valid to pass at the end of the turn"
 
     def perform_action(self, gamestate, player_id: str):

@@ -21,9 +21,6 @@ class Terrans(BasePlayer):
     def get_starting_board_income(self) -> Income:
         pass
 
-    def get_distance_from_planet_color(self, planet: PlanetType) -> int:
-        pass
-
     def get_building_costs(self) -> Dict[BuildingType, Cost]:
         pass
 
@@ -44,9 +41,6 @@ class Lantids(BasePlayer):
         pass
 
     def get_starting_board_income(self) -> Income:
-        pass
-
-    def get_distance_from_planet_color(self, planet: PlanetType) -> int:
         pass
 
     def get_building_costs(self) -> Dict[BuildingType, Cost]:
@@ -71,9 +65,6 @@ class Xenos(BasePlayer):
     def get_starting_board_income(self) -> Income:
         pass
 
-    def get_distance_from_planet_color(self, planet: PlanetType) -> int:
-        pass
-
     def get_building_costs(self) -> Dict[BuildingType, Cost]:
         pass
 
@@ -94,9 +85,6 @@ class Gleens(BasePlayer):
         pass
 
     def get_starting_board_income(self) -> Income:
-        pass
-
-    def get_distance_from_planet_color(self, planet: PlanetType) -> int:
         pass
 
     def get_building_costs(self) -> Dict[BuildingType, Cost]:
@@ -121,9 +109,6 @@ class Taklons(BasePlayer):
     def get_starting_board_income(self) -> Income:
         pass
 
-    def get_distance_from_planet_color(self, planet: PlanetType) -> int:
-        pass
-
     def get_building_costs(self) -> Dict[BuildingType, Cost]:
         pass
 
@@ -144,9 +129,6 @@ class Ambas(BasePlayer):
         pass
 
     def get_starting_board_income(self) -> Income:
-        pass
-
-    def get_distance_from_planet_color(self, planet: PlanetType) -> int:
         pass
 
     def get_building_costs(self) -> Dict[BuildingType, Cost]:
@@ -171,9 +153,6 @@ class HadschHallas(BasePlayer):
     def get_starting_board_income(self) -> Income:
         pass
 
-    def get_distance_from_planet_color(self, planet: PlanetType) -> int:
-        pass
-
     def get_building_costs(self) -> Dict[BuildingType, Cost]:
         pass
 
@@ -194,9 +173,6 @@ class Ivits(BasePlayer):
         pass
 
     def get_starting_board_income(self) -> Income:
-        pass
-
-    def get_distance_from_planet_color(self, planet: PlanetType) -> int:
         pass
 
     def get_building_costs(self) -> Dict[BuildingType, Cost]:
@@ -221,9 +197,6 @@ class Geodens(BasePlayer):
     def get_starting_board_income(self) -> Income:
         pass
 
-    def get_distance_from_planet_color(self, planet: PlanetType) -> int:
-        pass
-
     def get_building_costs(self) -> Dict[BuildingType, Cost]:
         pass
 
@@ -244,9 +217,6 @@ class Baltaks(BasePlayer):
         pass
 
     def get_starting_board_income(self) -> Income:
-        pass
-
-    def get_distance_from_planet_color(self, planet: PlanetType) -> int:
         pass
 
     def get_building_costs(self) -> Dict[BuildingType, Cost]:
@@ -271,9 +241,6 @@ class Firaks(BasePlayer):
     def get_starting_board_income(self) -> Income:
         pass
 
-    def get_distance_from_planet_color(self, planet: PlanetType) -> int:
-        pass
-
     def get_building_costs(self) -> Dict[BuildingType, Cost]:
         pass
 
@@ -294,9 +261,6 @@ class Bescods(BasePlayer):
         pass
 
     def get_starting_board_income(self) -> Income:
-        pass
-
-    def get_distance_from_planet_color(self, planet: PlanetType) -> int:
         pass
 
     def get_building_costs(self) -> Dict[BuildingType, Cost]:
@@ -321,9 +285,6 @@ class Nevlas(BasePlayer):
     def get_starting_board_income(self) -> Income:
         pass
 
-    def get_distance_from_planet_color(self, planet: PlanetType) -> int:
-        pass
-
     def get_building_costs(self) -> Dict[BuildingType, Cost]:
         pass
 
@@ -344,9 +305,6 @@ class Itars(BasePlayer):
         pass
 
     def get_starting_board_income(self) -> Income:
-        pass
-
-    def get_distance_from_planet_color(self, planet: PlanetType) -> int:
         pass
 
     def get_building_costs(self) -> Dict[BuildingType, Cost]:
