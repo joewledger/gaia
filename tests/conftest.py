@@ -63,12 +63,6 @@ class TestPlayer(BasePlayer):
     def get_starting_board_income(self):
         pass
 
-    def get_building_costs(self):
-        pass
-
-    def get_legal_building_upgrades(self):
-        pass
-
 
 @pytest.fixture()
 def test_player():

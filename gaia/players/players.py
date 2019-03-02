@@ -33,20 +33,19 @@ class BasePlayer(ABC):
     def get_distance_from_planet_color(self, target_planet: PlanetType) -> int:
         return Planet.get_terraforming_distance(self.native_planet, target_planet)
 
+    def get_legal_building_upgrades(self) -> Dict[BuildingType, List[BuildingType]]:
+        return {
+            BuildingType.MINE: [BuildingType.TRADING_STATION],
+            BuildingType.TRADING_STATION: [BuildingType.RESEARCH_LAB, BuildingType.PLANETARY_INSTITUTE],
+            BuildingType.RESEARCH_LAB: [BuildingType.ACADEMY]
+        }
+
     @abstractmethod
     def get_starting_resources(self) -> PlayerResources:
         pass
 
     @abstractmethod
     def get_starting_board_income(self) -> Income:
-        pass
-
-    @abstractmethod
-    def get_building_costs(self) -> Dict[BuildingType, Cost]:
-        pass
-
-    @abstractmethod
-    def get_legal_building_upgrades(self) -> Dict[BuildingType, List[BuildingType]]:
         pass
 
     def can_afford(self, cost: Cost):

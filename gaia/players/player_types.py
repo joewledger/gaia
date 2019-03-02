@@ -21,12 +21,6 @@ class Terrans(BasePlayer):
     def get_starting_board_income(self) -> Income:
         pass
 
-    def get_building_costs(self) -> Dict[BuildingType, Cost]:
-        pass
-
-    def get_legal_building_upgrades(self) -> Dict[BuildingType, List[BuildingType]]:
-        pass
-
 
 class Lantids(BasePlayer):
     @property
@@ -41,12 +35,6 @@ class Lantids(BasePlayer):
         pass
 
     def get_starting_board_income(self) -> Income:
-        pass
-
-    def get_building_costs(self) -> Dict[BuildingType, Cost]:
-        pass
-
-    def get_legal_building_upgrades(self) -> Dict[BuildingType, List[BuildingType]]:
         pass
 
 
@@ -65,12 +53,6 @@ class Xenos(BasePlayer):
     def get_starting_board_income(self) -> Income:
         pass
 
-    def get_building_costs(self) -> Dict[BuildingType, Cost]:
-        pass
-
-    def get_legal_building_upgrades(self) -> Dict[BuildingType, List[BuildingType]]:
-        pass
-
 
 class Gleens(BasePlayer):
     @property
@@ -85,12 +67,6 @@ class Gleens(BasePlayer):
         pass
 
     def get_starting_board_income(self) -> Income:
-        pass
-
-    def get_building_costs(self) -> Dict[BuildingType, Cost]:
-        pass
-
-    def get_legal_building_upgrades(self) -> Dict[BuildingType, List[BuildingType]]:
         pass
 
 
@@ -109,12 +85,6 @@ class Taklons(BasePlayer):
     def get_starting_board_income(self) -> Income:
         pass
 
-    def get_building_costs(self) -> Dict[BuildingType, Cost]:
-        pass
-
-    def get_legal_building_upgrades(self) -> Dict[BuildingType, List[BuildingType]]:
-        pass
-
 
 class Ambas(BasePlayer):
     @property
@@ -129,12 +99,6 @@ class Ambas(BasePlayer):
         pass
 
     def get_starting_board_income(self) -> Income:
-        pass
-
-    def get_building_costs(self) -> Dict[BuildingType, Cost]:
-        pass
-
-    def get_legal_building_upgrades(self) -> Dict[BuildingType, List[BuildingType]]:
         pass
 
 
@@ -153,12 +117,6 @@ class HadschHallas(BasePlayer):
     def get_starting_board_income(self) -> Income:
         pass
 
-    def get_building_costs(self) -> Dict[BuildingType, Cost]:
-        pass
-
-    def get_legal_building_upgrades(self) -> Dict[BuildingType, List[BuildingType]]:
-        pass
-
 
 class Ivits(BasePlayer):
     @property
@@ -173,12 +131,6 @@ class Ivits(BasePlayer):
         pass
 
     def get_starting_board_income(self) -> Income:
-        pass
-
-    def get_building_costs(self) -> Dict[BuildingType, Cost]:
-        pass
-
-    def get_legal_building_upgrades(self) -> Dict[BuildingType, List[BuildingType]]:
         pass
 
 
@@ -197,12 +149,6 @@ class Geodens(BasePlayer):
     def get_starting_board_income(self) -> Income:
         pass
 
-    def get_building_costs(self) -> Dict[BuildingType, Cost]:
-        pass
-
-    def get_legal_building_upgrades(self) -> Dict[BuildingType, List[BuildingType]]:
-        pass
-
 
 class Baltaks(BasePlayer):
     @property
@@ -217,12 +163,6 @@ class Baltaks(BasePlayer):
         pass
 
     def get_starting_board_income(self) -> Income:
-        pass
-
-    def get_building_costs(self) -> Dict[BuildingType, Cost]:
-        pass
-
-    def get_legal_building_upgrades(self) -> Dict[BuildingType, List[BuildingType]]:
         pass
 
 
@@ -241,12 +181,6 @@ class Firaks(BasePlayer):
     def get_starting_board_income(self) -> Income:
         pass
 
-    def get_building_costs(self) -> Dict[BuildingType, Cost]:
-        pass
-
-    def get_legal_building_upgrades(self) -> Dict[BuildingType, List[BuildingType]]:
-        pass
-
 
 class Bescods(BasePlayer):
     @property
@@ -261,12 +195,6 @@ class Bescods(BasePlayer):
         pass
 
     def get_starting_board_income(self) -> Income:
-        pass
-
-    def get_building_costs(self) -> Dict[BuildingType, Cost]:
-        pass
-
-    def get_legal_building_upgrades(self) -> Dict[BuildingType, List[BuildingType]]:
         pass
 
 
@@ -285,12 +213,6 @@ class Nevlas(BasePlayer):
     def get_starting_board_income(self) -> Income:
         pass
 
-    def get_building_costs(self) -> Dict[BuildingType, Cost]:
-        pass
-
-    def get_legal_building_upgrades(self) -> Dict[BuildingType, List[BuildingType]]:
-        pass
-
 
 class Itars(BasePlayer):
     @property
@@ -305,12 +227,6 @@ class Itars(BasePlayer):
         pass
 
     def get_starting_board_income(self) -> Income:
-        pass
-
-    def get_building_costs(self) -> Dict[BuildingType, Cost]:
-        pass
-
-    def get_legal_building_upgrades(self) -> Dict[BuildingType, List[BuildingType]]:
         pass
 
 
