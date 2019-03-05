@@ -11,8 +11,8 @@ def valid_moves_example_response():
         {
             'type': 'build',
             'hex': 11,
-            'navigation': {'QIC': 2, 'BON11': 1},
-            'dig': {'DIG': 3, 'ACT4': 2, 'ACT5': 1}
+            'navigation': 4,
+            'dig': 1-3
         },
 
         {

@@ -55,6 +55,47 @@ let getViewboxSize = function(sectors, hexSize) {
   return `${min_x} ${min_y} ${width} ${height}`;
 }
 
+class Board extends React.Component {
+  render() {
+    let sectors = this.props.sectors.map(sector =>
+        <Sector hexagons={sector.hexagons}
+                size={this.props.size}
+                screen_x_factor={sector.screen_x_factor}
+                screen_y_factor={sector.screen_y_factor} />
+    );
+
+    return (
+      <svg viewBox={getViewboxSize(this.props.sectors, this.props.size)} xmlns="http://www.w3.org/2000/svg">
+        {sectors}
+      </svg>
+    );
+  };
+};
+
+
+class Sector extends React.Component {
+  render() {
+    let size = this.props.size;
+    let sectorStretchFactor = .01;
+
+    let sector_x_factor = this.props.screen_x_factor * size * sectorStretchFactor;
+    let sector_y_factor = this.props.screen_y_factor * size * sectorStretchFactor;
+    let sector_translate = `translate(${sector_x_factor},${sector_y_factor})`;
+
+    let hexagons = this.props.hexagons.map(hexagon =>
+      <Hexagon x={hexagon.screen_x_factor * size}
+               y={hexagon.screen_y_factor * size}
+               hex_x={hexagon.x}
+               hex_z={hexagon.z}
+               planet={hexagon.planet} />
+    );
+
+    return (
+      <g transform={sector_translate}>{hexagons}</g >
+    );
+  };
+};
+
 class Hexagon extends React.Component {
   render() {
     let translate = `translate(${this.props.x},${this.props.y})`;
@@ -123,46 +164,6 @@ class Building extends React.Component {
     }
   }
 }
-
-class Sector extends React.Component {
-  render() {
-    let size = this.props.size;
-    let sectorStretchFactor = .01;
-
-    let sector_x_factor = this.props.screen_x_factor * size * sectorStretchFactor;
-    let sector_y_factor = this.props.screen_y_factor * size * sectorStretchFactor;
-    let sector_translate = `translate(${sector_x_factor},${sector_y_factor})`;
-
-    let hexagons = this.props.hexagons.map(hexagon =>
-      <Hexagon x={hexagon.screen_x_factor * size}
-               y={hexagon.screen_y_factor * size}
-               hex_x={hexagon.x}
-               hex_z={hexagon.z}
-               planet={hexagon.planet} />
-    );
-
-    return (
-      <g transform={sector_translate}>{hexagons}</g >
-    );
-  };
-};
-
-class Board extends React.Component {
-  render() {
-    let sectors = this.props.sectors.map(sector =>
-        <Sector hexagons={sector.hexagons}
-                size={this.props.size}
-                screen_x_factor={sector.screen_x_factor}
-                screen_y_factor={sector.screen_y_factor} />
-    );
-
-    return (
-      <svg viewBox={getViewboxSize(this.props.sectors, this.props.size)} xmlns="http://www.w3.org/2000/svg">
-        {sectors}
-      </svg>
-    );
-  };
-};
 
 class BoardSelector extends React.Component {
   constructor(props) {
